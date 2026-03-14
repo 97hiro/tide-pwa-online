@@ -1,0 +1,1695 @@
+[
+  {
+    "name": "南芦屋浜",
+    "fmCode": "minamiashiyahama",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": 34.7111,
+    "lon": 135.3128,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 232,
+        "name": "南芦屋浜"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/hanshin05"
+  },
+  {
+    "name": "武庫川一文字",
+    "fmCode": "mukogawaichimonji",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true,
+    "mapPageUrl": "https://fishingmax.co.jp/map/hanshin02"
+  },
+  {
+    "name": "西宮ケーソン",
+    "fmCode": "nishinomiyacaisson",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": 34.7125,
+    "lon": 135.3297,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 231,
+        "name": "西宮ケーソン"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "西宮浜総合公園",
+    "fmCode": "nishinomiya",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": 34.715,
+    "lon": 135.34,
+    "spotType": "park",
+    "matchedPorts": [
+      {
+        "index": 233,
+        "name": "西宮浜"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "丸島防波堤",
+    "fmCode": "marushima",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "鳴尾浜臨海公園海釣り広場",
+    "fmCode": "naruohamafishingnpark",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": 34.71,
+    "lon": 135.35,
+    "spotType": "park",
+    "matchedPorts": [
+      {
+        "index": 230,
+        "name": "鳴尾浜"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "尼崎魚つり公園",
+    "fmCode": "amagasakifishingpark",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "park",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "武庫川",
+    "fmCode": "mukogawashiri",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "lat": 34.72,
+    "lon": 135.37,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 228,
+        "name": "武庫川尻一文字"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/hanshin02"
+  },
+  {
+    "name": "神戸港周辺",
+    "fmCode": "portisland",
+    "area": "阪神間",
+    "subArea": "神戸周辺",
+    "prefKey": "hyogo",
+    "lat": 34.685,
+    "lon": 135.2,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 242,
+        "name": "神戸港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "神戸沖堤防",
+    "fmCode": "kobeokiteibo",
+    "area": "阪神間",
+    "subArea": "神戸周辺",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "神戸空港",
+    "fmCode": "kobekuko",
+    "area": "阪神間",
+    "subArea": "神戸周辺",
+    "prefKey": "hyogo",
+    "lat": 34.6303,
+    "lon": 135.2256,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 235,
+        "name": "神戸空港親水護岸"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "和田防",
+    "fmCode": "wadabo",
+    "area": "阪神間",
+    "subArea": "神戸周辺",
+    "prefKey": "hyogo",
+    "lat": 34.66,
+    "lon": 135.175,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 239,
+        "name": "和田防"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "六甲アイランド",
+    "fmCode": "rokkoisland",
+    "area": "阪神間",
+    "subArea": "神戸周辺",
+    "prefKey": "hyogo",
+    "lat": 34.69,
+    "lon": 135.265,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 241,
+        "name": "六甲アイランド"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "平磯海釣り公園",
+    "fmCode": "hiraisofishingpark",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": 34.6431,
+    "lon": 135.0053,
+    "spotType": "rock",
+    "matchedPorts": [
+      {
+        "index": 245,
+        "name": "平磯海づり公園"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "アジュール舞子",
+    "fmCode": "azurmaiko",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": 34.625,
+    "lon": 135.0264,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 249,
+        "name": "アジュール舞子"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/hanshin04"
+  },
+  {
+    "name": "大蔵海岸",
+    "fmCode": "okurakaigan",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": 34.64,
+    "lon": 134.995,
+    "spotType": "surf",
+    "matchedPorts": [
+      {
+        "index": 254,
+        "name": "大蔵海岸"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "垂水一文字",
+    "fmCode": "tarumiichimonji",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "須磨一文字",
+    "fmCode": "sumaichimonji",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "須磨海釣り公園",
+    "fmCode": "sumafishingpark",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "park",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "須磨海岸",
+    "fmCode": "sumakaigan",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": 34.635,
+    "lon": 135.12,
+    "spotType": "surf",
+    "matchedPorts": [
+      {
+        "index": 243,
+        "name": "須磨海岸"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/hanshin04"
+  },
+  {
+    "name": "明石沖",
+    "fmCode": "akashioki",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "淡路沖",
+    "fmCode": "awajioki",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "須磨沖",
+    "fmCode": "sumaoki",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "神戸沖",
+    "fmCode": "kobeoki",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "洲本沖",
+    "fmCode": "sumotooki",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "北淡",
+    "fmCode": "hokutan",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "南淡",
+    "fmCode": "nantan",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "岩屋一文字",
+    "fmCode": "iwayaichimonji",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "洲本周辺",
+    "fmCode": "sumoto",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": 34.34,
+    "lon": 134.9,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 289,
+        "name": "洲本港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "沼島",
+    "fmCode": "nushima",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": 34.175,
+    "lon": 134.835,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 296,
+        "name": "沼島漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "西浦",
+    "fmCode": "nishiura",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "東浦",
+    "fmCode": "higashiura",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "青野ダム",
+    "fmCode": "aonodam",
+    "area": "阪神間",
+    "subArea": "兵庫県",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true,
+    "mapPageUrl": "https://fishingmax.co.jp/map/hanshin01"
+  },
+  {
+    "name": "一庫ダム",
+    "fmCode": "hitokuradam",
+    "area": "阪神間",
+    "subArea": "兵庫県",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "揖保・千種川",
+    "fmCode": "ibo-chikusagawa",
+    "area": "阪神間",
+    "subArea": "兵庫県",
+    "prefKey": "hyogo",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "貝塚人工島",
+    "fmCode": "kaidukajinkoto",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": 34.4347,
+    "lon": 135.34,
+    "spotType": "pier",
+    "matchedPorts": [
+      {
+        "index": 152,
+        "name": "貝塚人工島"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/minamiosaka04"
+  },
+  {
+    "name": "貝塚港",
+    "fmCode": "kaidukako",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": 34.44,
+    "lon": 135.36,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 138,
+        "name": "貝塚港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "泉佐野一文字",
+    "fmCode": "izumisanoichimonji",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "岸和田周辺",
+    "fmCode": "kishiwadako",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": 34.47,
+    "lon": 135.38,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 137,
+        "name": "岸和田漁港"
+      },
+      {
+        "index": 153,
+        "name": "岸和田一文字"
+      },
+      {
+        "index": 165,
+        "name": "岸和田旧港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "汐見・なぎさ公園",
+    "fmCode": "shiomifuto",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "park",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "助松埠頭",
+    "fmCode": "sukematsufuto",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": 34.515,
+    "lon": 135.395,
+    "spotType": "pier",
+    "matchedPorts": [
+      {
+        "index": 155,
+        "name": "助松埠頭"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "小松埠頭",
+    "fmCode": "komatsufuto",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "大津川尻",
+    "fmCode": "otsugawa",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "river",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "忠岡木材コンビナート",
+    "fmCode": "tadaokaic",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "岸和田一文字",
+    "fmCode": "kishiwadaichimonji",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "lat": 34.4594,
+    "lon": 135.3561,
+    "spotType": "pier",
+    "matchedPorts": [
+      {
+        "index": 153,
+        "name": "岸和田一文字"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "とっとパーク小島",
+    "fmCode": "tottoparkkojima",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": 34.3175,
+    "lon": 135.1428,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 168,
+        "name": "とっとパーク小島"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "小島漁港",
+    "fmCode": "kojimagyoko",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": 34.285,
+    "lon": 135.18,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 147,
+        "name": "小島漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/wakayama01"
+  },
+  {
+    "name": "加太周辺",
+    "fmCode": "kadaohato",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": 34.275,
+    "lon": 135.065,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 95,
+        "name": "加太磯"
+      },
+      {
+        "index": 119,
+        "name": "加太大波止"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "深日周辺",
+    "fmCode": "fukegyoko",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": 34.295,
+    "lon": 135.19,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 146,
+        "name": "深日漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "泉佐野～阪南周辺",
+    "fmCode": "taruigyoko",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "小島沖",
+    "fmCode": "kojimaoki",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "加太沖",
+    "fmCode": "kadaoki",
+    "area": "南大阪",
+    "subArea": "泉南～加太",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "大阪釣り堀",
+    "fmCode": "osakatsuribori",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "pond",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "堺周辺",
+    "fmCode": "sakai",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "大阪　北港・南港",
+    "fmCode": "osakananko",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "lat": 34.66,
+    "lon": 135.42,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 166,
+        "name": "大阪北港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "浜寺運河",
+    "fmCode": "hamaderaunga",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "lat": null,
+    "lon": null,
+    "spotType": "river",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "石津",
+    "fmCode": "ishidu",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "lat": 34.56,
+    "lon": 135.44,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 133,
+        "name": "石津漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "淀川",
+    "fmCode": "yodogawa",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "lat": 34.68,
+    "lon": 135.41,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 169,
+        "name": "淀川河口"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "合川ダム",
+    "fmCode": "gogawadam",
+    "area": "和歌山",
+    "subArea": "和歌山県",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "七川ダム",
+    "fmCode": "shichikawadam",
+    "area": "和歌山",
+    "subArea": "和歌山県",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "紀北沖",
+    "fmCode": "kihokuoki",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "マリーナシティ",
+    "fmCode": "marinacity",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": 34.1575,
+    "lon": 135.1575,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 126,
+        "name": "マリーナシティ海釣り公園"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false,
+    "mapPageUrl": "https://fishingmax.co.jp/map/wakayama02"
+  },
+  {
+    "name": "下津ピアランド",
+    "fmCode": "shimotsupierland",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "田ノ浦",
+    "fmCode": "tanoura",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": 34.192,
+    "lon": 135.136,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 0,
+        "name": "田ノ浦漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "和歌浦",
+    "fmCode": "wakaura",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": 34.187,
+    "lon": 135.153,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 2,
+        "name": "和歌浦漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "雑賀崎(一文字)",
+    "fmCode": "saigasaki",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": 34.183,
+    "lon": 135.129,
+    "spotType": "pier",
+    "matchedPorts": [
+      {
+        "index": 1,
+        "name": "雑賀崎漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "水軒(一文字)",
+    "fmCode": "suiken",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "pier",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "紀ノ川河口",
+    "fmCode": "kinokawakako",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "river",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "下津周辺",
+    "fmCode": "shimotsu",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "lat": 34.11,
+    "lon": 135.185,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 122,
+        "name": "下津大波止"
+      },
+      {
+        "index": 128,
+        "name": "下津ピアーランド"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "みなべ周辺",
+    "fmCode": "minabe",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "湯浅周辺",
+    "fmCode": "yuasa",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "御坊周辺",
+    "fmCode": "gobo",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "日ノ岬沖",
+    "fmCode": "hinomisakioki",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "印南周辺",
+    "fmCode": "inami",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "lat": 33.81,
+    "lon": 135.2,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 34,
+        "name": "印南漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "串本周辺",
+    "fmCode": "kushimoto",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": 33.473,
+    "lon": 135.772,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 74,
+        "name": "串本漁港"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "すさみ周辺",
+    "fmCode": "susami",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "白浜周辺",
+    "fmCode": "shirahama",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": 34.775,
+    "lon": 134.63,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 270,
+        "name": "白浜海水浴場"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "白浜沖",
+    "fmCode": "shirahamaoki",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "周参見沖",
+    "fmCode": "susamioki",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "串本沖",
+    "fmCode": "kushimotooki",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "潮の岬沖",
+    "fmCode": "shionomisakioki",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "勝浦沖",
+    "fmCode": "katsuuraoki",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "田辺周辺",
+    "fmCode": "tanabe",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": 33.726,
+    "lon": 135.377,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 43,
+        "name": "田辺漁港"
+      },
+      {
+        "index": 124,
+        "name": "田辺新大波止"
+      }
+    ],
+    "isTarget": true,
+    "needsReview": false
+  },
+  {
+    "name": "田辺沖",
+    "fmCode": "tanabeoki",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "和歌山釣り堀",
+    "fmCode": "wakayamatsuribori",
+    "area": "和歌山",
+    "subArea": "その他和歌山",
+    "prefKey": "wakayama",
+    "lat": null,
+    "lon": null,
+    "spotType": "pond",
+    "matchedPorts": [],
+    "isTarget": true,
+    "needsReview": true
+  },
+  {
+    "name": "経ヶ岬沖",
+    "fmCode": "kyogamisakioki",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": 35.7833,
+    "lon": 135.2547,
+    "spotType": "offshore",
+    "matchedPorts": [
+      {
+        "index": 216,
+        "name": "経ヶ岬"
+      }
+    ],
+    "isTarget": false,
+    "needsReview": false
+  },
+  {
+    "name": "冠島沖",
+    "fmCode": "kanmurijimaoki",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "白石沖",
+    "fmCode": "shiraishioki",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "高山ダム",
+    "fmCode": "takayamadam",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "日吉ダム",
+    "fmCode": "hiyoshidam",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "宮津",
+    "fmCode": "miyadu",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": 35.534,
+    "lon": 135.195,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 197,
+        "name": "宮津港"
+      }
+    ],
+    "isTarget": false,
+    "needsReview": false
+  },
+  {
+    "name": "舞鶴",
+    "fmCode": "maiduru",
+    "area": "その他",
+    "subArea": "京都府",
+    "prefKey": null,
+    "lat": 35.473,
+    "lon": 135.387,
+    "spotType": "port",
+    "matchedPorts": [
+      {
+        "index": 189,
+        "name": "舞鶴漁港"
+      }
+    ],
+    "isTarget": false,
+    "needsReview": false
+  },
+  {
+    "name": "池原ダム",
+    "fmCode": "ikeharadam",
+    "area": "その他",
+    "subArea": "奈良県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "七色ダム",
+    "fmCode": "nanairodam",
+    "area": "その他",
+    "subArea": "奈良県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "津風呂湖",
+    "fmCode": "tsuburoko",
+    "area": "その他",
+    "subArea": "奈良県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "琵琶湖",
+    "fmCode": "biwako",
+    "area": "その他",
+    "subArea": "滋賀県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "dam",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "伊勢志摩周辺",
+    "fmCode": "iseshima",
+    "area": "その他",
+    "subArea": "三重県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "伊勢湾・志摩沖",
+    "fmCode": "isewan",
+    "area": "その他",
+    "subArea": "三重県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "尾鷲周辺",
+    "fmCode": "owashi",
+    "area": "その他",
+    "subArea": "三重県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "尾鷲沖",
+    "fmCode": "owashioki",
+    "area": "その他",
+    "subArea": "三重県",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "瀬戸内",
+    "fmCode": "setouchi",
+    "area": "その他",
+    "subArea": "中国四国",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "松山沖",
+    "fmCode": "matsuyamaoki",
+    "area": "その他",
+    "subArea": "中国四国",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "宇和島周辺",
+    "fmCode": "uwajima",
+    "area": "その他",
+    "subArea": "中国四国",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "鳴門周辺",
+    "fmCode": "naruto",
+    "area": "その他",
+    "subArea": "中国四国",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "室戸周辺",
+    "fmCode": "muroto",
+    "area": "その他",
+    "subArea": "中国四国",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "足摺周辺",
+    "fmCode": "ashizuri",
+    "area": "その他",
+    "subArea": "中国四国",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "若狭沖",
+    "fmCode": "wakasaoki",
+    "area": "その他",
+    "subArea": "日本海側",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "敦賀沖",
+    "fmCode": "tsurugaoki",
+    "area": "その他",
+    "subArea": "日本海側",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "鳥取沖",
+    "fmCode": "tottori",
+    "area": "その他",
+    "subArea": "日本海側",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "山陰沖",
+    "fmCode": "sanin",
+    "area": "その他",
+    "subArea": "日本海側",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "offshore",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "九頭竜川",
+    "fmCode": "kuzuryugawa",
+    "area": "その他",
+    "subArea": "その他",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "その他河川",
+    "fmCode": "otherriver",
+    "area": "その他",
+    "subArea": "その他",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  },
+  {
+    "name": "その他海",
+    "fmCode": "othersea",
+    "area": "その他",
+    "subArea": "その他",
+    "prefKey": null,
+    "lat": null,
+    "lon": null,
+    "spotType": "port",
+    "matchedPorts": [],
+    "isTarget": false,
+    "needsReview": true
+  }
+]

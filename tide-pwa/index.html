@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a1628">
+<title>タイドグラフ - 潮汐情報</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+:root {
+  --bg-primary: #0a1628;
+  --bg-secondary: #111d33;
+  --bg-card: #152238;
+  --bg-hover: #1a2d4a;
+  --text-primary: #e8edf5;
+  --text-secondary: #8899b0;
+  --accent-blue: #2d7dd2;
+  --accent-cyan: #3ec6e0;
+  --accent-orange: #f0943a;
+  --accent-red: #e74c5e;
+  --accent-green: #4ecb71;
+  --high-tide: #f0943a;
+  --low-tide: #3ec6e0;
+  --border: #1e3050;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic UI", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  min-width: 0;
+  flex: 1;
+}
+.header-left .port-name {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.header-left .port-area {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.header-left .chevron {
+  color: var(--text-secondary);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.header-center .date-text {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background .2s;
+}
+.header-center .date-text:active { background: var(--bg-hover); }
+.nav-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+}
+.nav-btn:active { background: var(--bg-hover); }
+.tide-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.tide-badge.oshio { background: #e74c5e33; color: #f06878; }
+.tide-badge.nakashio { background: #f0943a33; color: #f0a050; }
+.tide-badge.koshio { background: #3ec6e033; color: #3ec6e0; }
+.tide-badge.nagashio { background: #8899b033; color: #a0b0c8; }
+.tide-badge.wakashio { background: #4ecb7133; color: #4ecb71; }
+
+/* Graph Container */
+.graph-container {
+  position: relative;
+  width: 100%;
+  padding: 0 4px;
+  touch-action: pan-y;
+}
+.graph-container canvas {
+  width: 100%;
+  display: block;
+}
+
+/* Info Cards */
+.info-section {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+}
+.card-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.card-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+.card-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.card-value.high { color: var(--high-tide); }
+.card-value.low { color: var(--low-tide); }
+.tide-events {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.tide-events-title {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.tide-event-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tide-event-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  flex: 1;
+  min-width: 140px;
+}
+.tide-event-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tide-event-dot.high { background: var(--high-tide); }
+.tide-event-dot.low { background: var(--low-tide); }
+.tide-event-time {
+  font-size: 16px;
+  font-weight: 600;
+}
+.tide-event-height {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.tide-event-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.sun-moon-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.moon-icon-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.moon-canvas { flex-shrink: 0; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 200;
+  display: none;
+  opacity: 0;
+  transition: opacity .25s;
+}
+.modal-overlay.active { display: flex; opacity: 1; }
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg-primary);
+  z-index: 201;
+  display: none;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform .3s ease;
+}
+.modal.active { display: flex; transform: translateY(0); }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  padding-top: calc(12px + var(--safe-top));
+}
+.modal-title { font-size: 17px; font-weight: 600; }
+.modal-close {
+  width: 32px; height: 32px;
+  border: none;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-box {
+  padding: 10px 16px;
+  flex-shrink: 0;
+}
+.search-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 15px;
+  outline: none;
+}
+.search-input::placeholder { color: var(--text-secondary); }
+.search-input:focus { border-color: var(--accent-blue); }
+.tabs {
+  display: flex;
+  padding: 0 16px;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.tab {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .2s;
+  flex-shrink: 0;
+}
+.tab.active {
+  color: var(--accent-cyan);
+  border-bottom-color: var(--accent-cyan);
+}
+.port-list {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--safe-bottom);
+}
+.port-group-header {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.port-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.port-item:active { background: var(--bg-hover); }
+.port-item .port-item-name { font-size: 15px; }
+.port-item .port-item-area {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.fav-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.fav-btn.active { color: #f0c040; }
+
+/* Date picker */
+.date-picker-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 150;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.date-picker-overlay.active { display: flex; }
+.date-picker {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  min-width: 280px;
+}
+.date-picker input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 16px;
+}
+.date-picker-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.date-picker-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.date-picker-btn.cancel { background: var(--bg-secondary); color: var(--text-primary); }
+.date-picker-btn.today { background: var(--accent-blue); color: #fff; }
+
+/* Disclaimer Modal */
+.disclaimer-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.disclaimer-overlay.active { display: flex; }
+.disclaimer-box {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+.disclaimer-icon { font-size: 28px; margin-bottom: 8px; }
+.disclaimer-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.disclaimer-text { font-size: 13px; color: var(--text-secondary); line-height: 1.7; text-align: left; margin-bottom: 18px; }
+.disclaimer-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Footer disclaimer */
+.footer-disclaimer {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px 16px 4px;
+  opacity: .7;
+}
+
+/* Countdown */
+.next-tide-card {
+  background: linear-gradient(135deg, var(--bg-card), #1a2d4a);
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.next-tide-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.next-tide-info {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.next-tide-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.next-tide-countdown {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.next-tide-detail {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+@media (max-width: 374px) {
+  .header { padding: 8px 10px; }
+  .header-left .port-name { font-size: 14px; }
+  .card-value { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left" id="openPortSelect">
+    <div>
+      <div class="port-name" id="portName">串本漁港</div>
+      <div class="port-area" id="portArea">和歌山県 串本町</div>
+    </div>
+    <span class="chevron">&#9662;</span>
+  </div>
+  <div class="header-center">
+    <button class="nav-btn" id="prevDay">&#8249;</button>
+    <span class="date-text" id="dateText">2月28日(金)</span>
+    <button class="nav-btn" id="nextDay">&#8250;</button>
+  </div>
+  <span class="tide-badge" id="tideBadge">大潮</span>
+</div>
+
+<!-- Graph -->
+<div class="graph-container" id="graphContainer">
+  <canvas id="tideCanvas"></canvas>
+</div>
+
+<!-- Info -->
+<div class="info-section">
+  <!-- Next tide countdown -->
+  <div class="next-tide-card" id="nextTideCard">
+    <div class="next-tide-label">次の潮汐</div>
+    <div class="next-tide-info">
+      <span class="next-tide-name" id="nextTideName">満潮</span>
+      <span class="next-tide-countdown" id="nextTideCountdown">--:--:--</span>
+    </div>
+    <div class="next-tide-detail" id="nextTideDetail"></div>
+  </div>
+
+  <!-- Tide events -->
+  <div class="tide-events">
+    <div class="tide-events-title">満潮・干潮</div>
+    <div class="tide-event-list" id="tideEventList"></div>
+  </div>
+
+  <!-- Sun / Moon row -->
+  <div class="sun-moon-row">
+    <div class="card">
+      <div class="card-label">&#9728;&#65039; 日の出・日の入り</div>
+      <div class="card-value" id="sunriseText" style="font-size:16px;">--:--</div>
+      <div class="card-sub" id="sunsetText">日の入り --:--</div>
+    </div>
+    <div class="card">
+      <div class="card-label">&#127769; 月齢</div>
+      <div class="moon-icon-container">
+        <canvas class="moon-canvas" id="moonCanvas" width="36" height="36"></canvas>
+        <div>
+          <div class="card-value" id="moonAgeText" style="font-size:16px;">--</div>
+          <div class="card-sub" id="moonPhaseText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-disclaimer">&#9888; 本アプリの情報は釣り可否を保証するものではありません。現地の看板・各漁協にご確認ください。</div>
+</div>
+
+<!-- Disclaimer Modal -->
+<div class="disclaimer-overlay" id="disclaimerOverlay">
+  <div class="disclaimer-box">
+    <div class="disclaimer-icon">&#9888;&#65039;</div>
+    <div class="disclaimer-title">ご利用にあたって</div>
+    <div class="disclaimer-text">
+      釣り禁止・立入禁止区域は現地の看板・各漁協にご確認ください。<br><br>
+      本アプリの情報は釣り可否を保証するものではありません。<br><br>
+      マナーを守り安全に釣りをお楽しみください。
+    </div>
+    <button class="disclaimer-btn" id="disclaimerOk">了解しました</button>
+  </div>
+</div>
+
+<!-- Port Selection Modal -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal" id="portModal">
+  <div class="modal-header">
+    <span class="modal-title">地点を選択</span>
+    <button class="modal-close" id="closeModal">&#10005;</button>
+  </div>
+  <div class="search-box">
+    <input class="search-input" id="searchInput" type="text" placeholder="漁港名で検索..." autocomplete="off">
+  </div>
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="fav">&#9733; お気に入り</div>
+    <div class="tab" data-tab="wakayama">和歌山</div>
+    <div class="tab" data-tab="osaka">大阪</div>
+    <div class="tab" data-tab="kyoto">京都</div>
+  </div>
+  <div class="port-list" id="portList"></div>
+</div>
+
+<!-- Date Picker -->
+<div class="date-picker-overlay" id="datePickerOverlay">
+  <div class="date-picker">
+    <input type="date" id="datePickerInput">
+    <div class="date-picker-btns">
+      <button class="date-picker-btn cancel" id="datePickerCancel">キャンセル</button>
+      <button class="date-picker-btn today" id="datePickerToday">今日</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== PORT DATA ====================
+// Reference ports with harmonic constants (amplitude in cm, phase in degrees)
+// M2, S2, K1, O1, N2, SA, K2, P1
+const REF_PORTS = {
+  osaka: {
+    lat: 34.6500, lon: 135.4290,
+    // Osaka Bay - large tidal range, semi-diurnal dominant
+    M2: [38.0, 225], S2: [16.5, 260], K1: [22.5, 190], O1: [17.0, 170],
+    N2: [8.0, 210], SA: [8.5, 75], K2: [4.5, 260], P1: [7.5, 188]
+  },
+  wakayama: {
+    lat: 34.2200, lon: 135.1580,
+    M2: [40.5, 230], S2: [17.5, 268], K1: [23.0, 192], O1: [17.5, 172],
+    N2: [8.5, 215], SA: [8.0, 72], K2: [4.8, 268], P1: [7.6, 190]
+  },
+  kainan: {
+    lat: 34.1530, lon: 135.2030,
+    M2: [42.0, 233], S2: [18.0, 272], K1: [23.2, 193], O1: [17.8, 173],
+    N2: [8.8, 218], SA: [7.8, 70], K2: [4.9, 272], P1: [7.7, 191]
+  },
+  yuasa: {
+    lat: 34.0320, lon: 135.1780,
+    M2: [44.0, 238], S2: [19.0, 278], K1: [23.5, 195], O1: [18.0, 175],
+    N2: [9.2, 222], SA: [7.5, 68], K2: [5.2, 278], P1: [7.8, 193]
+  },
+  gobo: {
+    lat: 33.8610, lon: 135.1660,
+    M2: [46.5, 245], S2: [20.0, 285], K1: [24.0, 198], O1: [18.5, 178],
+    N2: [9.8, 228], SA: [7.2, 65], K2: [5.5, 285], P1: [8.0, 196]
+  },
+  tanabe: {
+    lat: 33.7260, lon: 135.3770,
+    M2: [50.0, 250], S2: [21.5, 292], K1: [24.5, 200], O1: [19.0, 180],
+    N2: [10.5, 232], SA: [7.0, 62], K2: [5.8, 292], P1: [8.1, 198]
+  },
+  shirahama: {
+    lat: 33.6830, lon: 135.3440,
+    M2: [52.0, 252], S2: [22.0, 295], K1: [24.8, 201], O1: [19.2, 181],
+    N2: [10.8, 234], SA: [6.8, 60], K2: [6.0, 295], P1: [8.2, 199]
+  },
+  kushimoto: {
+    lat: 33.4730, lon: 135.7720,
+    M2: [55.0, 260], S2: [23.0, 305], K1: [25.0, 205], O1: [19.5, 185],
+    N2: [11.5, 240], SA: [6.5, 55], K2: [6.3, 305], P1: [8.3, 203]
+  },
+  katsuura: {
+    lat: 33.6310, lon: 135.9430,
+    M2: [52.5, 255], S2: [22.0, 300], K1: [24.5, 203], O1: [19.0, 183],
+    N2: [11.0, 237], SA: [6.3, 52], K2: [6.0, 300], P1: [8.1, 201]
+  },
+  shingu: {
+    lat: 33.7270, lon: 136.0050,
+    M2: [50.0, 252], S2: [21.0, 296], K1: [24.0, 202], O1: [18.5, 182],
+    N2: [10.5, 234], SA: [6.0, 50], K2: [5.7, 296], P1: [7.9, 200]
+  },
+  maizuru: {
+    lat: 35.4730, lon: 135.3870,
+    M2: [12.0, 90], S2: [4.5, 130], K1: [10.5, 290], O1: [8.0, 270],
+    N2: [2.5, 75], SA: [9.0, 85], K2: [1.2, 130], P1: [3.5, 288]
+  },
+  miyazu: {
+    lat: 35.5340, lon: 135.1950,
+    M2: [11.5, 88], S2: [4.2, 128], K1: [10.2, 288], O1: [7.8, 268],
+    N2: [2.4, 73], SA: [9.2, 83], K2: [1.1, 128], P1: [3.4, 286]
+  },
+  tango: {
+    lat: 35.7460, lon: 135.0400,
+    M2: [10.5, 85], S2: [3.8, 125], K1: [9.8, 285], O1: [7.5, 265],
+    N2: [2.2, 70], SA: [9.5, 80], K2: [1.0, 125], P1: [3.2, 283]
+  }
+};
+
+// All fishing ports
+// Format: [name, area, prefecture, lat, lon, refPort1, refPort2(optional), weight(0-1, for interpolation)]
+const PORTS = [
+  // ==================== WAKAYAMA ====================
+  // --- 和歌山市 ---
+  ["田ノ浦漁港","和歌山市","wakayama",34.1920,135.1360,"wakayama",null,1],
+  ["雑賀崎漁港","和歌山市","wakayama",34.1830,135.1290,"wakayama",null,1],
+  ["和歌浦漁港","和歌山市","wakayama",34.1870,135.1530,"wakayama",null,1],
+  // --- 海南市 ---
+  ["塩津漁港","海南市","wakayama",34.1340,135.1820,"kainan",null,1],
+  ["戸坂漁港","海南市","wakayama",34.1280,135.1910,"kainan",null,1],
+  // --- 有田市 ---
+  ["初島漁港","有田市","wakayama",34.0790,135.1350,"kainan","yuasa",0.5],
+  ["矢櫃漁港","有田市","wakayama",34.0700,135.1280,"kainan","yuasa",0.55],
+  ["逢井漁港","有田市","wakayama",34.0650,135.1250,"kainan","yuasa",0.6],
+  ["千田漁港","有田市","wakayama",34.0600,135.1380,"kainan","yuasa",0.6],
+  ["箕島漁港","有田市","wakayama",34.0810,135.1470,"kainan","yuasa",0.45],
+  // --- 湯浅町 ---
+  ["田村漁港","湯浅町","wakayama",34.0380,135.1680,"yuasa",null,1],
+  ["栖原漁港","湯浅町","wakayama",34.0250,135.1720,"yuasa",null,1],
+  // --- 広川町 ---
+  ["唐尾漁港","広川町","wakayama",34.0180,135.1650,"yuasa","gobo",0.8],
+  ["鈴子漁港","広川町","wakayama",34.0100,135.1580,"yuasa","gobo",0.75],
+  // --- 由良町 ---
+  ["三尾川漁港","由良町","wakayama",33.9850,135.1350,"yuasa","gobo",0.6],
+  ["戸津井漁港","由良町","wakayama",33.9780,135.1280,"yuasa","gobo",0.55],
+  ["小引漁港","由良町","wakayama",33.9700,135.1200,"yuasa","gobo",0.5],
+  ["大引漁港","由良町","wakayama",33.9620,135.1100,"yuasa","gobo",0.45],
+  ["衣奈漁港","由良町","wakayama",33.9500,135.1050,"yuasa","gobo",0.4],
+  // --- 日高町 ---
+  ["小浦漁港","日高町","wakayama",33.9200,135.1100,"gobo",null,1],
+  ["津久野漁港","日高町","wakayama",33.9100,135.1050,"gobo",null,1],
+  ["比井漁港","日高町","wakayama",33.9050,135.1000,"gobo",null,1],
+  ["産湯漁港","日高町","wakayama",33.8950,135.1100,"gobo",null,1],
+  ["田杭漁港","日高町","wakayama",33.8900,135.1150,"gobo",null,1],
+  ["阿尾漁港","日高町","wakayama",33.8850,135.1200,"gobo",null,1],
+  // --- 美浜町 ---
+  ["三尾漁港","美浜町","wakayama",33.8800,135.1300,"gobo",null,1],
+  ["本ノ脇漁港","美浜町","wakayama",33.8750,135.1350,"gobo",null,1],
+  // --- 御坊市 ---
+  ["祓井戸漁港","御坊市","wakayama",33.8650,135.1500,"gobo",null,1],
+  ["野島漁港","御坊市","wakayama",33.8550,135.1450,"gobo",null,1],
+  ["加尾漁港","御坊市","wakayama",33.8500,135.1480,"gobo",null,1],
+  ["上野漁港","御坊市","wakayama",33.8450,135.1520,"gobo",null,1],
+  ["下楠井漁港","御坊市","wakayama",33.8400,135.1550,"gobo",null,1],
+  ["塩屋漁港","御坊市","wakayama",33.8580,135.1420,"gobo",null,1],
+  // --- 印南町 ---
+  ["津井漁港","印南町","wakayama",33.8200,135.1800,"gobo","tanabe",0.75],
+  ["印南漁港","印南町","wakayama",33.8100,135.2000,"gobo","tanabe",0.7],
+  ["切目漁港","印南町","wakayama",33.8000,135.2200,"gobo","tanabe",0.65],
+  ["島田漁港","印南町","wakayama",33.7950,135.2350,"gobo","tanabe",0.6],
+  // --- みなべ町 ---
+  ["岩代漁港","みなべ町","wakayama",33.7800,135.2700,"gobo","tanabe",0.45],
+  ["大目津漁港","みなべ町","wakayama",33.7700,135.2900,"gobo","tanabe",0.4],
+  ["南部漁港","みなべ町","wakayama",33.7650,135.3100,"gobo","tanabe",0.35],
+  ["堺漁港","みなべ町","wakayama",33.7600,135.3200,"gobo","tanabe",0.3],
+  // --- 田辺市 ---
+  ["芳養漁港","田辺市","wakayama",33.7350,135.3500,"tanabe",null,1],
+  ["目良漁港","田辺市","wakayama",33.7280,135.3650,"tanabe",null,1],
+  ["田辺漁港","田辺市","wakayama",33.7260,135.3770,"tanabe",null,1],
+  ["内の浦漁港","田辺市","wakayama",33.7200,135.3900,"tanabe",null,1],
+  // --- 白浜町 ---
+  ["堅田漁港","白浜町","wakayama",33.7050,135.3500,"tanabe","shirahama",0.6],
+  ["綱不知漁港","白浜町","wakayama",33.6970,135.3520,"tanabe","shirahama",0.5],
+  ["江津良漁港","白浜町","wakayama",33.6900,135.3450,"shirahama",null,1],
+  ["瀬戸漁港","白浜町","wakayama",33.6880,135.3400,"shirahama",null,1],
+  ["湯崎漁港","白浜町","wakayama",33.6830,135.3440,"shirahama",null,1],
+  ["鴨居漁港","白浜町","wakayama",33.6780,135.3500,"shirahama",null,1],
+  ["安久川漁港","白浜町","wakayama",33.6700,135.3600,"shirahama",null,1],
+  ["中漁港","白浜町","wakayama",33.6600,135.3700,"shirahama",null,1],
+  ["袋漁港","白浜町","wakayama",33.6500,135.3800,"shirahama","kushimoto",0.85],
+  ["朝来帰漁港","白浜町","wakayama",33.6400,135.3900,"shirahama","kushimoto",0.8],
+  ["市江漁港","白浜町","wakayama",33.6200,135.4100,"shirahama","kushimoto",0.7],
+  ["笠甫漁港","白浜町","wakayama",33.6000,135.4300,"shirahama","kushimoto",0.6],
+  ["伊古木漁港","白浜町","wakayama",33.5800,135.4500,"shirahama","kushimoto",0.5],
+  // --- すさみ町 ---
+  ["口和深漁港","すさみ町","wakayama",33.5500,135.5000,"shirahama","kushimoto",0.4],
+  ["周参見漁港","すさみ町","wakayama",33.5400,135.5100,"shirahama","kushimoto",0.38],
+  ["見老津漁港","すさみ町","wakayama",33.5200,135.5500,"shirahama","kushimoto",0.3],
+  ["江須ノ川漁港","すさみ町","wakayama",33.5100,135.5700,"shirahama","kushimoto",0.25],
+  ["江住漁港","すさみ町","wakayama",33.5000,135.5900,"shirahama","kushimoto",0.2],
+  ["里野漁港","すさみ町","wakayama",33.4950,135.6100,"shirahama","kushimoto",0.18],
+  // --- 串本町 ---
+  ["舟波漁港","串本町","wakayama",33.4900,135.6300,"kushimoto",null,1],
+  ["安指漁港","串本町","wakayama",33.4870,135.6500,"kushimoto",null,1],
+  ["田子漁港","串本町","wakayama",33.4820,135.6700,"kushimoto",null,1],
+  ["江田漁港","串本町","wakayama",33.4780,135.6900,"kushimoto",null,1],
+  ["野凪漁港","串本町","wakayama",33.4750,135.7100,"kushimoto",null,1],
+  ["田並漁港","串本町","wakayama",33.4730,135.7200,"kushimoto",null,1],
+  ["須賀漁港","串本町","wakayama",33.4700,135.7350,"kushimoto",null,1],
+  ["菖蒲谷漁港","串本町","wakayama",33.4720,135.7500,"kushimoto",null,1],
+  ["黒島漁港","串本町","wakayama",33.4700,135.7600,"kushimoto",null,1],
+  ["船瀬漁港","串本町","wakayama",33.4710,135.7650,"kushimoto",null,1],
+  ["串本漁港","串本町","wakayama",33.4730,135.7720,"kushimoto",null,1],
+  ["出雲漁港","串本町","wakayama",33.4750,135.7800,"kushimoto",null,1],
+  ["橋杭漁港","串本町","wakayama",33.4800,135.7900,"kushimoto",null,1],
+  ["大島漁港","串本町","wakayama",33.4650,135.7950,"kushimoto",null,1],
+  ["動鳴気漁港","串本町","wakayama",33.4630,135.8100,"kushimoto",null,1],
+  ["樫野漁港","串本町","wakayama",33.4600,135.8300,"kushimoto","katsuura",0.85],
+  ["有田漁港","串本町","wakayama",33.4700,135.8050,"kushimoto",null,1],
+  ["阿野木漁港","串本町","wakayama",33.4850,135.8100,"kushimoto","katsuura",0.8],
+  ["須江漁港","串本町","wakayama",33.4950,135.8200,"kushimoto","katsuura",0.75],
+  ["白野漁港","串本町","wakayama",33.5050,135.8300,"kushimoto","katsuura",0.7],
+  ["姫漁港","串本町","wakayama",33.5200,135.8400,"kushimoto","katsuura",0.6],
+  ["伊串漁港","串本町","wakayama",33.5350,135.8500,"kushimoto","katsuura",0.5],
+  ["津荷漁港","串本町","wakayama",33.5500,135.8600,"kushimoto","katsuura",0.4],
+  ["下田原漁港","串本町","wakayama",33.5650,135.8700,"kushimoto","katsuura",0.3],
+  // --- 那智勝浦町 ---
+  ["小金島漁港","那智勝浦町","wakayama",33.5800,135.8900,"katsuura",null,1],
+  ["勝浦漁港","那智勝浦町","wakayama",33.6310,135.9430,"katsuura",null,1],
+  ["那智漁港","那智勝浦町","wakayama",33.6500,135.9500,"katsuura","shingu",0.7],
+  ["宇久井漁港","那智勝浦町","wakayama",33.6600,135.9600,"katsuura","shingu",0.6],
+  // --- 太地町 ---
+  ["太地漁港","太地町","wakayama",33.5950,135.9250,"katsuura",null,1],
+  // --- 新宮市 ---
+  ["三輪崎漁港","新宮市","wakayama",33.7100,136.0000,"shingu",null,1],
+
+  // ==================== OSAKA ====================
+  ["大阪港","大阪市","osaka",34.6500,135.4290,"osaka",null,1],
+  ["堺泉北港","堺市〜泉大津市","osaka",34.5500,135.4100,"osaka",null,1],
+  ["堺出島漁港","堺市","osaka",34.5700,135.4500,"osaka",null,1],
+  ["石津漁港","堺市","osaka",34.5600,135.4400,"osaka",null,1],
+  ["高石漁港","高石市","osaka",34.5300,135.4200,"osaka",null,1],
+  ["忠岡港","忠岡町","osaka",34.5100,135.4000,"osaka",null,1],
+  ["泉大津港","泉大津市","osaka",34.5050,135.3950,"osaka",null,1],
+  ["岸和田漁港","岸和田市","osaka",34.4700,135.3800,"osaka",null,1],
+  ["貝塚港","貝塚市","osaka",34.4400,135.3600,"osaka",null,1],
+  ["佐野漁港","泉佐野市","osaka",34.4000,135.3300,"osaka","wakayama",0.8],
+  ["田尻漁港","田尻町","osaka",34.3850,135.3100,"osaka","wakayama",0.75],
+  ["岡田漁港","泉南市","osaka",34.3700,135.2900,"osaka","wakayama",0.7],
+  ["樽井漁港","泉南市","osaka",34.3550,135.2700,"osaka","wakayama",0.65],
+  ["西鳥取漁港","阪南市","osaka",34.3400,135.2500,"osaka","wakayama",0.6],
+  ["下荘漁港","阪南市","osaka",34.3250,135.2300,"osaka","wakayama",0.55],
+  ["淡輪漁港","岬町","osaka",34.3100,135.2100,"osaka","wakayama",0.5],
+  ["深日漁港","岬町","osaka",34.2950,135.1900,"osaka","wakayama",0.4],
+  ["小島漁港","岬町","osaka",34.2850,135.1800,"osaka","wakayama",0.35],
+
+  // ==================== KYOTO ====================
+  // --- 舞鶴市 ---
+  ["水ヶ浦漁港","舞鶴市","kyoto",35.5100,135.4400,"maizuru",null,1],
+  ["成生漁港","舞鶴市","kyoto",35.5450,135.4200,"maizuru",null,1],
+  ["瀬崎漁港","舞鶴市","kyoto",35.5350,135.4000,"maizuru",null,1],
+  ["西大浦漁港","舞鶴市","kyoto",35.5200,135.3700,"maizuru","miyazu",0.8],
+  ["神崎漁港","舞鶴市","kyoto",35.5000,135.3500,"maizuru","miyazu",0.7],
+  ["田井漁港","舞鶴市","kyoto",35.4900,135.3800,"maizuru",null,1],
+  ["野原漁港","舞鶴市","kyoto",35.4850,135.4000,"maizuru",null,1],
+  ["竜宮浜漁港","舞鶴市","kyoto",35.5300,135.4100,"maizuru",null,1],
+  ["舞鶴漁港","舞鶴市","kyoto",35.4730,135.3870,"maizuru",null,1],
+  ["舞鶴港","舞鶴市","kyoto",35.4730,135.3870,"maizuru",null,1],
+  // --- 宮津市 ---
+  ["由良漁港","宮津市","kyoto",35.5300,135.2800,"miyazu",null,1],
+  ["島陰漁港","宮津市","kyoto",35.5400,135.2600,"miyazu",null,1],
+  ["田井漁港","宮津市","kyoto",35.5350,135.2400,"miyazu",null,1],
+  ["溝尻漁港","宮津市","kyoto",35.5450,135.2200,"miyazu",null,1],
+  ["栗田漁港","宮津市","kyoto",35.5500,135.2100,"miyazu",null,1],
+  ["養老漁港","宮津市","kyoto",35.5600,135.1900,"miyazu",null,1],
+  ["宮津港","宮津市","kyoto",35.5340,135.1950,"miyazu",null,1],
+  // --- 伊根町 ---
+  ["泊漁港","伊根町","kyoto",35.6700,135.2800,"miyazu","tango",0.5],
+  ["伊根漁港","伊根町","kyoto",35.6750,135.2700,"miyazu","tango",0.5],
+  ["新井漁港","伊根町","kyoto",35.6800,135.2500,"miyazu","tango",0.45],
+  ["浦島漁港","伊根町","kyoto",35.6900,135.2300,"miyazu","tango",0.4],
+  ["本庄漁港","伊根町","kyoto",35.7000,135.2100,"miyazu","tango",0.35],
+  // --- 京丹後市 ---
+  ["袖志漁港","京丹後市","kyoto",35.7600,135.0700,"tango",null,1],
+  ["竹野漁港","京丹後市","kyoto",35.7500,135.0500,"tango",null,1],
+  ["小間漁港","京丹後市","kyoto",35.7550,135.0600,"tango",null,1],
+  ["砂方漁港","京丹後市","kyoto",35.7400,135.0400,"tango",null,1],
+  ["三津漁港","京丹後市","kyoto",35.7300,135.0300,"tango",null,1],
+  ["遊漁港","京丹後市","kyoto",35.7200,135.0200,"tango",null,1],
+  ["磯漁港","京丹後市","kyoto",35.7100,135.0100,"tango",null,1],
+  ["浜詰漁港","京丹後市","kyoto",35.7000,135.0000,"tango",null,1],
+  ["蒲井漁港","京丹後市","kyoto",35.6900,134.9900,"tango",null,1],
+  ["旭漁港","京丹後市","kyoto",35.7350,135.0350,"tango",null,1],
+  ["間人漁港","京丹後市","kyoto",35.7460,135.0400,"tango",null,1],
+  ["浅茂川漁港","京丹後市","kyoto",35.7250,135.0250,"tango",null,1],
+  ["中浜漁港","京丹後市","kyoto",35.7150,135.0150,"tango",null,1]
+];
+
+// ==================== TIDAL CALCULATION ====================
+const DEG = Math.PI / 180;
+
+// Astronomical angular speeds (degrees per hour)
+const SPEEDS = {
+  M2: 28.9841042,
+  S2: 30.0000000,
+  K1: 15.0410686,
+  O1: 13.9430356,
+  N2: 28.4397295,
+  SA: 0.0410686,
+  K2: 30.0821373,
+  P1: 14.9589314
+};
+
+// Node factors and equilibrium arguments - simplified for practical use
+function getAstronomicalArgs(date) {
+  const Y = date.getFullYear();
+  const M = date.getMonth() + 1;
+  const D = date.getDate();
+  // Julian centuries from J2000.0
+  const JD = 367*Y - Math.floor(7*(Y+Math.floor((M+9)/12))/4) + Math.floor(275*M/9) + D + 1721013.5;
+  const T = (JD - 2451545.0) / 36525.0;
+
+  // Mean lunar longitude
+  const s = 218.3165 + 481267.8813 * T;
+  // Mean solar longitude
+  const h = 280.4661 + 36000.7698 * T;
+  // Mean lunar perigee longitude
+  const p = 83.3532 + 4069.0137 * T;
+  // Mean lunar node longitude
+  const N = 125.0445 - 1934.1363 * T;
+
+  return { s: s % 360, h: h % 360, p: p % 360, N: N % 360, T };
+}
+
+function getEquilibriumArgs(astro) {
+  const { s, h, p, N } = astro;
+  return {
+    M2: 2*h - 2*s,
+    S2: 0,
+    K1: h + 90,
+    O1: h - 2*s - 90,
+    N2: 2*h - 3*s + p,
+    SA: h,
+    K2: 2*h,
+    P1: -h + 270
+  };
+}
+
+function getNodeFactors(astro) {
+  const Nr = astro.N * DEG;
+  const cosN = Math.cos(Nr);
+  const cos2N = Math.cos(2 * Nr);
+  return {
+    M2: 1.0 - 0.037 * cosN,
+    S2: 1.0,
+    K1: 1.006 + 0.115 * cosN,
+    O1: 1.009 + 0.187 * cosN,
+    N2: 1.0 - 0.037 * cosN,
+    SA: 1.0,
+    K2: 1.024 + 0.286 * cosN,
+    P1: 1.0
+  };
+}
+
+function getNodePhaseCorrections(astro) {
+  const Nr = astro.N * DEG;
+  const sinN = Math.sin(Nr);
+  return {
+    M2: -2.1 * sinN,
+    S2: 0,
+    K1: -8.9 * sinN,
+    O1: 10.8 * sinN,
+    N2: -2.1 * sinN,
+    SA: 0,
+    K2: -17.7 * sinN,
+    P1: 0
+  };
+}
+
+function getHarmonicsForPort(portIndex) {
+  const port = PORTS[portIndex];
+  const ref1Name = port[5];
+  const ref2Name = port[6];
+  const weight = port[7];
+  const ref1 = REF_PORTS[ref1Name];
+  if (!ref2Name) return ref1;
+  const ref2 = REF_PORTS[ref2Name];
+  // Interpolate
+  const result = { lat: port[3], lon: port[4] };
+  const constituents = ['M2','S2','K1','O1','N2','SA','K2','P1'];
+  for (const c of constituents) {
+    const a1 = ref1[c][0], p1 = ref1[c][1];
+    const a2 = ref2[c][0], p2 = ref2[c][1];
+    const w = weight;
+    result[c] = [
+      a1 * w + a2 * (1 - w),
+      p1 * w + p2 * (1 - w)
+    ];
+  }
+  return result;
+}
+
+// Calculate tide height at a given Date
+function calcTideHeight(harmonics, date, astro, nodeF, nodeU, eqArgs) {
+  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const hours = (date - startOfDay) / 3600000;
+  const constituents = ['M2','S2','K1','O1','N2','SA','K2','P1'];
+  let h = 100; // mean sea level offset in cm
+  for (const c of constituents) {
+    if (!harmonics[c]) continue;
+    const A = harmonics[c][0];
+    const phi = harmonics[c][1];
+    const f = nodeF[c];
+    const u = nodeU[c];
+    const V0 = eqArgs[c];
+    const omega = SPEEDS[c];
+    h += f * A * Math.cos((omega * hours + V0 + u - phi) * DEG);
+  }
+  return h;
+}
+
+// Calculate a full day of tide data (144 points, every 10 min)
+function calcDayTide(portIndex, date) {
+  const harmonics = getHarmonicsForPort(portIndex);
+  const astro = getAstronomicalArgs(date);
+  const nodeF = getNodeFactors(astro);
+  const nodeU = getNodePhaseCorrections(astro);
+  const eqArgs = getEquilibriumArgs(astro);
+
+  const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const points = [];
+  for (let i = 0; i <= 144; i++) {
+    const t = new Date(startOfDay.getTime() + i * 10 * 60000);
+    const h = calcTideHeight(harmonics, t, astro, nodeF, nodeU, eqArgs);
+    points.push({ time: t, height: h, minutes: i * 10 });
+  }
+  return points;
+}
+
+// Find high/low tide events
+function findTideEvents(points) {
+  const events = [];
+  for (let i = 1; i < points.length - 1; i++) {
+    const prev = points[i-1].height;
+    const curr = points[i].height;
+    const next = points[i+1].height;
+    if (curr > prev && curr > next) {
+      events.push({ type: 'high', time: points[i].time, height: Math.round(curr), minutes: points[i].minutes });
+    } else if (curr < prev && curr < next) {
+      events.push({ type: 'low', time: points[i].time, height: Math.round(curr), minutes: points[i].minutes });
+    }
+  }
+  return events;
+}
+
+// ==================== SUN CALCULATION ====================
+function calcSunTimes(lat, lon, date) {
+  const rad = Math.PI / 180;
+  const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
+  const lnHour = lon / 15;
+
+  function calcSun(rising) {
+    const t = dayOfYear + ((rising ? 6 : 18) - lnHour) / 24;
+    const M = 0.9856 * t - 3.289;
+    let L = M + 1.916 * Math.sin(M * rad) + 0.020 * Math.sin(2 * M * rad) + 282.634;
+    L = ((L % 360) + 360) % 360;
+    let RA = Math.atan2(Math.sin(L * rad) * 0.91764, Math.cos(L * rad)) / rad;
+    RA = ((RA % 360) + 360) % 360;
+    const Lq = Math.floor(L / 90) * 90;
+    const RAq = Math.floor(RA / 90) * 90;
+    RA = (RA + Lq - RAq) / 15;
+    const sinDec = 0.39782 * Math.sin(L * rad);
+    const cosDec = Math.cos(Math.asin(sinDec));
+    const cosH = (-0.01454 - sinDec * Math.sin(lat * rad)) / (cosDec * Math.cos(lat * rad));
+    if (cosH > 1 || cosH < -1) return null;
+    let H = Math.acos(cosH) / rad;
+    if (rising) H = 360 - H;
+    H /= 15;
+    const T = H + RA - 0.06571 * t - 6.622;
+    let UT = ((T - lnHour) % 24 + 24) % 24;
+    // Convert to JST (UTC+9)
+    UT += 9;
+    if (UT >= 24) UT -= 24;
+    return UT;
+  }
+
+  const sunrise = calcSun(true);
+  const sunset = calcSun(false);
+  return {
+    sunrise: sunrise != null ? sunrise : null,
+    sunset: sunset != null ? sunset : null
+  };
+}
+
+function hoursToHHMM(h) {
+  if (h == null) return '--:--';
+  const hh = Math.floor(h);
+  const mm = Math.round((h - hh) * 60);
+  return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+}
+
+// ==================== MOON CALCULATION ====================
+function calcMoonAge(date) {
+  // Simplified moon age calculation
+  const Y = date.getFullYear();
+  const M = date.getMonth() + 1;
+  const D = date.getDate();
+  // Based on the known new moon: Jan 6, 2000 was a new moon (roughly)
+  const JD = 367*Y - Math.floor(7*(Y+Math.floor((M+9)/12))/4) + Math.floor(275*M/9) + D + 1721013.5;
+  const newMoonRef = 2451550.1; // Jan 6, 2000 new moon
+  const synodicMonth = 29.53059;
+  let age = ((JD - newMoonRef) % synodicMonth + synodicMonth) % synodicMonth;
+  return age;
+}
+
+function getTideName(moonAge) {
+  const a = Math.floor(moonAge);
+  if ((a >= 0 && a <= 2) || (a >= 14 && a <= 17)) return '大潮';
+  if ((a >= 3 && a <= 6) || (a >= 11 && a <= 13) || (a >= 18 && a <= 21) || (a >= 25 && a <= 27)) return '中潮';
+  if ((a >= 7 && a <= 8) || (a >= 22 && a <= 23)) return '小潮';
+  if (a === 9 || a === 24) return '長潮';
+  if (a === 10 || a === 25) return '若潮';
+  return '中潮';
+}
+
+function getTideBadgeClass(name) {
+  switch(name) {
+    case '大潮': return 'oshio';
+    case '中潮': return 'nakashio';
+    case '小潮': return 'koshio';
+    case '長潮': return 'nagashio';
+    case '若潮': return 'wakashio';
+    default: return 'nakashio';
+  }
+}
+
+function getMoonPhaseName(moonAge) {
+  if (moonAge < 1.85) return '新月';
+  if (moonAge < 7.38) return '三日月';
+  if (moonAge < 9.23) return '上弦';
+  if (moonAge < 14.77) return '十三夜';
+  if (moonAge < 16.61) return '満月';
+  if (moonAge < 22.15) return '居待月';
+  if (moonAge < 24.00) return '下弦';
+  return '晦日月';
+}
+
+function drawMoon(canvas, moonAge) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const r = Math.min(w, h) / 2 - 2;
+  const cx = w / 2, cy = h / 2;
+  ctx.clearRect(0, 0, w, h);
+
+  // Background circle (dark side)
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = '#1a2540';
+  ctx.fill();
+  ctx.strokeStyle = '#2a3a5a';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Illuminated portion
+  const phase = (moonAge / 29.53059) * Math.PI * 2;
+  ctx.beginPath();
+  // Right half or left half lit depending on phase
+  if (phase < Math.PI) {
+    // Waxing: right side lit
+    ctx.arc(cx, cy, r, -Math.PI/2, Math.PI/2, false);
+    const k = Math.cos(phase);
+    ctx.ellipse(cx, cy, Math.abs(k) * r, r, 0, Math.PI/2, -Math.PI/2, k < 0);
+  } else {
+    // Waning: left side lit
+    ctx.arc(cx, cy, r, Math.PI/2, -Math.PI/2, false);
+    const k = Math.cos(phase);
+    ctx.ellipse(cx, cy, Math.abs(k) * r, r, 0, -Math.PI/2, Math.PI/2, k > 0);
+  }
+  ctx.closePath();
+  ctx.fillStyle = '#e8dcc0';
+  ctx.fill();
+}
+
+// ==================== GRAPH DRAWING ====================
+function drawTideGraph(canvas, points, events, sunTimes, currentDate, isToday) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const W = rect.width;
+  const H = Math.min(W * 0.55, 320);
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 20, right: 12, bottom: 30, left: 40 };
+  const gW = W - pad.left - pad.right;
+  const gH = H - pad.top - pad.bottom;
+
+  // Find data range
+  let minH = Infinity, maxH = -Infinity;
+  for (const p of points) {
+    if (p.height < minH) minH = p.height;
+    if (p.height > maxH) maxH = p.height;
+  }
+  const range = maxH - minH;
+  const dataMin = minH - range * 0.15;
+  const dataMax = maxH + range * 0.15;
+
+  function xPos(minutes) { return pad.left + (minutes / 1440) * gW; }
+  function yPos(h) { return pad.top + gH - ((h - dataMin) / (dataMax - dataMin)) * gH; }
+
+  // Background
+  ctx.fillStyle = '#0c1a2e';
+  ctx.fillRect(0, 0, W, H);
+
+  // Day/night background
+  if (sunTimes.sunrise != null && sunTimes.sunset != null) {
+    const srMin = sunTimes.sunrise * 60;
+    const ssMin = sunTimes.sunset * 60;
+    // Night (before sunrise)
+    ctx.fillStyle = 'rgba(5,12,30,0.6)';
+    ctx.fillRect(pad.left, pad.top, xPos(srMin) - pad.left, gH);
+    // Day
+    const dayGrad = ctx.createLinearGradient(0, pad.top, 0, pad.top + gH);
+    dayGrad.addColorStop(0, 'rgba(30,60,100,0.3)');
+    dayGrad.addColorStop(1, 'rgba(15,30,60,0.15)');
+    ctx.fillStyle = dayGrad;
+    ctx.fillRect(xPos(srMin), pad.top, xPos(ssMin) - xPos(srMin), gH);
+    // Night (after sunset)
+    ctx.fillStyle = 'rgba(5,12,30,0.6)';
+    ctx.fillRect(xPos(ssMin), pad.top, W - pad.right - xPos(ssMin), gH);
+
+    // Sunrise/sunset lines
+    ctx.setLineDash([4, 3]);
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#f0943a55';
+    ctx.beginPath();
+    ctx.moveTo(xPos(srMin), pad.top);
+    ctx.lineTo(xPos(srMin), pad.top + gH);
+    ctx.stroke();
+    ctx.strokeStyle = '#e74c5e55';
+    ctx.beginPath();
+    ctx.moveTo(xPos(ssMin), pad.top);
+    ctx.lineTo(xPos(ssMin), pad.top + gH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Grid lines - vertical (hours)
+  ctx.strokeStyle = '#1a2d4a';
+  ctx.lineWidth = 0.5;
+  for (let h = 0; h <= 24; h += 3) {
+    const x = xPos(h * 60);
+    ctx.beginPath();
+    ctx.moveTo(x, pad.top);
+    ctx.lineTo(x, pad.top + gH);
+    ctx.stroke();
+  }
+
+  // Grid lines - horizontal
+  const step = Math.max(10, Math.round(range / 4 / 10) * 10) || 20;
+  const startY = Math.ceil(dataMin / step) * step;
+  ctx.strokeStyle = '#1a2d4a';
+  ctx.fillStyle = '#5a7090';
+  ctx.font = '10px -apple-system, sans-serif';
+  ctx.textAlign = 'right';
+  for (let v = startY; v <= dataMax; v += step) {
+    const y = yPos(v);
+    if (y < pad.top || y > pad.top + gH) continue;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y);
+    ctx.lineTo(W - pad.right, y);
+    ctx.stroke();
+    ctx.fillText(Math.round(v) + '', pad.left - 4, y + 3);
+  }
+
+  // X-axis labels
+  ctx.fillStyle = '#5a7090';
+  ctx.font = '10px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  for (let h = 0; h <= 24; h += 3) {
+    ctx.fillText(h + '', xPos(h * 60), H - pad.bottom + 16);
+  }
+
+  // Tide curve - gradient fill
+  ctx.beginPath();
+  ctx.moveTo(xPos(points[0].minutes), yPos(points[0].height));
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(xPos(points[i].minutes), yPos(points[i].height));
+  }
+  ctx.lineTo(xPos(points[points.length-1].minutes), pad.top + gH);
+  ctx.lineTo(xPos(points[0].minutes), pad.top + gH);
+  ctx.closePath();
+  const fillGrad = ctx.createLinearGradient(0, pad.top, 0, pad.top + gH);
+  fillGrad.addColorStop(0, 'rgba(45,125,210,0.35)');
+  fillGrad.addColorStop(1, 'rgba(45,125,210,0.05)');
+  ctx.fillStyle = fillGrad;
+  ctx.fill();
+
+  // Tide curve - line
+  ctx.beginPath();
+  ctx.moveTo(xPos(points[0].minutes), yPos(points[0].height));
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(xPos(points[i].minutes), yPos(points[i].height));
+  }
+  ctx.strokeStyle = '#3ec6e0';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // High/Low markers
+  for (const ev of events) {
+    const x = xPos(ev.minutes);
+    const y = yPos(ev.height);
+    const color = ev.type === 'high' ? '#f0943a' : '#3ec6e0';
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#0c1a2e';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Label
+    const timeStr = ev.time.getHours().toString().padStart(2,'0') + ':' + ev.time.getMinutes().toString().padStart(2,'0');
+    const labelText = timeStr + ' (' + ev.height + 'cm)';
+    ctx.font = 'bold 10px -apple-system, sans-serif';
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    const labelY = ev.type === 'high' ? y - 10 : y + 15;
+    ctx.fillText(labelText, Math.max(pad.left + 30, Math.min(W - pad.right - 30, x)), labelY);
+  }
+
+  // Current time marker (only if viewing today)
+  if (isToday) {
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const nx = xPos(nowMin);
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = '#e74c5e';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(nx, pad.top);
+    ctx.lineTo(nx, pad.top + gH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Current tide height dot
+    const idx = Math.min(Math.floor(nowMin / 10), points.length - 2);
+    const frac = (nowMin - idx * 10) / 10;
+    const currentH = points[idx].height + (points[idx+1].height - points[idx].height) * frac;
+    const ny = yPos(currentH);
+    ctx.beginPath();
+    ctx.arc(nx, ny, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#e74c5e';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  }
+
+  // Y-axis label
+  ctx.save();
+  ctx.fillStyle = '#5a7090';
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.translate(10, pad.top + gH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('潮位 (cm)', 0, 0);
+  ctx.restore();
+}
+
+// ==================== APP STATE ====================
+let state = {
+  portIndex: 76, // 串本漁港 default
+  date: new Date(),
+  favorites: [],
+  activeTab: 'fav'
+};
+
+// Load from localStorage
+function loadState() {
+  try {
+    const saved = localStorage.getItem('tidegraph_state');
+    if (saved) {
+      const s = JSON.parse(saved);
+      if (typeof s.portIndex === 'number') state.portIndex = s.portIndex;
+      if (Array.isArray(s.favorites)) state.favorites = s.favorites;
+    }
+  } catch(e) {}
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('tidegraph_state', JSON.stringify({
+      portIndex: state.portIndex,
+      favorites: state.favorites
+    }));
+  } catch(e) {}
+}
+
+// ==================== UI UPDATE ====================
+const dayNames = ['日','月','火','水','木','金','土'];
+
+function formatDate(d) {
+  return `${d.getMonth()+1}月${d.getDate()}日(${dayNames[d.getDay()]})`;
+}
+
+function isToday(d) {
+  const today = new Date();
+  return d.getFullYear() === today.getFullYear() &&
+         d.getMonth() === today.getMonth() &&
+         d.getDate() === today.getDate();
+}
+
+function updateUI() {
+  const port = PORTS[state.portIndex];
+  const d = state.date;
+  const td = isToday(d);
+
+  // Header
+  document.getElementById('portName').textContent = port[0];
+  document.getElementById('portArea').textContent =
+    (port[2] === 'wakayama' ? '和歌山県' : port[2] === 'osaka' ? '大阪府' : '京都府') + ' ' + port[1];
+  document.getElementById('dateText').textContent = formatDate(d);
+
+  // Moon / tide name
+  const moonAge = calcMoonAge(d);
+  const tideName = getTideName(moonAge);
+  const badge = document.getElementById('tideBadge');
+  badge.textContent = tideName;
+  badge.className = 'tide-badge ' + getTideBadgeClass(tideName);
+
+  // Calculate tides
+  const points = calcDayTide(state.portIndex, d);
+  const events = findTideEvents(points);
+
+  // Sun
+  const sunTimes = calcSunTimes(port[3], port[4], d);
+
+  // Draw graph
+  const canvas = document.getElementById('tideCanvas');
+  drawTideGraph(canvas, points, events, sunTimes, d, td);
+
+  // Tide events list
+  const eventList = document.getElementById('tideEventList');
+  eventList.innerHTML = '';
+  for (const ev of events) {
+    const timeStr = ev.time.getHours().toString().padStart(2,'0') + ':' + ev.time.getMinutes().toString().padStart(2,'0');
+    const typeName = ev.type === 'high' ? '満潮' : '干潮';
+    const item = document.createElement('div');
+    item.className = 'tide-event-item';
+    item.innerHTML = `
+      <span class="tide-event-dot ${ev.type}"></span>
+      <div>
+        <div class="tide-event-label">${typeName}</div>
+        <div class="tide-event-time">${timeStr}</div>
+        <div class="tide-event-height">${ev.height} cm</div>
+      </div>
+    `;
+    eventList.appendChild(item);
+  }
+
+  // Next tide countdown
+  updateNextTide(events, td);
+
+  // Sun display
+  document.getElementById('sunriseText').textContent = '日の出 ' + hoursToHHMM(sunTimes.sunrise);
+  document.getElementById('sunsetText').textContent = '日の入り ' + hoursToHHMM(sunTimes.sunset);
+
+  // Moon
+  document.getElementById('moonAgeText').textContent = moonAge.toFixed(1);
+  document.getElementById('moonPhaseText').textContent = getMoonPhaseName(moonAge);
+  drawMoon(document.getElementById('moonCanvas'), moonAge);
+}
+
+function updateNextTide(events, td) {
+  const card = document.getElementById('nextTideCard');
+  const nameEl = document.getElementById('nextTideName');
+  const countEl = document.getElementById('nextTideCountdown');
+  const detailEl = document.getElementById('nextTideDetail');
+
+  if (!td || events.length === 0) {
+    nameEl.textContent = '--';
+    countEl.textContent = '--:--:--';
+    detailEl.textContent = td ? '' : '当日のみ表示';
+    return;
+  }
+
+  const now = new Date();
+  let nextEvent = null;
+  for (const ev of events) {
+    if (ev.time > now) { nextEvent = ev; break; }
+  }
+  if (!nextEvent) {
+    nameEl.textContent = '--';
+    countEl.textContent = '本日終了';
+    detailEl.textContent = '';
+    return;
+  }
+
+  const typeName = nextEvent.type === 'high' ? '満潮' : '干潮';
+  const timeStr = nextEvent.time.getHours().toString().padStart(2,'0') + ':' + nextEvent.time.getMinutes().toString().padStart(2,'0');
+  nameEl.textContent = typeName;
+  nameEl.style.color = nextEvent.type === 'high' ? 'var(--high-tide)' : 'var(--low-tide)';
+
+  const diff = nextEvent.time - now;
+  const hh = Math.floor(diff / 3600000);
+  const mm = Math.floor((diff % 3600000) / 60000);
+  const ss = Math.floor((diff % 60000) / 1000);
+  countEl.textContent = `${hh}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  detailEl.textContent = `${timeStr} (${nextEvent.height}cm)`;
+}
+
+// ==================== PORT SELECTION MODAL ====================
+function openPortModal() {
+  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('portModal').classList.add('active');
+  document.getElementById('searchInput').value = '';
+  renderPortList();
+}
+
+function closePortModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('portModal').classList.remove('active');
+}
+
+function renderPortList() {
+  const list = document.getElementById('portList');
+  const searchText = document.getElementById('searchInput').value.trim();
+  const tab = state.activeTab;
+  list.innerHTML = '';
+
+  let filtered = [];
+  if (searchText) {
+    // Search across all ports
+    PORTS.forEach((p, i) => {
+      if (p[0].includes(searchText) || p[1].includes(searchText)) {
+        filtered.push(i);
+      }
+    });
+  } else if (tab === 'fav') {
+    filtered = state.favorites.filter(i => i >= 0 && i < PORTS.length);
+    if (filtered.length === 0) {
+      list.innerHTML = '<div style="padding:40px 16px;text-align:center;color:var(--text-secondary);font-size:14px;">お気に入りがありません<br><span style="font-size:12px;">漁港の★をタップして追加</span></div>';
+      return;
+    }
+  } else {
+    const prefMap = { wakayama: 'wakayama', osaka: 'osaka', kyoto: 'kyoto' };
+    PORTS.forEach((p, i) => {
+      if (p[2] === prefMap[tab]) filtered.push(i);
+    });
+  }
+
+  // Group by area (for wakayama)
+  if (tab === 'wakayama' && !searchText) {
+    const groups = {};
+    for (const i of filtered) {
+      const area = PORTS[i][1];
+      if (!groups[area]) groups[area] = [];
+      groups[area].push(i);
+    }
+    for (const [area, indices] of Object.entries(groups)) {
+      const header = document.createElement('div');
+      header.className = 'port-group-header';
+      header.textContent = area;
+      list.appendChild(header);
+      for (const i of indices) {
+        list.appendChild(createPortItem(i));
+      }
+    }
+  } else {
+    for (const i of filtered) {
+      list.appendChild(createPortItem(i));
+    }
+  }
+}
+
+function createPortItem(portIndex) {
+  const port = PORTS[portIndex];
+  const isFav = state.favorites.includes(portIndex);
+  const item = document.createElement('div');
+  item.className = 'port-item';
+  item.innerHTML = `
+    <div>
+      <div class="port-item-name">${port[0]}</div>
+      <div class="port-item-area">${port[2]==='wakayama'?'和歌山県':port[2]==='osaka'?'大阪府':'京都府'} ${port[1]}</div>
+    </div>
+    <button class="fav-btn ${isFav ? 'active' : ''}" data-idx="${portIndex}">&#9733;</button>
+  `;
+  item.querySelector('.port-item-name').parentElement.addEventListener('click', () => {
+    state.portIndex = portIndex;
+    saveState();
+    closePortModal();
+    updateUI();
+  });
+  item.querySelector('.fav-btn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleFavorite(portIndex);
+    renderPortList();
+  });
+  return item;
+}
+
+function toggleFavorite(portIndex) {
+  const idx = state.favorites.indexOf(portIndex);
+  if (idx >= 0) {
+    state.favorites.splice(idx, 1);
+  } else {
+    state.favorites.push(portIndex);
+  }
+  saveState();
+}
+
+// ==================== DATE PICKER ====================
+function openDatePicker() {
+  const overlay = document.getElementById('datePickerOverlay');
+  const input = document.getElementById('datePickerInput');
+  const d = state.date;
+  input.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  overlay.classList.add('active');
+}
+
+function closeDatePicker() {
+  document.getElementById('datePickerOverlay').classList.remove('active');
+}
+
+// ==================== SWIPE ====================
+let touchStartX = 0;
+let touchStartY = 0;
+function handleSwipe(e) {
+  if (e.type === 'touchstart') {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  } else if (e.type === 'touchend') {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) changeDay(1);
+      else changeDay(-1);
+    }
+  }
+}
+
+function changeDay(delta) {
+  state.date = new Date(state.date.getTime() + delta * 86400000);
+  updateUI();
+}
+
+// ==================== INIT ====================
+function showDisclaimer() {
+  if (!localStorage.getItem('disclaimerAccepted')) {
+    document.getElementById('disclaimerOverlay').classList.add('active');
+    document.getElementById('disclaimerOk').addEventListener('click', () => {
+      localStorage.setItem('disclaimerAccepted', '1');
+      document.getElementById('disclaimerOverlay').classList.remove('active');
+    });
+  }
+}
+
+function init() {
+  loadState();
+  showDisclaimer();
+
+  // Event listeners
+  document.getElementById('openPortSelect').addEventListener('click', openPortModal);
+  document.getElementById('modalOverlay').addEventListener('click', closePortModal);
+  document.getElementById('closeModal').addEventListener('click', closePortModal);
+  document.getElementById('prevDay').addEventListener('click', () => changeDay(-1));
+  document.getElementById('nextDay').addEventListener('click', () => changeDay(1));
+  document.getElementById('dateText').addEventListener('click', openDatePicker);
+
+  // Search
+  document.getElementById('searchInput').addEventListener('input', renderPortList);
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.activeTab = tab.dataset.tab;
+      renderPortList();
+    });
+  });
+
+  // Date picker
+  document.getElementById('datePickerCancel').addEventListener('click', closeDatePicker);
+  document.getElementById('datePickerToday').addEventListener('click', () => {
+    state.date = new Date();
+    closeDatePicker();
+    updateUI();
+  });
+  document.getElementById('datePickerInput').addEventListener('change', (e) => {
+    const parts = e.target.value.split('-');
+    if (parts.length === 3) {
+      state.date = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+      closeDatePicker();
+      updateUI();
+    }
+  });
+  document.getElementById('datePickerOverlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeDatePicker();
+  });
+
+  // Swipe
+  const graphContainer = document.getElementById('graphContainer');
+  graphContainer.addEventListener('touchstart', handleSwipe, { passive: true });
+  graphContainer.addEventListener('touchend', handleSwipe, { passive: true });
+
+  // Resize
+  window.addEventListener('resize', updateUI);
+
+  // Update countdown every second
+  setInterval(() => {
+    if (isToday(state.date)) {
+      const points = calcDayTide(state.portIndex, state.date);
+      const events = findTideEvents(points);
+      updateNextTide(events, true);
+    }
+  }, 1000);
+
+  // Redraw graph every minute (for current time marker)
+  setInterval(() => {
+    if (isToday(state.date)) updateUI();
+  }, 60000);
+
+  updateUI();
+}
+
+// Register service worker and force update
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then((reg) => {
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'activated') location.reload();
+      });
+    });
+  }).catch(() => {});
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+{
+  "spots": [
+    {
+      "name": "西宮ケーソン",
+      "prefecture": "兵庫",
+      "status": "釣り禁止",
+      "reason": "ゴミ放置、港湾利用者とのトラブル、安全性の問題",
+      "source_url": "https://ameblo.jp/d-anglers/entry-12873156556.html",
+      "notes": "港湾施設",
+      "scraped_at": "2026-03-10T07:38:03.151Z"
+    },
+    {
+      "name": "西宮浜西護岸",
+      "prefecture": "兵庫",
+      "status": "要注意",
+      "reason": "落水事故、安全性の懸念",
+      "source_url": "https://ameblo.jp/d-anglers/entry-12873156556.html",
+      "notes": "2024年11月時点で釣りは可能だが通り抜け不可。ライフジャケット着用推奨",
+      "scraped_at": "2026-03-10T07:38:03.151Z"
+    },
+    {
+      "name": "岩屋港（一部）",
+      "prefecture": "兵庫",
+      "status": "要注意",
+      "reason": "釣り人による問題行為、市役所駐車場への無断駐車",
+      "source_url": "https://ameblo.jp/d-anglers/entry-12873156556.html",
+      "notes": "問題継続で全面閉鎖の可能性。漁師の職場。淡路島",
+      "scraped_at": "2026-03-10T07:38:03.151Z"
+    },
+    {
+      "name": "郡家港",
+      "prefecture": "兵庫",
+      "status": "車両進入禁止",
+      "reason": "船の陸揚げや船への給油のためタンクローリー等が入る",
+      "source_url": "https://ameblo.jp/d-anglers/entry-12873156556.html",
+      "notes": "淡路島。空地部分への車両進入禁止",
+      "scraped_at": "2026-03-10T07:38:03.151Z"
+    },
+    {
+      "name": "オノコロ裏",
+      "prefecture": "兵庫",
+      "status": "閉鎖",
+      "reason": "無断侵入、進入禁止柵の破壊・海への廃棄",
+      "source_url": "https://ameblo.jp/d-anglers/entry-12873156556.html",
+      "notes": "淡路島。警察捜査実施、現在コンクリートブロックで閉鎖",
+      "scraped_at": "2026-03-10T07:38:03.151Z"
+    },
+    {
+      "name": "マリンパーク横",
+      "prefecture": "大阪",
+      "status": "釣り禁止",
+      "reason": "危険エリア",
+      "source_url": "https://ameblo.jp/d-anglers/entry-12945761794.html",
+      "notes": "大型船舶接岸エリアも釣り禁止",
+      "scraped_at": "2026-03-10T07:38:03.151Z"
+    }
+  ],
+  "total": 6,
+  "scraped_at": "2026-03-10T07:38:03.151Z",
+  "sources": [
+    {
+      "name": "D-ANGLERS メインサイト",
+      "url": "https://d-anglers.net"
+    },
+    {
+      "name": "D-ANGLERS ブログ",
+      "url": "https://ameblo.jp/d-anglers"
+    }
+  ]
+}

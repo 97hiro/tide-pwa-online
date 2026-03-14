@@ -1,0 +1,200 @@
+[
+  {
+    "id": 1,
+    "name": "武庫川一文字",
+    "fmCode": "mukogawaichimonji",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "spotType": "pier"
+  },
+  {
+    "id": 2,
+    "name": "丸島防波堤",
+    "fmCode": "marushima",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "spotType": "pier"
+  },
+  {
+    "id": 3,
+    "name": "尼崎魚つり公園",
+    "fmCode": "amagasakifishingpark",
+    "area": "阪神間",
+    "subArea": "芦屋～武庫川方面",
+    "prefKey": "hyogo",
+    "spotType": "park"
+  },
+  {
+    "id": 4,
+    "name": "神戸沖堤防",
+    "fmCode": "kobeokiteibo",
+    "area": "阪神間",
+    "subArea": "神戸周辺",
+    "prefKey": "hyogo",
+    "spotType": "pier"
+  },
+  {
+    "id": 5,
+    "name": "垂水一文字",
+    "fmCode": "tarumiichimonji",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "spotType": "pier"
+  },
+  {
+    "id": 6,
+    "name": "須磨一文字",
+    "fmCode": "sumaichimonji",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "spotType": "pier"
+  },
+  {
+    "id": 7,
+    "name": "須磨海釣り公園",
+    "fmCode": "sumafishingpark",
+    "area": "阪神間",
+    "subArea": "須磨～明石方面",
+    "prefKey": "hyogo",
+    "spotType": "park"
+  },
+  {
+    "id": 8,
+    "name": "岩屋一文字",
+    "fmCode": "iwayaichimonji",
+    "area": "阪神間",
+    "subArea": "淡路島",
+    "prefKey": "hyogo",
+    "spotType": "pier"
+  },
+  {
+    "id": 9,
+    "name": "揖保・千種川",
+    "fmCode": "ibo-chikusagawa",
+    "area": "阪神間",
+    "subArea": "兵庫県",
+    "prefKey": "hyogo",
+    "spotType": "port"
+  },
+  {
+    "id": 10,
+    "name": "泉佐野一文字",
+    "fmCode": "izumisanoichimonji",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "spotType": "pier"
+  },
+  {
+    "id": 11,
+    "name": "汐見・なぎさ公園",
+    "fmCode": "shiomifuto",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "spotType": "park"
+  },
+  {
+    "id": 12,
+    "name": "小松埠頭",
+    "fmCode": "komatsufuto",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "spotType": "pier"
+  },
+  {
+    "id": 13,
+    "name": "大津川尻",
+    "fmCode": "otsugawa",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "spotType": "river"
+  },
+  {
+    "id": 14,
+    "name": "忠岡木材コンビナート",
+    "fmCode": "tadaokaic",
+    "area": "南大阪",
+    "subArea": "泉大津～泉南",
+    "prefKey": "osaka",
+    "spotType": "port"
+  },
+  {
+    "id": 15,
+    "name": "浜寺運河",
+    "fmCode": "hamaderaunga",
+    "area": "南大阪",
+    "subArea": "大阪府",
+    "prefKey": "osaka",
+    "spotType": "river"
+  },
+  {
+    "id": 16,
+    "name": "下津ピアランド",
+    "fmCode": "shimotsupierland",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "spotType": "port"
+  },
+  {
+    "id": 17,
+    "name": "水軒(一文字)",
+    "fmCode": "suiken",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "spotType": "pier"
+  },
+  {
+    "id": 18,
+    "name": "紀ノ川河口",
+    "fmCode": "kinokawakako",
+    "area": "和歌山",
+    "subArea": "紀北",
+    "prefKey": "wakayama",
+    "spotType": "river"
+  },
+  {
+    "id": 19,
+    "name": "みなべ周辺",
+    "fmCode": "minabe",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "spotType": "port"
+  },
+  {
+    "id": 20,
+    "name": "湯浅周辺",
+    "fmCode": "yuasa",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "spotType": "port"
+  },
+  {
+    "id": 21,
+    "name": "御坊周辺",
+    "fmCode": "gobo",
+    "area": "和歌山",
+    "subArea": "中紀",
+    "prefKey": "wakayama",
+    "spotType": "port"
+  },
+  {
+    "id": 22,
+    "name": "すさみ周辺",
+    "fmCode": "susami",
+    "area": "和歌山",
+    "subArea": "南紀",
+    "prefKey": "wakayama",
+    "spotType": "port"
+  }
+]
