@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a1628">
+<title>タイドグラフ Theory - 釣り総合情報</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<div class="header">
+  <div class="header-left" id="openPortSelect">
+    <div>
+      <div class="port-name" id="portName">串本漁港</div>
+      <div class="port-area" id="portArea">和歌山県 串本町</div>
+      <div class="port-links" id="portLinks"></div>
+    </div>
+    <span class="chevron">&#9662;</span>
+  </div>
+  <div class="header-center">
+    <button class="nav-btn" id="prevDay">&#8249;</button>
+    <span class="date-text" id="dateText">--</span>
+    <button class="nav-btn" id="nextDay">&#8250;</button>
+  </div>
+  <button class="ranking-btn" id="openRanking" title="ランキング">&#127942;</button>
+  <span class="tide-badge" id="tideBadge">--</span>
+</div>
+
+<!-- ===== 周辺施設 ===== -->
+<div class="nearby-section" id="nearbySection" style="display:none">
+  <div class="nearby-title">周辺施設</div>
+  <div class="nearby-status" id="nearbyStatus"></div>
+  <div class="nearby-list" id="nearbyList"></div>
+</div>
+
+<!-- ===== Score Area ===== -->
+<div class="score-section">
+  <div class="score-header">
+    <span class="score-label">釣り期待値 Theory<span class="online-badge offline" id="onlineBadge">OFFLINE</span><span class="last-update-label" id="lastUpdateLabel"></span></span>
+    <span class="score-best-time" id="scoreBestTime">ベストタイム: --:--</span>
+  </div>
+  <div class="score-main">
+    <div class="score-number" id="scoreNumber">--</div>
+    <div class="score-right">
+      <div class="score-message" id="scoreMessage">計算中...</div>
+      <div class="score-bar-container"><canvas id="scoreBarCanvas"></canvas></div>
+    </div>
+  </div>
+  <div class="score-facility" id="scoreFacility"></div>
+  <div class="jiai-status" id="jiaiStatus" style="display:none"></div>
+  <div class="score-ratings" id="scoreRatings"></div>
+  <div class="fish-mini-scores" id="fishMiniScores"></div>
+  <!-- Weather summary -->
+  <div id="weatherInfo" style="margin-top:8px;display:flex;align-items:center;gap:8px;"></div>
+</div>
+
+<!-- ===== Tide Graph ===== -->
+<div class="gp-toolbar">
+  <button class="gp-btn" id="gpToggle">GP</button>
+</div>
+<div class="graph-container" id="graphContainer">
+  <canvas id="tideCanvas"></canvas>
+  <canvas id="tideOverlay"></canvas>
+</div>
+<div class="gp-legend" id="gpLegend" style="display:none">
+  <span class="gp-legend-item"><span class="gp-dot" style="background:#ff2020"></span>激熱</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:#ff8c00"></span>高期待</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:#ffd700"></span>期待あり</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:#40c060"></span>普通</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:#4080ff"></span>低め</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:#666"></span>厳しい</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:linear-gradient(#ff0000,#ff8c00,#ffd700,#00c800,#0064ff,#4b0082,#9400d3)"></span>&#127752;時合+80超</span>
+</div>
+
+<!-- ===== Time Slider ===== -->
+<div class="time-slider-section">
+  <div class="time-slider-row">
+    <span class="time-slider-edge">0:00</span>
+    <input type="range" id="timeSlider" class="time-slider" min="0" max="1440" step="30" value="720">
+    <span class="time-slider-edge">24:00</span>
+    <button class="time-slider-now" id="timeSliderNow">今</button>
+  </div>
+  <div class="time-slider-display" id="timeSliderDisplay">12:00</div>
+  <div class="time-slider-daybtns">
+    <button class="time-slider-daybtn" id="sliderPrevDay">◀ 前日</button>
+    <button class="time-slider-daybtn" id="sliderNextDay">翌日 ▶</button>
+  </div>
+</div>
+
+<!-- ===== Info Section ===== -->
+<div class="info-section">
+
+  <!-- Next tide countdown -->
+  <div class="next-tide-card">
+    <div class="next-tide-label">次の潮汐</div>
+    <div class="next-tide-info">
+      <span class="next-tide-name" id="nextTideName">--</span>
+      <span class="next-tide-countdown" id="nextTideCountdown">--:--:--</span>
+    </div>
+    <div class="next-tide-detail" id="nextTideDetail"></div>
+  </div>
+
+  <!-- Weather cards -->
+  <div class="weather-cards">
+    <div class="weather-card" id="waveCard">
+      <div class="card-label">波浪</div>
+      <div class="card-value" style="color:var(--text-secondary)">--</div>
+      <div class="card-sub">データ取得中...</div>
+    </div>
+    <div class="weather-card" id="windCard">
+      <div class="card-label">風</div>
+      <div class="wind-display">
+        <canvas class="wind-arrow-canvas" id="windArrowCanvas" width="40" height="40"></canvas>
+        <div class="wind-info-left">
+          <div id="windSpeedText" style="font-size:18px;font-weight:700;color:var(--text-secondary)">--</div>
+          <div id="windDirText" style="font-size:11px;color:var(--text-secondary)"></div>
+        </div>
+        <div id="windCompatDisplay" class="wind-compat-display"></div>
+      </div>
+    </div>
+    <div class="weather-card" id="pressureCard">
+      <div class="card-label">気圧</div>
+      <div class="card-value" style="color:var(--text-secondary)">--</div>
+      <div class="card-sub">データ取得中...</div>
+    </div>
+    <div class="weather-card" id="sstCard">
+      <div class="card-label">海水温</div>
+      <div class="card-value" style="color:var(--text-secondary)">--</div>
+      <div class="card-sub">データ取得中...</div>
+    </div>
+  </div>
+
+  <!-- Tide events -->
+  <div class="tide-events">
+    <div class="tide-events-title">満潮・干潮</div>
+    <div class="tide-event-list" id="tideEventList"></div>
+  </div>
+
+  <!-- Sun / Moon -->
+  <div class="sun-moon-row">
+    <div class="card">
+      <div class="card-label">日の出・日の入り</div>
+      <div class="card-value" id="sunriseText" style="font-size:15px;">--:--</div>
+      <div class="card-sub" id="sunsetText">日の入り --:--</div>
+    </div>
+    <div class="card">
+      <div class="card-label">月齢</div>
+      <div class="moon-icon-container">
+        <canvas class="moon-canvas" id="moonCanvas" width="36" height="36"></canvas>
+        <div>
+          <div class="card-value" id="moonAgeText" style="font-size:15px;">--</div>
+          <div class="card-sub" id="moonPhaseText"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Weekly scores -->
+  <div class="weekly-section">
+    <div class="weekly-title">3日間スコア予測</div>
+    <div class="weekly-canvas-container"><canvas id="weeklyCanvas"></canvas></div>
+  </div>
+  <div class="footer-disclaimer">&#9888; 本アプリの情報は釣り可否を保証するものではありません。現地の看板・各漁協にご確認ください。</div>
+</div>
+
+<!-- ===== Disclaimer Modal ===== -->
+<div class="disclaimer-overlay" id="disclaimerOverlay">
+  <div class="disclaimer-box">
+    <div class="disclaimer-icon">&#9888;&#65039;</div>
+    <div class="disclaimer-title">ご利用にあたって</div>
+    <div class="disclaimer-text">
+      釣り禁止・立入禁止区域は現地の看板・各漁協にご確認ください。<br><br>
+      本アプリの情報は釣り可否を保証するものではありません。<br><br>
+      マナーを守り安全に釣りをお楽しみください。
+    </div>
+    <button class="disclaimer-btn" id="disclaimerOk">了解しました</button>
+  </div>
+</div>
+
+<!-- ===== Port Selection Modal ===== -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="modal" id="portModal">
+  <div class="modal-header">
+    <span class="modal-title">地点を選択</span>
+    <button class="modal-close" id="closeModal">&#10005;</button>
+  </div>
+  <div class="search-box">
+    <input class="search-input" id="searchInput" type="text" placeholder="漁港名で検索..." autocomplete="off">
+  </div>
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="fav">&#9733; お気に入り</div>
+    <div class="tab" data-tab="wakayama">和歌山</div>
+    <div class="tab" data-tab="osaka">大阪</div>
+    <div class="tab" data-tab="kyoto">京都</div>
+    <div class="tab" data-tab="hyogo">兵庫</div>
+  </div>
+  <div class="port-list" id="portList"></div>
+</div>
+
+<!-- ===== Ranking Modal ===== -->
+<div class="modal-overlay" id="rankingOverlay"></div>
+<div class="modal" id="rankingModal">
+  <div class="modal-header">
+    <span class="modal-title">&#127942; ランキング</span>
+    <button class="modal-close" id="closeRanking">&#10005;</button>
+  </div>
+  <div class="ranking-date-row">
+    <button class="ranking-date-nav" id="rankingPrevDay">&#8249;</button>
+    <span class="ranking-date-text" id="rankingDateText">--</span>
+    <button class="ranking-date-nav" id="rankingNextDay">&#8250;</button>
+  </div>
+  <div class="tabs" id="rankingTabs">
+    <div class="tab active" data-ranking-tab="all">全て</div>
+    <div class="tab" data-ranking-tab="wakayama">和歌山</div>
+    <div class="tab" data-ranking-tab="osaka">大阪</div>
+    <div class="tab" data-ranking-tab="kyoto">京都</div>
+    <div class="tab" data-ranking-tab="hyogo">兵庫</div>
+  </div>
+  <div class="fish-bar" id="fishBar">
+    <div class="fish-bar-item active" data-fish="none"><span class="fish-bar-emoji">&#128200;</span><span class="fish-bar-name">総合</span></div>
+    <div class="fish-bar-item" data-fish="aji"><img class="fish-bar-icon" src="img/fish/aji.png" alt="アジ"><span class="fish-bar-name">アジ</span></div>
+    <div class="fish-bar-item" data-fish="saba"><img class="fish-bar-icon" src="img/fish/saba.png" alt="サバ"><span class="fish-bar-name">サバ</span></div>
+    <div class="fish-bar-item" data-fish="aori"><img class="fish-bar-icon" src="img/fish/aori.png" alt="イカ"><span class="fish-bar-name">イカ</span></div>
+    <div class="fish-bar-item" data-fish="hirame"><img class="fish-bar-icon" src="img/fish/hirame.png" alt="ヒラメ"><span class="fish-bar-name">ヒラメ</span></div>
+    <div class="fish-bar-item" data-fish="hata"><img class="fish-bar-icon" src="img/fish/hata.png" alt="ハタ"><span class="fish-bar-name">ハタ</span></div>
+    <div class="fish-bar-item" data-fish="gasira"><img class="fish-bar-icon" src="img/fish/gasira.png" alt="ガシラ"><span class="fish-bar-name">ガシラ</span></div>
+    <div class="fish-bar-item" data-fish="aomono"><img class="fish-bar-icon" src="img/fish/aomono.png" alt="青物"><span class="fish-bar-name">青物</span></div>
+    <div class="fish-bar-item" data-fish="tako"><img class="fish-bar-icon" src="img/fish/tako.png" alt="タコ"><span class="fish-bar-name">タコ</span></div>
+    <div class="fish-bar-item" data-fish="chinu"><img class="fish-bar-icon" src="img/fish/chinu.png" alt="チヌ"><span class="fish-bar-name">チヌ</span></div>
+    <div class="fish-bar-item" data-fish="madai"><img class="fish-bar-icon" src="img/fish/madai.png" alt="マダイ"><span class="fish-bar-name">マダイ</span></div>
+    <div class="fish-bar-item" data-fish="bestAll"><span class="fish-bar-emoji">&#127942;</span><span class="fish-bar-name">ベスト</span></div>
+  </div>
+  <div class="ranking-time-row">
+    <button class="ranking-time-btn active" data-period="best">終日ベスト</button>
+    <button class="ranking-time-btn" data-period="morning">朝マズメ</button>
+    <button class="ranking-time-btn" data-period="evening">夕マズメ</button>
+  </div>
+  <div class="ranking-content" id="rankingContent"></div>
+</div>
+
+<!-- ===== Date Picker ===== -->
+<div class="date-picker-overlay" id="datePickerOverlay">
+  <div class="date-picker">
+    <input type="date" id="datePickerInput">
+    <div class="date-picker-btns">
+      <button class="date-picker-btn cancel" id="datePickerCancel">キャンセル</button>
+      <button class="date-picker-btn today" id="datePickerToday">今日</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Scripts (load order matters) ===== -->
+<script src="js/ports-data.js"></script>
+<script src="js/tide-calc.js"></script>
+<script src="js/data-fetch.js"></script>
+<script src="js/theory-score.js"></script>
+<script src="js/fish-profiles.js"></script>
+<script src="js/fish-score.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/regulation-data.js"></script>
+<script src="js/nearby.js"></script>
+<script src="js/ranking.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

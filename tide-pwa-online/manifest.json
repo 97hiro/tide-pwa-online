@@ -1,0 +1,25 @@
+{
+  "name": "タイドグラフ Theory - 釣り総合情報",
+  "short_name": "Theory",
+  "description": "和歌山・大阪・京都 152地点対応 釣り期待値スコア付き潮汐情報アプリ",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1628",
+  "theme_color": "#0a1628",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
