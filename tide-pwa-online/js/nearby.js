@@ -3,125 +3,47 @@
 // =====================================================
 
 const Nearby = (() => {
-  const spotCache = {};    // portIndex -> { data, time }
-  const SPOT_CACHE_TTL = 10 * 60 * 1000;
-  let loading = false;
-
-  // カテゴリ定義: { key, icon, label, maxRadius }
   const CATEGORIES = [
-    { key: 'convenience', icon: '\uD83C\uDFEA', label: '\u30B3\u30F3\u30D3\u30CB', maxRadius: 3000 },
-    { key: 'supermarket', icon: '\uD83D\uDED2', label: '\u30B9\u30FC\u30D1\u30FC', maxRadius: 3000 },
-    { key: 'fishing',     icon: '\uD83C\uDFA3', label: '\u91E3\u5177\u5C4B',       maxRadius: 3000 },
-    { key: 'restaurant',  icon: '\uD83C\uDF7D\uFE0F', label: '\u98F2\u98DF\u5E97', maxRadius: 3000 },
-    { key: 'fuel',        icon: '\u26FD', label: '\u30AC\u30BD\u30EA\u30F3\u30B9\u30BF\u30F3\u30C9', maxRadius: 5000 }
+    { key: 'convenience', icon: '\uD83C\uDFEA', label: '\u30B3\u30F3\u30D3\u30CB', maxRadius: 3000,
+      match: el => el.tags.amenity === 'convenience_store' || el.tags.shop === 'convenience' },
+    { key: 'supermarket', icon: '\uD83D\uDED2', label: '\u30B9\u30FC\u30D1\u30FC', maxRadius: 3000,
+      match: el => el.tags.shop === 'supermarket' },
+    { key: 'fishing', icon: '\uD83C\uDFA3', label: '\u91E3\u5177\u5C4B', maxRadius: 3000,
+      match: el => el.tags.shop === 'fishing' },
+    { key: 'restaurant', icon: '\uD83C\uDF7D\uFE0F', label: '\u98F2\u98DF\u5E97', maxRadius: 3000,
+      match: el => el.tags.amenity === 'restaurant' },
+    { key: 'fuel', icon: '\u26FD', label: '\u30AC\u30BD\u30EA\u30F3\u30B9\u30BF\u30F3\u30C9', maxRadius: 5000,
+      match: el => el.tags.amenity === 'fuel' }
   ];
   const MAX_PER_CATEGORY = 3;
 
-  // ==================== Overpass API ====================
-  const MAX_RETRIES = 3;
+  const CHAIN_FILTERS = {
+    convenience: [
+      '\u30BB\u30D6\u30F3\u30A4\u30EC\u30D6\u30F3', '\u30ED\u30FC\u30BD\u30F3', '\u30D5\u30A1\u30DF\u30EA\u30FC\u30DE\u30FC\u30C8',
+      '\u30DF\u30CB\u30B9\u30C8\u30C3\u30D7', '\u30C7\u30A4\u30EA\u30FC\u30E4\u30DE\u30B6\u30AD', '\u30DD\u30D7\u30E9', '\u30BB\u30A4\u30B3\u30FC\u30DE\u30FC\u30C8'
+    ],
+    supermarket: [
+      '\u30A4\u30AA\u30F3', '\u30A4\u30AA\u30F3\u30E2\u30FC\u30EB', '\u30DE\u30C3\u30AF\u30B9\u30D0\u30EA\u30E5', '\u30E9\u30A4\u30D5', '\u962A\u6025\u30AA\u30A2\u30B7\u30B9',
+      '\u30D5\u30EC\u30B9\u30B3', '\u30B3\u30FC\u30D7', '\u696D\u52D9\u30B9\u30FC\u30D1\u30FC', '\u4E07\u4EE3', '\u897F\u53CB', '\u30C0\u30A4\u30A8\u30FC',
+      '\u5E73\u548C\u5802', '\u30D5\u30FC\u30C9\u30EF\u30F3', '\u30ED\u30D4\u30A2', '\u30AA\u30FC\u30AF\u30EF', '\u30C8\u30E9\u30A4\u30A2\u30EB', '\u30E9\u30E0\u30FC',
+      '\u30A6\u30A7\u30EB\u30B7\u30A2', '\u30C9\u30E9\u30C3\u30B0\u30B9\u30C8\u30A2', '\u30C9\u30E9\u30C3\u30B0'
+    ],
+    restaurant: [
+      '\u30DE\u30AF\u30C9\u30CA\u30EB\u30C9', '\u30E2\u30B9\u30D0\u30FC\u30AC\u30FC', '\u30B1\u30F3\u30BF\u30C3\u30AD\u30FC',
+      '\u5409\u91CE\u5BB6', '\u3059\u304D\u5BB6', '\u677E\u5C4B', '\u306A\u304B\u536F',
+      '\u5929\u4E3C\u3066\u3093\u3084', '\u304B\u3064\u3084', '\u9903\u5B50\u306E\u738B\u5C06',
+      '\u4E38\u4E80\u88FD\u9EBA', '\u306F\u306A\u307E\u308B\u3046\u3069\u3093', '\u30EA\u30F3\u30AC\u30FC\u30CF\u30C3\u30C8',
+      '\u30B5\u30A4\u30BC\u30EA\u30E4', '\u30AC\u30B9\u30C8', '\u30C7\u30CB\u30FC\u30BA', '\u30B8\u30E7\u30A4\u30D5\u30EB', '\u30D0\u30FC\u30DF\u30E4\u30F3', '\u30B8\u30E7\u30CA\u30B5\u30F3',
+      '\u30E9\u30FC\u30E1\u30F3\u5C71\u5CA1\u5BB6', '\u5E78\u697D\u82D1', '\u65E5\u9AD8\u5C4B', '\u30E9\u30FC\u30E1\u30F3\u6765\u6765\u4EAD',
+      '\u30B9\u30B7\u30ED\u30FC', '\u304F\u3089\u5BFF\u53F8', '\u306F\u307E\u5BFF\u53F8', '\u304B\u3063\u3071\u5BFF\u53F8',
+      '\u30B3\u30E1\u30C0\u73C8\u7432', '\u30C9\u30C8\u30FC\u30EB', '\u30B9\u30BF\u30FC\u30D0\u30C3\u30AF\u30B9', '\u30BF\u30EA\u30FC\u30BA'
+    ]
+  };
 
-  async function fetchNearbyFacilities(lat, lon) {
-    console.log('[NEARBY] 検索座標:', lat, lon);
-    const query = `[out:json][timeout:30];(
-      nwr["amenity"="convenience_store"](around:3000,${lat},${lon});
-      nwr["shop"="convenience"](around:3000,${lat},${lon});
-      nwr["shop"="supermarket"](around:3000,${lat},${lon});
-      nwr["shop"="fishing"](around:3000,${lat},${lon});
-      nwr["amenity"="restaurant"](around:3000,${lat},${lon});
-      nwr["amenity"="fuel"](around:5000,${lat},${lon});
-    );out center body;`;
+  let loading = false;
 
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-      try {
-        console.log(`[Nearby] Overpass API request attempt ${attempt}/${MAX_RETRIES} (${lat}, ${lon})`);
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 30000);
-        const res = await fetch('https://overpass-api.de/api/interpreter', {
-          method: 'POST',
-          body: 'data=' + encodeURIComponent(query),
-          signal: controller.signal
-        });
-        clearTimeout(timer);
-
-        console.log(`[Nearby] Response status: ${res.status}`);
-        if (!res.ok) {
-          const text = await res.text();
-          console.warn(`[Nearby] HTTP error ${res.status}:`, text);
-          throw new Error(`HTTP ${res.status}`);
-        }
-
-        const data = await res.json();
-        const raw = data.elements || [];
-        console.log(`[Nearby] Got ${raw.length} elements`);
-        // スポット座標から遠すぎる施設を除外（SWキャッシュ汚染対策）
-        const filtered = raw.filter(el => {
-          const c = el.center || el;
-          if (!c.lat || !c.lon) return false;
-          const d = calcDist(lat, lon, c.lat, c.lon);
-          if (d > 10000) {
-            console.warn(`[Nearby] REJECTED (${d.toFixed(0)}m away): ${el.tags?.name || '?'} @ ${c.lat},${c.lon}`);
-            return false;
-          }
-          return true;
-        });
-        if (filtered.length < raw.length) {
-          console.warn(`[Nearby] Filtered out ${raw.length - filtered.length} far-away elements (cache contamination?)`);
-        }
-        return filtered;
-      } catch (e) {
-        console.warn(`[Nearby] Attempt ${attempt}/${MAX_RETRIES} failed:`, e.message);
-        if (attempt < MAX_RETRIES) {
-          await new Promise(r => setTimeout(r, 1000 * attempt));
-        } else {
-          throw e;
-        }
-      }
-    }
-  }
-
-  // ==================== チェーン店フィルタ ====================
-  const CONVENIENCE_CHAINS = [
-    'セブンイレブン', 'ローソン', 'ファミリーマート',
-    'ミニストップ', 'デイリーヤマザキ', 'ポプラ', 'セイコーマート'
-  ];
-  const SUPERMARKET_CHAINS = [
-    'イオン', 'イオンモール', 'マックスバリュ', 'ライフ', '阪急オアシス',
-    'フレスコ', 'コープ', '業務スーパー', '万代', '西友', 'ダイエー',
-    '平和堂', 'フードワン', 'ロピア', 'オークワ', 'トライアル', 'ラムー',
-    'ウェルシア', 'ドラッグストア', 'ドラッグ'
-  ];
-  const RESTAURANT_CHAINS = [
-    'マクドナルド', 'モスバーガー', 'ケンタッキー',
-    '吉野家', 'すき家', '松屋', 'なか卯',
-    '天丼てんや', 'かつや', '餃子の王将',
-    '丸亀製麺', 'はなまるうどん', 'リンガーハット',
-    'サイゼリヤ', 'ガスト', 'デニーズ', 'ジョイフル', 'バーミヤン', 'ジョナサン',
-    'ラーメン山岡家', '幸楽苑', '日高屋', 'ラーメン来来亭',
-    'スシロー', 'くら寿司', 'はま寿司', 'かっぱ寿司',
-    'コメダ珈琲', 'ドトール', 'スターバックス', 'タリーズ'
-  ];
-
-  function matchesChain(name, chains) {
-    if (!name) return false;
-    return chains.some(c => name.includes(c));
-  }
-
-  // ==================== ユーティリティ ====================
-  function getCategoryKey(el) {
-    if (el.tags.amenity === 'convenience_store' || el.tags.shop === 'convenience') return 'convenience';
-    if (el.tags.shop === 'supermarket') return 'supermarket';
-    if (el.tags.shop === 'fishing') return 'fishing';
-    if (el.tags.amenity === 'restaurant') return 'restaurant';
-    if (el.tags.amenity === 'fuel') return 'fuel';
-    return null;
-  }
-
-  function getCoords(el) {
-    if (el.center) return { lat: el.center.lat, lon: el.center.lon };
-    return { lat: el.lat, lon: el.lon };
-  }
-
-  function calcDist(lat1, lon1, lat2, lon2) {
+  // ==================== Haversine距離計算 ====================
+  function haversine(lat1, lon1, lat2, lon2) {
     const R = 6371000;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -131,48 +53,84 @@ const Nearby = (() => {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
+  // ==================== Overpass API取得 ====================
+  async function fetchFacilities(spotLat, spotLon) {
+    const query = `[out:json][timeout:30];(
+      nwr["amenity"="convenience_store"](around:3000,${spotLat},${spotLon});
+      nwr["shop"="convenience"](around:3000,${spotLat},${spotLon});
+      nwr["shop"="supermarket"](around:3000,${spotLat},${spotLon});
+      nwr["shop"="fishing"](around:3000,${spotLat},${spotLon});
+      nwr["amenity"="restaurant"](around:3000,${spotLat},${spotLon});
+      nwr["amenity"="fuel"](around:5000,${spotLat},${spotLon});
+    );out center body;`;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30000);
+    try {
+      const res = await fetch('https://overpass-api.de/api/interpreter', {
+        method: 'POST',
+        body: 'data=' + encodeURIComponent(query),
+        signal: controller.signal,
+        cache: 'no-store'
+      });
+      clearTimeout(timer);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      return data.elements || [];
+    } catch (e) {
+      clearTimeout(timer);
+      throw e;
+    }
+  }
+
+  // ==================== 店舗名生成 ====================
+  function buildName(tags) {
+    const nameJa = tags['name:ja'] || '';
+    const name = tags.name || '';
+    const brand = tags.brand || '';
+    const branch = tags.branch || '';
+    let display = nameJa || name || (brand + (branch ? ' ' + branch : '')) || null;
+    if (display && brand && display === brand && nameJa && nameJa !== brand) {
+      display = nameJa;
+    }
+    if (display && !display.match(/店$|店舗$|支店$/)) {
+      const addr = tags['addr:full'] || tags['addr:suburb'] || tags['addr:city'] || '';
+      if (addr) display = display + ' ' + addr;
+    }
+    return display;
+  }
+
   // ==================== 描画 ====================
   function render(elements, spotLat, spotLon) {
     const list = document.getElementById('nearbyList');
     const status = document.getElementById('nearbyStatus');
 
-    // カテゴリごとに分類・距離計算・フィルタ
     const grouped = {};
     for (const cat of CATEGORIES) grouped[cat.key] = [];
 
     for (const el of elements) {
-      const key = getCategoryKey(el);
-      if (!key) continue;
-      const coords = getCoords(el);
+      if (!el.tags) continue;
+      const cat = CATEGORIES.find(c => c.match(el));
+      if (!cat) continue;
+
+      const coords = el.center || el;
       if (!coords.lat || !coords.lon) continue;
-      const dist = calcDist(spotLat, spotLon, coords.lat, coords.lon);
-      // 10km超の施設は絶対に除外（キャッシュ汚染対策）
-      if (dist > 10000) continue;
-      const maxR = CATEGORIES.find(c => c.key === key).maxRadius;
-      if (dist > maxR) continue;
+
+      const dist = haversine(spotLat, spotLon, coords.lat, coords.lon);
+      if (dist > cat.maxRadius) continue;
+
       const rawName = el.tags.name || el.tags['name:ja'] || el.tags.brand || null;
-      // チェーン店フィルタ
-      if (key === 'convenience' && !matchesChain(rawName, CONVENIENCE_CHAINS)) continue;
-      if (key === 'supermarket' && !matchesChain(rawName, SUPERMARKET_CHAINS)) continue;
-      if (key === 'restaurant' && !matchesChain(rawName, RESTAURANT_CHAINS)) continue;
-      // 店舗フルネーム: name:ja > name > brand+branch、住所で補完
-      const nameJa = el.tags['name:ja'] || '';
-      const nameTag = el.tags.name || '';
-      const brandTag = el.tags.brand || '';
-      const branchTag = el.tags.branch || '';
-      let displayName = nameJa || nameTag || (brandTag + (branchTag ? ' ' + branchTag : '')) || null;
-      // nameがチェーン名のみでname:jaにフル名がある場合はname:jaを優先
-      if (displayName && brandTag && displayName === brandTag && nameJa && nameJa !== brandTag) {
-        displayName = nameJa;
-      }
-      if (displayName && !displayName.match(/店$|店舗$|支店$/)) {
-        const addr = el.tags['addr:full'] || el.tags['addr:suburb'] || el.tags['addr:city'] || '';
-        if (addr) displayName = displayName + ' ' + addr;
-      }
-      grouped[key].push({ name: displayName, dist, lat: coords.lat, lon: coords.lon });
+      const chains = CHAIN_FILTERS[cat.key];
+      if (chains && !chains.some(c => rawName && rawName.includes(c))) continue;
+
+      grouped[cat.key].push({
+        name: buildName(el.tags),
+        dist,
+        lat: coords.lat,
+        lon: coords.lon
+      });
     }
 
-    // 各カテゴリを距離順ソート、重複除去、上位3件に絞る
     for (const key of Object.keys(grouped)) {
       grouped[key].sort((a, b) => a.dist - b.dist);
       const seen = new Set();
@@ -185,7 +143,6 @@ const Nearby = (() => {
       grouped[key] = grouped[key].slice(0, MAX_PER_CATEGORY);
     }
 
-    // 表示するカテゴリがあるか
     const hasAny = CATEGORIES.some(c => grouped[c.key].length > 0);
     if (!hasAny) {
       status.textContent = '\u5468\u8FBA\u306B\u65BD\u8A2D\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093';
@@ -195,11 +152,9 @@ const Nearby = (() => {
 
     status.textContent = '';
     let html = '';
-
     for (const cat of CATEGORIES) {
       const items = grouped[cat.key];
       if (items.length === 0) continue;
-
       html += `<div class="nearby-category">`;
       html += `<div class="nearby-cat-header">${cat.icon} ${cat.label}</div>`;
       for (const item of items) {
@@ -213,59 +168,43 @@ const Nearby = (() => {
       }
       html += `</div>`;
     }
-
     list.innerHTML = html;
   }
 
-  // ==================== トグル（オンデマンド） ====================
+  // ==================== トグル ====================
   async function toggle(portIndex) {
     const section = document.getElementById('nearbySection');
     if (!section) return;
 
-    // 表示中ならトグルで閉じる
     if (section.style.display !== 'none') {
       section.style.display = 'none';
       return;
     }
 
-    const port = PORTS[portIndex];
-    const lat = port[3];
-    const lon = port[4];
-    console.log(`[NEARBY] toggle: portIndex=${portIndex}, name=${port[0]}, lat=${lat}, lon=${lon}`);
-
-    // キャッシュがあればそのまま表示
-    const cached = spotCache[portIndex];
-    if (cached && (Date.now() - cached.time < SPOT_CACHE_TTL)) {
-      section.style.display = '';
-      render(cached.data, lat, lon);
-      return;
-    }
-
-    // ローディング表示
     if (loading) return;
+
+    const spotLat = Number(PORTS[portIndex][3]);
+    const spotLon = Number(PORTS[portIndex][4]);
+    if (!spotLat || !spotLon) return;
+
     loading = true;
     section.style.display = '';
     document.getElementById('nearbyStatus').textContent = '\u5468\u8FBA\u65BD\u8A2D\u3092\u691C\u7D22\u4E2D...';
     document.getElementById('nearbyList').innerHTML = '';
 
     try {
-      const elements = await fetchNearbyFacilities(lat, lon);
-      spotCache[portIndex] = { data: elements, time: Date.now() };
-      render(elements, lat, lon);
+      const elements = await fetchFacilities(spotLat, spotLon);
+      render(elements, spotLat, spotLon);
     } catch (e) {
-      console.warn('[Nearby] All retries failed:', e);
       section.style.display = 'none';
     } finally {
       loading = false;
     }
   }
 
-  // スポット変更時にパネルを閉じてキャッシュクリア
   function hide() {
     const section = document.getElementById('nearbySection');
     if (section) section.style.display = 'none';
-    // 全キャッシュクリア（古いデータ混入防止）
-    for (const key of Object.keys(spotCache)) delete spotCache[key];
   }
 
   return { toggle, hide };

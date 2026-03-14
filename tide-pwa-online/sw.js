@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'tidegraph-theory-v63';
+const CACHE_VERSION = 'tidegraph-theory-v70';
 
 // 静的ファイル（Cache First）
 const STATIC_ASSETS = [
@@ -14,6 +14,7 @@ const STATIC_ASSETS = [
   './js/chart.js',
   './js/ui.js',
   './js/nearby.js',
+  './js/regulation-data.js',
   './js/ranking.js',
   './js/app.js',
   './manifest.json',
@@ -31,14 +32,16 @@ const STATIC_ASSETS = [
   './img/fish/madai.png'
 ];
 
-// 外部API（Network First）
-const API_PATTERNS = [
-  'open-meteo.com',
-  'overpass-api.de'
-];
+// Network First対象: 外部API + nearby.js（常に最新版を取得）
+function isNetworkFirst(url) {
+  return url.includes('open-meteo.com') ||
+         url.includes('overpass-api.de') ||
+         url.includes('nearby.js');
+}
 
-function isApiRequest(url) {
-  return API_PATTERNS.some(p => url.includes(p));
+// Overpass APIはPOSTなのでキャッシュしない
+function isOverpass(url) {
+  return url.includes('overpass-api.de');
 }
 
 // Install: 静的ファイルをキャッシュ
@@ -50,7 +53,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: 古いキャッシュを削除
+// Activate: 古いキャッシュを全て削除
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -60,12 +63,18 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: Cache First (static) / Network First (API)
+// Fetch handler
 self.addEventListener('fetch', (event) => {
   const url = event.request.url;
 
-  if (isApiRequest(url)) {
-    // Network First: APIデータ
+  // Overpass API: 常にネットワーク直接、キャッシュしない
+  if (isOverpass(url)) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Network First: API + nearby.js
+  if (isNetworkFirst(url)) {
     event.respondWith(
       fetch(event.request)
         .then(response => {
@@ -77,8 +86,11 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => caches.match(event.request))
     );
-  } else if (event.request.mode === 'navigate') {
-    // Network First: HTML navigation
+    return;
+  }
+
+  // Navigation: Network First
+  if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).then(response => {
         const clone = response.clone();
@@ -86,21 +98,22 @@ self.addEventListener('fetch', (event) => {
         return response;
       }).catch(() => caches.match('./index.html'))
     );
-  } else {
-    // Cache First: 静的アセット
-    event.respondWith(
-      caches.match(event.request)
-        .then(cached => {
-          if (cached) return cached;
-          return fetch(event.request).then(response => {
-            if (response && response.status === 200 && response.type === 'basic') {
-              const clone = response.clone();
-              caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
-            }
-            return response;
-          });
-        })
-        .catch(() => {})
-    );
+    return;
   }
+
+  // Cache First: その他の静的アセット
+  event.respondWith(
+    caches.match(event.request)
+      .then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(response => {
+          if (response && response.status === 200 && response.type === 'basic') {
+            const clone = response.clone();
+            caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        });
+      })
+      .catch(() => {})
+  );
 });
