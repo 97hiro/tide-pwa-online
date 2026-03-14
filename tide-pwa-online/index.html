@@ -2,6 +2,33 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script>
+// SW強制クリア（古いキャッシュを完全に削除）
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    regs.forEach(function(r) { r.unregister(); });
+  });
+  if (typeof caches !== 'undefined') {
+    caches.keys().then(function(keys) {
+      keys.forEach(function(k) { caches.delete(k); });
+    });
+  }
+}
+// Geolocationブロック
+(function() {
+  try {
+    Object.defineProperty(navigator, 'geolocation', {
+      value: null, writable: false, configurable: false
+    });
+  } catch(e) {}
+  try {
+    delete Navigator.prototype.geolocation;
+    Object.defineProperty(Navigator.prototype, 'geolocation', {
+      value: null, writable: false, configurable: false
+    });
+  } catch(e) {}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -256,17 +283,37 @@
 </div>
 
 <!-- ===== Scripts (load order matters) ===== -->
-<script src="js/ports-data.js"></script>
-<script src="js/tide-calc.js"></script>
-<script src="js/data-fetch.js"></script>
-<script src="js/theory-score.js"></script>
-<script src="js/fish-profiles.js"></script>
-<script src="js/fish-score.js"></script>
-<script src="js/chart.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/regulation-data.js"></script>
-<script src="js/nearby.js"></script>
-<script src="js/ranking.js"></script>
-<script src="js/app.js"></script>
+<script src="js/ports-data.js?v=74"></script>
+<script src="js/tide-calc.js?v=74"></script>
+<script src="js/data-fetch.js?v=74"></script>
+<script src="js/theory-score.js?v=74"></script>
+<script src="js/fish-profiles.js?v=74"></script>
+<script src="js/fish-score.js?v=74"></script>
+<script src="js/chart.js?v=74"></script>
+<script src="js/ui.js?v=74"></script>
+<script src="js/regulation-data.js?v=74"></script>
+<script src="js/nearby.js?v=74"></script>
+<script src="js/ranking.js?v=74"></script>
+<script src="js/app.js?v=74"></script>
+<script>
+// デバッグ：全モジュール読み込み確認
+console.log('[DEBUG] Nearby defined:', typeof Nearby);
+console.log('[DEBUG] Nearby.toggle:', typeof Nearby !== 'undefined' ? typeof Nearby.toggle : 'N/A');
+window.addEventListener('error', function(e) {
+  console.error('[GLOBAL ERROR]', e.message, e.filename, e.lineno);
+});
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('nearbyToggle');
+  console.log('[DEBUG] nearbyToggle button:', btn);
+  if (btn) {
+    console.log('[DEBUG] ボタン発見。クリックイベントをテスト追加');
+    btn.addEventListener('click', function() {
+      console.log('[DEBUG] 周辺ボタンがクリックされた');
+    });
+  } else {
+    console.warn('[DEBUG] nearbyToggleボタンが見つからない');
+  }
+});
+</script>
 </body>
 </html>

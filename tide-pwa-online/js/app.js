@@ -565,9 +565,17 @@ const App = (() => {
     });
   }
 
-  // Service Worker登録
+  // Service Worker登録（まず古いSWを全てアンレジストしてから再登録）
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      return Promise.all(regs.map(r => r.unregister()));
+    }).then(() => {
+      return caches.keys();
+    }).then(keys => {
+      return Promise.all(keys.map(k => caches.delete(k)));
+    }).then(() => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }).catch(() => {});
   }
 
   document.addEventListener('DOMContentLoaded', init);
