@@ -1,3 +1,4 @@
+// VERSION: 2026-03-14-FINAL
 // ==================== nearby.js ====================
 // 周辺施設表示（Overpass API / オンデマンド方式）
 // =====================================================
@@ -17,26 +18,32 @@ const Nearby = (() => {
   ];
   const MAX_PER_CATEGORY = 3;
 
+  // チェーン店フィルタ（コンビニ・スーパー・飲食店のみ。釣具屋・ガソスタはフィルタなし）
   const CHAIN_FILTERS = {
     convenience: [
-      '\u30BB\u30D6\u30F3\u30A4\u30EC\u30D6\u30F3', '\u30ED\u30FC\u30BD\u30F3', '\u30D5\u30A1\u30DF\u30EA\u30FC\u30DE\u30FC\u30C8',
-      '\u30DF\u30CB\u30B9\u30C8\u30C3\u30D7', '\u30C7\u30A4\u30EA\u30FC\u30E4\u30DE\u30B6\u30AD', '\u30DD\u30D7\u30E9', '\u30BB\u30A4\u30B3\u30FC\u30DE\u30FC\u30C8'
+      'セブンイレブン', 'セブン-イレブン', 'セブン‐イレブン',
+      'ローソン', 'ファミリーマート', 'ファミマ',
+      'ミニストップ', 'デイリーヤマザキ', 'ポプラ', 'セイコーマート',
+      'NewDays', 'ニューデイズ'
     ],
     supermarket: [
-      '\u30A4\u30AA\u30F3', '\u30A4\u30AA\u30F3\u30E2\u30FC\u30EB', '\u30DE\u30C3\u30AF\u30B9\u30D0\u30EA\u30E5', '\u30E9\u30A4\u30D5', '\u962A\u6025\u30AA\u30A2\u30B7\u30B9',
-      '\u30D5\u30EC\u30B9\u30B3', '\u30B3\u30FC\u30D7', '\u696D\u52D9\u30B9\u30FC\u30D1\u30FC', '\u4E07\u4EE3', '\u897F\u53CB', '\u30C0\u30A4\u30A8\u30FC',
-      '\u5E73\u548C\u5802', '\u30D5\u30FC\u30C9\u30EF\u30F3', '\u30ED\u30D4\u30A2', '\u30AA\u30FC\u30AF\u30EF', '\u30C8\u30E9\u30A4\u30A2\u30EB', '\u30E9\u30E0\u30FC',
-      '\u30A6\u30A7\u30EB\u30B7\u30A2', '\u30C9\u30E9\u30C3\u30B0\u30B9\u30C8\u30A2', '\u30C9\u30E9\u30C3\u30B0'
+      'イオン', 'マックスバリュ', 'ライフ', '阪急オアシス',
+      'フレスコ', 'コープ', '業務スーパー', '万代', '西友', 'ダイエー',
+      '平和堂', 'ロピア', 'オークワ', 'トライアル', 'ラ・ムー', 'ラムー',
+      'ウェルシア', 'ナショナル', 'サンディ', '玉出', 'スーパー',
+      'マルハチ', 'バロー', 'アプロ', 'サボイ', 'ドラッグ'
     ],
     restaurant: [
-      '\u30DE\u30AF\u30C9\u30CA\u30EB\u30C9', '\u30E2\u30B9\u30D0\u30FC\u30AC\u30FC', '\u30B1\u30F3\u30BF\u30C3\u30AD\u30FC',
-      '\u5409\u91CE\u5BB6', '\u3059\u304D\u5BB6', '\u677E\u5C4B', '\u306A\u304B\u536F',
-      '\u5929\u4E3C\u3066\u3093\u3084', '\u304B\u3064\u3084', '\u9903\u5B50\u306E\u738B\u5C06',
-      '\u4E38\u4E80\u88FD\u9EBA', '\u306F\u306A\u307E\u308B\u3046\u3069\u3093', '\u30EA\u30F3\u30AC\u30FC\u30CF\u30C3\u30C8',
-      '\u30B5\u30A4\u30BC\u30EA\u30E4', '\u30AC\u30B9\u30C8', '\u30C7\u30CB\u30FC\u30BA', '\u30B8\u30E7\u30A4\u30D5\u30EB', '\u30D0\u30FC\u30DF\u30E4\u30F3', '\u30B8\u30E7\u30CA\u30B5\u30F3',
-      '\u30E9\u30FC\u30E1\u30F3\u5C71\u5CA1\u5BB6', '\u5E78\u697D\u82D1', '\u65E5\u9AD8\u5C4B', '\u30E9\u30FC\u30E1\u30F3\u6765\u6765\u4EAD',
-      '\u30B9\u30B7\u30ED\u30FC', '\u304F\u3089\u5BFF\u53F8', '\u306F\u307E\u5BFF\u53F8', '\u304B\u3063\u3071\u5BFF\u53F8',
-      '\u30B3\u30E1\u30C0\u73C8\u7432', '\u30C9\u30C8\u30FC\u30EB', '\u30B9\u30BF\u30FC\u30D0\u30C3\u30AF\u30B9', '\u30BF\u30EA\u30FC\u30BA'
+      'マクドナルド', 'モスバーガー', 'ケンタッキー',
+      '吉野家', 'すき家', '松屋', 'なか卯',
+      '天丼てんや', 'かつや', '餃子の王将',
+      '丸亀製麺', 'はなまるうどん', 'リンガーハット',
+      'サイゼリヤ', 'ガスト', 'デニーズ', 'ジョイフル', 'バーミヤン', 'ジョナサン',
+      'ラーメン山岡家', '幸楽苑', '日高屋', 'ラーメン来来亭',
+      'スシロー', 'くら寿司', 'はま寿司', 'かっぱ寿司',
+      'コメダ珈琲', 'ドトール', 'スターバックス', 'タリーズ',
+      'CoCo壱番屋', 'ココイチ', '王将', 'やよい軒', '大戸屋',
+      'ロイヤルホスト', 'びっくりドンキー', 'COCO\'S', 'ココス'
     ]
   };
 
@@ -69,9 +76,15 @@ const Nearby = (() => {
     try {
       const res = await fetch('https://overpass-api.de/api/interpreter', {
         method: 'POST',
+        headers: {
+          'Cache-Control': 'no-cache, no-store',
+          'Pragma': 'no-cache'
+        },
         body: 'data=' + encodeURIComponent(query),
         signal: controller.signal,
-        cache: 'no-store'
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
       });
       clearTimeout(timer);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -85,19 +98,7 @@ const Nearby = (() => {
 
   // ==================== 店舗名生成 ====================
   function buildName(tags) {
-    const nameJa = tags['name:ja'] || '';
-    const name = tags.name || '';
-    const brand = tags.brand || '';
-    const branch = tags.branch || '';
-    let display = nameJa || name || (brand + (branch ? ' ' + branch : '')) || null;
-    if (display && brand && display === brand && nameJa && nameJa !== brand) {
-      display = nameJa;
-    }
-    if (display && !display.match(/店$|店舗$|支店$/)) {
-      const addr = tags['addr:full'] || tags['addr:suburb'] || tags['addr:city'] || '';
-      if (addr) display = display + ' ' + addr;
-    }
-    return display;
+    return tags['name:ja'] || tags.name || tags.brand || null;
   }
 
   // ==================== 描画 ====================
@@ -133,14 +134,13 @@ const Nearby = (() => {
 
     for (const key of Object.keys(grouped)) {
       grouped[key].sort((a, b) => a.dist - b.dist);
-      const seen = new Set();
-      grouped[key] = grouped[key].filter(item => {
-        const normalized = (item.name || '').replace(/[（(][^）)]*[）)]/g, '').trim();
-        if (seen.has(normalized)) return false;
-        seen.add(normalized);
-        return true;
-      });
-      grouped[key] = grouped[key].slice(0, MAX_PER_CATEGORY);
+      // 同一座標（50m以内）の施設を重複とみなす
+      const kept = [];
+      for (const item of grouped[key]) {
+        const isDup = kept.some(k => haversine(k.lat, k.lon, item.lat, item.lon) < 50);
+        if (!isDup) kept.push(item);
+      }
+      grouped[key] = kept.slice(0, MAX_PER_CATEGORY);
     }
 
     const hasAny = CATEGORIES.some(c => grouped[c.key].length > 0);
