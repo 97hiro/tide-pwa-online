@@ -1,4 +1,3 @@
-console.log('nearby.js version:', '2026-03-14-new');
 // ==================== nearby.js ====================
 // 周辺施設表示（Overpass API / オンデマンド方式）
 // =====================================================
@@ -7,8 +6,6 @@ const Nearby = (() => {
   const spotCache = {};    // portIndex -> { data, time }
   const SPOT_CACHE_TTL = 10 * 60 * 1000;
   let loading = false;
-  let currentPortIndex = null;  // 現在表示中のスポット
-  let abortController = null;   // 進行中リクエストのキャンセル用
 
   // カテゴリ定義: { key, icon, label, maxRadius }
   const CATEGORIES = [
@@ -37,12 +34,12 @@ const Nearby = (() => {
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
         console.log(`[Nearby] Overpass API request attempt ${attempt}/${MAX_RETRIES} (${lat}, ${lon})`);
-        abortController = new AbortController();
-        const timer = setTimeout(() => abortController.abort(), 30000);
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 30000);
         const res = await fetch('https://overpass-api.de/api/interpreter', {
           method: 'POST',
           body: 'data=' + encodeURIComponent(query),
-          signal: abortController.signal
+          signal: controller.signal
         });
         clearTimeout(timer);
 
@@ -54,13 +51,23 @@ const Nearby = (() => {
         }
 
         const data = await res.json();
-        console.log(`[Nearby] Got ${(data.elements || []).length} elements`);
-        console.log('[Nearby] Raw elements:', JSON.stringify(data.elements || [], null, 2));
-        (data.elements || []).forEach((el, i) => {
+        const raw = data.elements || [];
+        console.log(`[Nearby] Got ${raw.length} elements`);
+        // スポット座標から遠すぎる施設を除外（SWキャッシュ汚染対策）
+        const filtered = raw.filter(el => {
           const c = el.center || el;
-          console.log(`[Nearby] #${i} type=${el.type} lat=${c.lat} lon=${c.lon} name=${el.tags?.name} name:ja=${el.tags?.['name:ja']} brand=${el.tags?.brand} addr:full=${el.tags?.['addr:full']} addr:city=${el.tags?.['addr:city']} addr:suburb=${el.tags?.['addr:suburb']}`);
+          if (!c.lat || !c.lon) return false;
+          const d = calcDist(lat, lon, c.lat, c.lon);
+          if (d > 10000) {
+            console.warn(`[Nearby] REJECTED (${d.toFixed(0)}m away): ${el.tags?.name || '?'} @ ${c.lat},${c.lon}`);
+            return false;
+          }
+          return true;
         });
-        return data.elements || [];
+        if (filtered.length < raw.length) {
+          console.warn(`[Nearby] Filtered out ${raw.length - filtered.length} far-away elements (cache contamination?)`);
+        }
+        return filtered;
       } catch (e) {
         console.warn(`[Nearby] Attempt ${attempt}/${MAX_RETRIES} failed:`, e.message);
         if (attempt < MAX_RETRIES) {
@@ -126,7 +133,6 @@ const Nearby = (() => {
 
   // ==================== 描画 ====================
   function render(elements, spotLat, spotLon) {
-    console.log(`[NEARBY] render: spotLat=${spotLat}, spotLon=${spotLon}, elements=${elements.length}, currentPortIndex=${currentPortIndex}`);
     const list = document.getElementById('nearbyList');
     const status = document.getElementById('nearbyStatus');
 
@@ -140,6 +146,8 @@ const Nearby = (() => {
       const coords = getCoords(el);
       if (!coords.lat || !coords.lon) continue;
       const dist = calcDist(spotLat, spotLon, coords.lat, coords.lon);
+      // 10km超の施設は絶対に除外（キャッシュ汚染対策）
+      if (dist > 10000) continue;
       const maxR = CATEGORIES.find(c => c.key === key).maxRadius;
       if (dist > maxR) continue;
       const rawName = el.tags.name || el.tags['name:ja'] || el.tags.brand || null;
@@ -214,27 +222,18 @@ const Nearby = (() => {
     const section = document.getElementById('nearbySection');
     if (!section) return;
 
-    // 同じスポットで表示中ならトグルで閉じる
-    if (section.style.display !== 'none' && currentPortIndex === portIndex) {
+    // 表示中ならトグルで閉じる
+    if (section.style.display !== 'none') {
       section.style.display = 'none';
       return;
-    }
-
-    // スポットが変わった場合: 進行中リクエストをキャンセル
-    if (currentPortIndex !== portIndex) {
-      if (abortController) {
-        abortController.abort();
-        abortController = null;
-      }
-      loading = false;
-      currentPortIndex = portIndex;
     }
 
     const port = PORTS[portIndex];
     const lat = port[3];
     const lon = port[4];
+    console.log(`[NEARBY] toggle: portIndex=${portIndex}, name=${port[0]}, lat=${lat}, lon=${lon}`);
 
-    // 同じスポットのキャッシュがあればそのまま表示
+    // キャッシュがあればそのまま表示
     const cached = spotCache[portIndex];
     if (cached && (Date.now() - cached.time < SPOT_CACHE_TTL)) {
       section.style.display = '';
@@ -251,18 +250,9 @@ const Nearby = (() => {
 
     try {
       const elements = await fetchNearbyFacilities(lat, lon);
-      // fetch完了時にスポットが変わっていたら結果を破棄
-      if (currentPortIndex !== portIndex) {
-        console.log(`[Nearby] Discarding stale result for port ${portIndex}, current is ${currentPortIndex}`);
-        return;
-      }
       spotCache[portIndex] = { data: elements, time: Date.now() };
       render(elements, lat, lon);
     } catch (e) {
-      if (e.name === 'AbortError') {
-        console.log('[Nearby] Request aborted (spot changed)');
-        return;
-      }
       console.warn('[Nearby] All retries failed:', e);
       section.style.display = 'none';
     } finally {
@@ -270,16 +260,12 @@ const Nearby = (() => {
     }
   }
 
-  // スポット変更時にパネルを閉じ、進行中リクエストをキャンセル
+  // スポット変更時にパネルを閉じてキャッシュクリア
   function hide() {
     const section = document.getElementById('nearbySection');
     if (section) section.style.display = 'none';
-    if (abortController) {
-      abortController.abort();
-      abortController = null;
-    }
-    loading = false;
-    currentPortIndex = null;
+    // 全キャッシュクリア（古いデータ混入防止）
+    for (const key of Object.keys(spotCache)) delete spotCache[key];
   }
 
   return { toggle, hide };
