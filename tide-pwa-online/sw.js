@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'tidegraph-theory-v52';
+const CACHE_VERSION = 'tidegraph-theory-v63';
 
 // 静的ファイル（Cache First）
 const STATIC_ASSETS = [
@@ -13,6 +13,7 @@ const STATIC_ASSETS = [
   './js/fish-score.js',
   './js/chart.js',
   './js/ui.js',
+  './js/nearby.js',
   './js/ranking.js',
   './js/app.js',
   './manifest.json',
@@ -30,9 +31,10 @@ const STATIC_ASSETS = [
   './img/fish/madai.png'
 ];
 
-// 気象データURL（Network First）
+// 外部API（Network First）
 const API_PATTERNS = [
-  'open-meteo.com'
+  'open-meteo.com',
+  'overpass-api.de'
 ];
 
 function isApiRequest(url) {
