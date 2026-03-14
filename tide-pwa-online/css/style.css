@@ -632,6 +632,38 @@ body {
   color: var(--text-secondary);
   margin-bottom: 8px;
 }
+.nearby-cat-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.nearby-cat-btn {
+  font-size: 12px;
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nearby-cat-btn:active {
+  background: var(--bg-hover);
+}
+.nearby-cat-btn.active {
+  background: #1a3a5c;
+  border-color: #4090d0;
+  color: #8cc8ff;
+}
+.nearby-cat-btn.loading {
+  opacity: 0.6;
+  animation: nearby-pulse 1s infinite;
+}
+@keyframes nearby-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
 .nearby-status {
   font-size: 12px;
   color: var(--text-secondary);
