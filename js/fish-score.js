@@ -133,7 +133,7 @@ const FishScore = (() => {
   // スポット種別
   function calcSpotScore(profile, spotType) {
     if (!spotType) return 50;
-    if (profile.spotType.best.includes(spotType)) return 100;
+    if (profile.spotType.best.includes(spotType)) return 80;
     if (profile.spotType.good.includes(spotType)) return 60;
     if (profile.spotType.ok && profile.spotType.ok.includes(spotType)) return 30;
     return 0;
@@ -182,14 +182,15 @@ const FishScore = (() => {
     let tideScore = calcTideScore(profile, params.jiaiStatus);
 
     // スポット種別連動の潮汐ボーナス増幅
+    const spotType = params.spotType || params.portType;
     if (profile.shelterPref === 'low') {
       // アオリイカ・青物・マダイ・ハタ等: 外洋スポットで潮の影響大
-      if ((params.spotType === 'rock' || params.spotType === 'pier') && params.shelter != null && params.shelter <= 0.3) {
+      if ((spotType === 'rock' || spotType === 'pier') && params.shelter != null && params.shelter <= 0.3) {
         tideScore = Math.min(100, Math.round(tideScore * 1.3));
       }
     } else if (profile.shelterPref === 'high') {
       // アジ・チヌ等: 港内で安定
-      if (params.spotType === 'port' && params.shelter != null && params.shelter >= 0.6) {
+      if (spotType === 'port' && params.shelter != null && params.shelter >= 0.6) {
         tideScore = Math.min(100, Math.round(tideScore * 1.2));
       }
     }
@@ -202,7 +203,7 @@ const FishScore = (() => {
       pressure: calcPressureScore(profile, params.pressure),
       moon: calcMoonScore(profile, params.moonAge),
       time: calcTimeScore(profile, params.minutesOfDay, params.sunTimes),
-      spot: calcSpotScore(profile, params.spotType),
+      spot: calcSpotScore(profile, params.spotType || params.portType),
       shelter: calcShelterScore(profile, params.shelter)
     };
 
@@ -238,6 +239,76 @@ const FishScore = (() => {
         total += profile.rainPenalty || 0;       // 雨時 -10
       } else if (!params.wasRainyYesterday) {
         total += profile.clearWaterBonus || 0;   // 晴天続き +5
+      }
+    }
+
+    // ==================== 汎用特有補正（7魚種共通ロジック） ====================
+
+    // マズメボーナス (朝・夕マズメ時に加算)
+    if (profile.mazumeBonus && params.sunTimes && params.minutesOfDay != null) {
+      const sr = params.sunTimes.sunrise != null ? params.sunTimes.sunrise * 60 : null;
+      const ss = params.sunTimes.sunset != null ? params.sunTimes.sunset * 60 : null;
+      if (sr != null && Math.abs(params.minutesOfDay - sr) <= 60) {
+        total += profile.mazumeBonus.morning || 0;
+      }
+      if (ss != null && Math.abs(params.minutesOfDay - ss) <= 60) {
+        total += profile.mazumeBonus.evening || 0;
+      }
+    }
+
+    // 雨後ボーナス (前日雨の翌日に加算)
+    if (profile.rainAfterBonus && params.wasRainyYesterday) {
+      total += profile.rainAfterBonus;
+    }
+
+    // 雨ペナルティ (アオリイカ等: 汎用、タコ・マダイ以外)
+    if (!profile.takoMode && !profile.madaiMode && !profile.chinuMode) {
+      if (profile.rainPenalty && params.isRainy) {
+        total += profile.rainPenalty;
+      }
+      if (profile.lightRainPenalty && params.isLightRain) {
+        total += profile.lightRainPenalty;
+      }
+    }
+
+    // 澄み潮ボーナス (アオリイカ・ハタ等: 汎用、マダイ・チヌ以外)
+    if (!profile.madaiMode && !profile.chinuMode) {
+      if (profile.clearWaterBonus && !params.isRainy && !params.wasRainyYesterday) {
+        total += profile.clearWaterBonus;
+      }
+    }
+
+    // 夜間ボーナス (アオリイカ・ガシラ: 夜20時〜朝5時に加算)
+    if (profile.nightBonus && params.minutesOfDay != null) {
+      const h = params.minutesOfDay / 60;
+      if (h >= 20 || h <= 5) {
+        total += profile.nightBonus;
+      }
+    }
+
+    // 潮流ボーナス (サバ・青物: 潮流が強い時に加算)
+    if (profile.currentBonus && params.flowRate != null && params.flowRate > 0.5) {
+      total += profile.currentBonus;
+    }
+
+    // 波高ボーナス (サバ・青物: 適度な波で加算)
+    if (profile.waveBonus && params.waveHeight != null) {
+      if (params.waveHeight >= profile.waveBonus.min && params.waveHeight <= profile.waveBonus.max) {
+        total += profile.waveBonus.bonus;
+      }
+    }
+
+    // 荒れ後ボーナス (ヒラメ・ガシラ: 適度な波高で加算)
+    if (profile.roughAfterBonus && params.waveHeight != null) {
+      if (params.waveHeight >= profile.roughAfterBonus.min && params.waveHeight <= profile.roughAfterBonus.max) {
+        total += profile.roughAfterBonus.bonus;
+      }
+    }
+
+    // 高水温ボーナス (ハタ: 水温が閾値以上で加算)
+    if (profile.tempBonus && params.seaTemp != null) {
+      if (params.seaTemp >= profile.tempBonus.threshold) {
+        total += profile.tempBonus.bonus;
       }
     }
 

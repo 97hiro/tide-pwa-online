@@ -1,4 +1,5 @@
-const CACHE_VERSION = 'tidegraph-theory-v76';
+// ※ git pushのたびにバージョンを+1すること（SWキャッシュ更新のため）
+const CACHE_VERSION = 'tidegraph-theory-v92';
 
 // プリキャッシュ対象（オフライン用）
 const STATIC_ASSETS = [

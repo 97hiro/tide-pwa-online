@@ -64,8 +64,9 @@ const TideCalc = (() => {
     return result;
   }
 
-  function calcHeight(harmonics, date, astro, nodeF, nodeU, eqArgs) {
-    const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  function calcHeight(harmonics, date, astro, nodeF, nodeU, eqArgs, refStartOfDay) {
+    // refStartOfDayが指定された場合はそれを基準にhours計算（日跨ぎ対応）
+    const startOfDay = refStartOfDay || new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const hours = (date - startOfDay) / 3600000;
     let h = 100;
     for (const c of CONSTITUENTS) {
@@ -76,20 +77,22 @@ const TideCalc = (() => {
     return h;
   }
 
-  // 1日分の潮位を計算 (144点, 10分間隔)
-  function calcDayTide(portIndex, date) {
+  // 1日分の潮位を計算 (145点, 10分間隔: 0〜1440分)
+  // extended=true の場合は翌日4時まで (169点, 0〜1680分)
+  function calcDayTide(portIndex, date, extended) {
     const harmonics = getHarmonics(portIndex);
     const astro = getAstro(date);
     const nodeF = getNodeFactors(astro);
     const nodeU = getNodePhaseCorr(astro);
     const eqArgs = getEquilibriumArgs(astro);
     const startOfDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const maxIdx = extended ? 168 : 144; // 168 = 1680min = 翌日4:00
     const points = [];
-    for (let i = 0; i <= 144; i++) {
+    for (let i = 0; i <= maxIdx; i++) {
       const t = new Date(startOfDay.getTime() + i * 10 * 60000);
       points.push({
         time: t,
-        height: calcHeight(harmonics, t, astro, nodeF, nodeU, eqArgs),
+        height: calcHeight(harmonics, t, astro, nodeF, nodeU, eqArgs, startOfDay),
         minutes: i * 10
       });
     }

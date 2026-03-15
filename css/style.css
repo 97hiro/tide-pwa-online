@@ -247,8 +247,23 @@ body {
 .gp-toolbar {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
   padding: 4px 8px 0;
 }
+.fish-mode-btn {
+  padding: 3px 10px;
+  border: 1.5px solid var(--accent-cyan);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--accent-cyan);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1.4;
+  margin-right: auto;
+}
+.fish-mode-btn:active { opacity: 0.8; }
 .gp-btn {
   padding: 3px 10px;
   border: 1.5px solid var(--text-secondary);
@@ -1242,3 +1257,122 @@ body {
   .card-value { font-size: 16px; }
   .info-section { padding: 8px; gap: 8px; }
 }
+
+/* ==================== Spot Bar (行2) ==================== */
+.spot-bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+.spot-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  min-width: 36px;
+  height: 32px;
+  transition: background 0.15s;
+}
+.spot-bar-btn:active { background: var(--bg-hover); }
+.spot-bar-btn.warn { color: var(--accent-yellow); }
+.spot-bar-btn.danger { color: var(--accent-red); }
+.spot-bar-btn.info { font-size: 12px; color: var(--text-secondary); }
+.spot-bar-sep { flex: 1; min-width: 4px; }
+
+/* ==================== Spot Popup ==================== */
+.spot-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.spot-popup {
+  background: var(--bg-secondary);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 0;
+}
+.spot-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 8px;
+  border-bottom: 1px solid var(--border);
+}
+.spot-popup-title {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+.spot-popup-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.spot-popup-body {
+  padding: 12px 16px 20px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+.spot-popup-row {
+  margin-bottom: 10px;
+}
+.spot-popup-row .sp-icon {
+  margin-right: 6px;
+}
+.spot-popup-row .sp-label {
+  font-weight: bold;
+  color: var(--text-secondary);
+  font-size: 11px;
+  display: block;
+  margin-bottom: 2px;
+}
+.spot-popup-row .sp-value {
+  display: block;
+}
+.spot-popup-row.sp-warn .sp-value { color: var(--accent-yellow); }
+.spot-popup-row.sp-danger .sp-value { color: var(--accent-red); }
+.spot-popup-date {
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: right;
+  margin-top: 8px;
+}
+
+/* ==================== Fish Select Popup ==================== */
+.fish-select-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  transition: background 0.1s;
+}
+.fish-select-item:active, .fish-select-item:hover { background: var(--bg-hover); }
+.fish-select-item.active { color: var(--accent-cyan); font-weight: bold; }
+.fish-select-item img { width: 28px; height: 28px; object-fit: contain; }
+.fish-select-emoji { font-size: 22px; width: 28px; text-align: center; }

@@ -182,13 +182,12 @@ const TideChart = (() => {
     // ==================== GP棒グラフ (潮位曲線の下に描画) ====================
     if (gpScores && gpScores.length > 0) {
       const barW = gW / 48; // 30分幅 = 1440/30 = 48本
-      const rainbowStatuses = ['上げ七分', '下げ三分', '上げ三分', '下げ七分'];
 
       for (const gp of gpScores) {
         const bx = xPos(gp.minutes);
         const barH = (gp.score / 100) * gH;
         const by = pad.top + gH - barH;
-        const isRainbow = gp.score >= 78 && gp.jiaiStatus && rainbowStatuses.includes(gp.jiaiStatus);
+        const isRainbow = gp.isRainbow === true;
 
         if (isRainbow) {
           const rainbow = ctx.createLinearGradient(bx, by, bx, pad.top + gH);

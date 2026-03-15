@@ -394,6 +394,7 @@ const Ranking = (() => {
       const si = SpotInfo.getByIndex(portIndex);
       if (si) {
         if (si.is_banned && !ban) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
+        else if (si.has_restriction && !ban) parts.push('<span style="color:#f0a030;font-weight:bold" title="' + (si.restriction_reason || '').replace(/"/g, '&quot;').substring(0, 80) + '">▲制限</span>');
         if (si.parking && parking === undefined && parking !== true && parking !== false) parts.push('🅿');
         if (si.toilet && toilet === undefined && toilet !== true && toilet !== false) {
           parts.push(si.toilet === 'なし' ? '🚻❌' : '🚻');
@@ -467,11 +468,14 @@ const Ranking = (() => {
     el.innerHTML = html;
 
     // クリックイベント
+    const currentFishMode = state.fishMode;
     el.querySelectorAll('.ranking-item').forEach(row => {
       row.addEventListener('click', () => {
         const idx = parseInt(row.dataset.portIndex);
+        // 魚種別ランキングの場合は魚種IDを渡す
+        const fishId = (currentFishMode && currentFishMode !== 'bestAll') ? currentFishMode : null;
         close();
-        App.selectPort(idx);
+        App.selectPort(idx, fishId);
       });
     });
   }
@@ -549,11 +553,13 @@ const Ranking = (() => {
 
     el.innerHTML = html;
 
+    const currentFishMode2 = state.fishMode;
     el.querySelectorAll('.ranking-item').forEach(row => {
       row.addEventListener('click', () => {
         const idx = parseInt(row.dataset.portIndex);
+        const fishId = (currentFishMode2 && currentFishMode2 !== 'bestAll') ? currentFishMode2 : null;
         close();
-        App.selectPort(idx);
+        App.selectPort(idx, fishId);
       });
     });
   }

@@ -9,11 +9,16 @@ const FISH_PROFILES = {
     pressure: { best: [1000, 1013], good: [1013, 1020], ok: [995, 1025] },
     wind: { best: [0, 2], good: [2, 4], max: 6 },
     wave: { best: [0, 0.5], good: [0.5, 1.0], max: 1.5 },
-    seaTemp: { best: [18, 22], good: [15, 25], min: 12, max: 28 },
+    seaTemp: { best: [10, 25], good: [8, 28], min: 5, max: 30 },
     moon: { best: 'new', good: 'crescent' },
     timeOfDay: { best: ['night', 'evening'], good: ['morning'] },
     spotType: { best: ['port', 'pier'], good: ['park'], ok: ['rock'] },
-    shelterPref: 'high'
+    shelterPref: 'medium',
+    tidalBonus: { '大潮': -2, '中潮': 2, '小潮': 2, '若潮': 0, '長潮': 0 },
+    mazumeBonus: { morning: 4, evening: 5 },
+    rainAfterBonus: 3,
+    season: [6, 7, 8, 9, 10, 11],
+    peakMonths: [7, 8, 9, 10]
   },
   saba: {
     name: 'サバ', icon: 'img/fish/saba.png', emoji: '🐠',
@@ -25,7 +30,12 @@ const FISH_PROFILES = {
     moon: { best: 'any', good: 'any' },
     timeOfDay: { best: ['morning', 'evening'], good: ['daytime'] },
     spotType: { best: ['port', 'pier'], good: ['park', 'rock'], ok: ['surf'] },
-    shelterPref: 'medium'
+    shelterPref: 'medium',
+    tidalBonus: { '大潮': 3, '中潮': 2, '小潮': -2, '若潮': -1, '長潮': -2 },
+    currentBonus: 5,
+    waveBonus: { min: 1.0, max: 2.0, bonus: 3 },
+    season: [6, 7, 8, 9, 10, 11],
+    peakMonths: [7, 8, 9, 10]
   },
   aori: {
     name: 'アオリイカ', icon: 'img/fish/aori.png', emoji: '🦑',
@@ -37,7 +47,14 @@ const FISH_PROFILES = {
     moon: { best: 'full', good: 'half' },
     timeOfDay: { best: ['evening', 'night'], good: ['morning'] },
     spotType: { best: ['rock', 'pier'], good: ['port', 'park'], ok: ['surf'] },
-    shelterPref: 'low'
+    shelterPref: 'low',
+    tidalBonus: { '大潮': -2, '中潮': 2, '小潮': 3, '若潮': 1, '長潮': 0 },
+    clearWaterBonus: 3,
+    rainPenalty: -3,
+    lightRainPenalty: -2,
+    nightBonus: 4,
+    season: [9, 10, 11, 12, 1, 2, 3, 4, 5],
+    peakMonths: [10, 11, 12, 3, 4]
   },
   hirame: {
     name: 'ヒラメ', icon: 'img/fish/hirame.png', emoji: '🐊',
@@ -49,7 +66,12 @@ const FISH_PROFILES = {
     moon: { best: 'any', good: 'any' },
     timeOfDay: { best: ['morning', 'evening'], good: ['daytime'] },
     spotType: { best: ['surf', 'river'], good: ['port', 'pier'], ok: ['rock'] },
-    shelterPref: 'low'
+    shelterPref: 'low',
+    tidalBonus: { '大潮': 3, '中潮': 2, '小潮': -2, '若潮': -1, '長潮': -2 },
+    roughAfterBonus: { min: 1.0, max: 1.5, bonus: 3 },
+    mazumeBonus: { morning: 5, evening: 3 },
+    season: [10, 11, 12, 1, 2, 3, 4, 5],
+    peakMonths: [11, 12, 1, 4, 5]
   },
   hata: {
     name: 'ハタ', icon: 'img/fish/hata.png', emoji: '🐡',
@@ -61,7 +83,11 @@ const FISH_PROFILES = {
     moon: { best: 'any', good: 'any' },
     timeOfDay: { best: ['morning', 'evening'], good: ['daytime'] },
     spotType: { best: ['rock', 'pier'], good: ['port'], ok: ['park'] },
-    shelterPref: 'low'
+    shelterPref: 'low',
+    clearWaterBonus: 3,
+    tempBonus: { threshold: 25, bonus: 3 },
+    season: [6, 7, 8, 9, 10],
+    peakMonths: [7, 8, 9]
   },
   gasira: {
     name: 'ガシラ', icon: 'img/fish/gasira.png', emoji: '🦂',
@@ -73,7 +99,11 @@ const FISH_PROFILES = {
     moon: { best: 'new', good: 'crescent' },
     timeOfDay: { best: ['night', 'evening'], good: ['morning'] },
     spotType: { best: ['rock', 'port', 'pier'], good: ['park'], ok: ['river'] },
-    shelterPref: 'medium'
+    shelterPref: 'medium',
+    nightBonus: 2,
+    roughAfterBonus: { min: 0.5, max: 1.5, bonus: 2 },
+    season: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    peakMonths: [10, 11, 12, 1, 2, 3]
   },
   aomono: {
     name: '青物', icon: 'img/fish/aomono.png', emoji: '💪',
@@ -85,7 +115,13 @@ const FISH_PROFILES = {
     moon: { best: 'any', good: 'any' },
     timeOfDay: { best: ['morning'], good: ['evening', 'daytime'] },
     spotType: { best: ['rock', 'pier'], good: ['surf', 'park'], ok: ['port'] },
-    shelterPref: 'low'
+    shelterPref: 'low',
+    tidalBonus: { '大潮': 3, '中潮': 2, '小潮': -3, '若潮': -2, '長潮': -3 },
+    currentBonus: 5,
+    mazumeBonus: { morning: 5, evening: 3 },
+    waveBonus: { min: 1.0, max: 2.0, bonus: 3 },
+    season: [7, 8, 9, 10, 11],
+    peakMonths: [9, 10]
   },
   tako: {
     name: 'タコ', icon: 'img/fish/tako.png', emoji: '🐙',

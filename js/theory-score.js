@@ -399,25 +399,25 @@ const TheoryScore = (() => {
   }
 
   function getRating(score) {
-    if (score >= 80) return '◎';
-    if (score >= 60) return '○';
-    if (score >= 40) return '△';
+    if (score >= 78) return '◎';
+    if (score >= 65) return '○';
+    if (score >= 46) return '△';
     return '×';
   }
 
   function getMessage(score) {
-    if (score >= 81) return '最高のコンディション！';
-    if (score >= 61) return '期待大！';
-    if (score >= 41) return 'まずまず';
-    if (score >= 21) return 'やや渋め';
+    if (score >= 78) return '最高のコンディション！';
+    if (score >= 65) return '期待大！';
+    if (score >= 46) return 'まずまず';
+    if (score >= 31) return 'やや渋め';
     return '厳しい条件です';
   }
 
   function getColor(score) {
-    if (score >= 81) return '#4ecb71';
-    if (score >= 61) return '#a0d840';
-    if (score >= 41) return '#f0c040';
-    if (score >= 21) return '#f0943a';
+    if (score >= 78) return '#4ecb71';
+    if (score >= 65) return '#a0d840';
+    if (score >= 46) return '#f0c040';
+    if (score >= 31) return '#f0943a';
     return '#e74c5e';
   }
 

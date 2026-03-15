@@ -29,19 +29,20 @@ const UI = (() => {
   function updateHeader(port, date, tideName, portIndex) {
     document.getElementById('portName').textContent = port[0];
     const areaText = PREF_NAMES[port[2]] + ' ' + port[1];
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${port[3]},${port[4]}`;
     document.getElementById('portArea').textContent = areaText;
+    // portLinks は行2(spotBar)に移行 → 非表示
     const linksEl = document.getElementById('portLinks');
-    linksEl.innerHTML =
-      `<a href="${mapUrl}" target="_blank" rel="noopener" class="map-link">\uD83D\uDCCD 地図で見る</a>` +
-      `<button class="nearby-btn" id="nearbyToggle">\uD83C\uDFEA 周辺</button>`;
-    linksEl.querySelector('.map-link').addEventListener('click', e => e.stopPropagation());
-    document.getElementById('nearbyToggle').addEventListener('click', e => { e.stopPropagation(); Nearby.toggle(portIndex); });
+    linksEl.innerHTML = '';
     document.getElementById('dateText').textContent = formatDate(date);
 
     const badge = document.getElementById('tideBadge');
     badge.textContent = tideName;
     badge.className = 'tide-badge ' + getTideBadgeClass(tideName);
+
+    // 行2: スポット情報バー
+    if (typeof SpotInfo !== 'undefined') {
+      SpotInfo.renderSpotBar(portIndex);
+    }
   }
 
   // ==================== Score Section ====================
@@ -118,27 +119,10 @@ const UI = (() => {
     onlineBadge.textContent = isOnline ? 'LIVE' : 'OFFLINE';
     onlineBadge.className = 'online-badge ' + (isOnline ? 'online' : 'offline');
 
-    // 施設情報
+    // 施設情報 → 行2(spotBar)に移行済み。scoreFacilityは非表示
     if (facilityEl) {
-      const p = (typeof portIndex === 'number') ? PORTS[portIndex] : null;
-      if (p) {
-        const parts = [];
-        if (p[13] === true) parts.push('🚻✅');
-        else if (p[13] === false) parts.push('🚻❌');
-        if (p[14] === true) parts.push('🅿\uFE0F✅');
-        else if (p[14] === false) parts.push('🅿\uFE0F❌');
-        if (p[15] === true) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔釣り禁止情報あり</span>');
-        // SpotInfo連携: クローラさんの詳細情報を追加
-        let spotDetail = '';
-        if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
-          spotDetail = SpotInfo.renderDetail(portIndex);
-        }
-        facilityEl.innerHTML = parts.join(' ') + spotDetail;
-        facilityEl.style.display = (parts.length > 0 || spotDetail) ? '' : 'none';
-      } else {
-        facilityEl.innerHTML = '';
-        facilityEl.style.display = 'none';
-      }
+      facilityEl.innerHTML = '';
+      facilityEl.style.display = 'none';
     }
   }
 
@@ -482,6 +466,7 @@ const UI = (() => {
       const si = SpotInfo.getByIndex(portIndex);
       if (si) {
         if (si.is_banned && port[15] !== true) fc.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
+        else if (si.has_restriction && port[15] !== true) fc.push('<span style="color:#f0a030;font-weight:bold">▲制限</span>');
         if (si.parking && port[14] === undefined) fc.push('🅿\uFE0F');
         if (si.toilet && port[13] === undefined) fc.push(si.toilet === 'なし' ? '🚻❌' : '🚻');
       }

@@ -59,6 +59,20 @@ if ('serviceWorker' in navigator) {
   <span class="tide-badge" id="tideBadge">--</span>
 </div>
 
+<!-- ===== 行2: スポット情報バー ===== -->
+<div class="spot-bar" id="spotBar"></div>
+
+<!-- ===== スポット詳細ポップアップ ===== -->
+<div class="spot-popup-overlay" id="spotPopupOverlay" style="display:none" onclick="this.style.display='none'">
+  <div class="spot-popup" onclick="event.stopPropagation()">
+    <div class="spot-popup-header">
+      <span class="spot-popup-title" id="spotPopupTitle">詳細情報</span>
+      <button class="spot-popup-close" onclick="document.getElementById('spotPopupOverlay').style.display='none'">&times;</button>
+    </div>
+    <div class="spot-popup-body" id="spotPopupBody"></div>
+  </div>
+</div>
+
 <!-- ===== 周辺施設 ===== -->
 <div class="nearby-section" id="nearbySection" style="display:none">
   <div class="nearby-title">周辺施設</div>
@@ -90,6 +104,7 @@ if ('serviceWorker' in navigator) {
 
 <!-- ===== Tide Graph ===== -->
 <div class="gp-toolbar">
+  <button class="fish-mode-btn" id="fishModeBtn" title="魚種切替">🎣 総合</button>
   <button class="gp-btn" id="gpToggle">GP</button>
 </div>
 <div class="graph-container" id="graphContainer">
@@ -103,7 +118,7 @@ if ('serviceWorker' in navigator) {
   <span class="gp-legend-item"><span class="gp-dot" style="background:#40c060"></span>普通</span>
   <span class="gp-legend-item"><span class="gp-dot" style="background:#4080ff"></span>低め</span>
   <span class="gp-legend-item"><span class="gp-dot" style="background:#666"></span>厳しい</span>
-  <span class="gp-legend-item"><span class="gp-dot" style="background:linear-gradient(#ff0000,#ff8c00,#ffd700,#00c800,#0064ff,#4b0082,#9400d3)"></span>&#127752;時合+80超</span>
+  <span class="gp-legend-item"><span class="gp-dot" style="background:linear-gradient(#ff0000,#ff8c00,#ffd700,#00c800,#0064ff,#4b0082,#9400d3)"></span>&#127752;時合+82超</span>
 </div>
 
 <!-- ===== Time Slider ===== -->
@@ -291,12 +306,12 @@ if ('serviceWorker' in navigator) {
 <script src="js/fish-profiles.js?v=74"></script>
 <script src="js/fish-score.js?v=74"></script>
 <script src="js/chart.js?v=74"></script>
-<script src="js/ui.js?v=76"></script>
+<script src="js/ui.js?v=92"></script>
 <script src="js/regulation-data.js?v=74"></script>
-<script src="js/spot-info.js?v=76"></script>
+<script src="js/spot-info.js?v=92"></script>
 <script src="js/nearby.js?v=74"></script>
-<script src="js/ranking.js?v=76"></script>
-<script src="js/app.js?v=76"></script>
+<script src="js/ranking.js?v=92"></script>
+<script src="js/app.js?v=92"></script>
 <script>
 // デバッグ：全モジュール読み込み確認
 console.log('[DEBUG] Nearby defined:', typeof Nearby);

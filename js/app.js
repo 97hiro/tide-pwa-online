@@ -36,7 +36,8 @@ const App = (() => {
     lastWeatherAtTime: null,  // スライダー用: 最後の有効な気象データ
     lastFacing: null,         // スライダー用: 最後の港facing
     gpEnabled: false,         // GP棒グラフ表示
-    gpScores: null            // GP 48本分キャッシュ
+    gpScores: null,           // GP 48本分キャッシュ
+    selectedFish: null        // null=総合, 'aji'|'tako'|...=魚種別
   };
 
   // localStorage読み書き
@@ -71,6 +72,51 @@ const App = (() => {
     return 720;
   }
 
+  // ==================== 魚種別レインボー判定 ====================
+  const RAINBOW_RULES = {
+    // null = 総合
+    _default: ['上げ七分', '下げ三分'],
+    aomono:   ['上げ七分', '下げ三分'],
+    saba:     ['上げ七分', '下げ三分'],
+    madai:    ['上げ七分', '下げ三分'],
+    hata:     ['上げ七分', '下げ三分'],
+    aji:      ['上げ三分', '上げ七分', '_evening'],
+    tako:     ['潮止まり', '下げ七分'],
+    chinu:    ['上げ三分', '下げ七分', '上げ七分'],
+    aori:     ['潮止まり', '上げ三分'],
+    hirame:   ['上げ七分', '下げ三分', '_morning'],
+    gasira:   ['潮止まり', '下げ七分', '_latenight'],
+  };
+
+  // 魚種別レインボースコア閾値
+  const RAINBOW_THRESHOLD = { gasira: 85 };
+  const RAINBOW_DEFAULT_THRESHOLD = 82;
+
+  function _checkRainbow(fishId, jiaiStatus, minutes) {
+    const rules = RAINBOW_RULES[fishId] || RAINBOW_RULES._default;
+    if (!jiaiStatus) return false;
+
+    for (const rule of rules) {
+      if (rule === '_morning') {
+        if (minutes >= 300 && minutes <= 420) return true;
+      } else if (rule === '_evening') {
+        if (minutes >= 1020 && minutes <= 1140) return true;
+      } else if (rule === '_night') {
+        if (minutes >= 1200 || minutes <= 240) return true;
+      } else if (rule === '_latenight') {
+        // 深夜 22:00〜2:00 (1320〜1440 or 0〜120min)
+        if (minutes >= 1320 || minutes <= 120) return true;
+      } else if (jiaiStatus === rule) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function _getRainbowThreshold(fishId) {
+    return RAINBOW_THRESHOLD[fishId] || RAINBOW_DEFAULT_THRESHOLD;
+  }
+
   // ==================== メイン更新 ====================
   function updateUI() {
     const port = PORTS[state.portIndex];
@@ -84,9 +130,11 @@ const App = (() => {
     // ヘッダー更新
     UI.updateHeader(port, d, tideName, state.portIndex);
 
-    // 潮汐計算
-    const points = TideCalc.calcDayTide(state.portIndex, d);
-    const events = TideCalc.findTideEvents(points);
+    // 潮汐計算（翌日4時まで拡張 → 時合判定の精度向上）
+    const pointsExtended = TideCalc.calcDayTide(state.portIndex, d, true);
+    const points = pointsExtended.filter(p => p.minutes <= 1440); // 表示用: 0〜24時
+    const eventsExtended = TideCalc.findTideEvents(pointsExtended); // 判定用: 翌日4時まで
+    const events = eventsExtended.filter(e => e.minutes <= 1440); // 表示用
     const tidalRange = TideCalc.getTidalRange(events);
     const sunTimes = TideCalc.calcSunTimes(port[3], port[4], d);
 
@@ -113,7 +161,7 @@ const App = (() => {
     const adjustedPoints = pressure != null ? TideCalc.applyPressureCorrection(points, pressure) : points;
 
     const scoreParams = {
-      tideName, tidalRange, minutesOfDay, tideEvents: events,
+      tideName, tidalRange, minutesOfDay, tideEvents: eventsExtended,
       pressure: pressure,
       pressureTrend: null,
       pressureChange: null,
@@ -122,17 +170,86 @@ const App = (() => {
       waveHeight, wavePeriod,
       sunTimes, moonAge,
       facing: port[10], shelter: port[11],
-      tidePoints: points
+      tidePoints: pointsExtended
     };
 
     const scoreResult = TheoryScore.calcScore(scoreParams);
-    const hourlyScores = TheoryScore.calcHourlyScores(scoreParams);
-    const bestTime = TheoryScore.findBestTime(hourlyScores);
     const dynamicBestTimes = TheoryScore.findDynamicBestTimes(sunTimes, events, tideName);
     const isOnline = !!(state.onlineData && state.onlineData.isOnline);
 
     // 潮流デバッグログ（1回だけ）
     TheoryScore.debugLogTideFlow(events);
+
+    // 魚種別 or 総合: メインスコア・ヒートマップ・GP を一括計算
+    const isFishMode = state.selectedFish && typeof FishScore !== 'undefined';
+    const seaTemp = marineForDate ? (marineForDate.seaTemp || marineForDate.sst || null) : null;
+
+    // 時点別スコア計算ヘルパー
+    function calcScoreAtMinute(min) {
+      const wAt = weather ? DataFetch.getWeatherAtMinute(weather, d, min) : null;
+      const mAt = marine ? DataFetch.getMarineAtMinute(marine, d, min) : null;
+      const ws = wAt ? wAt.windSpeed : null;
+      const wd = wAt ? wAt.windDir : null;
+      const pr = wAt ? wAt.pressure : null;
+      const wh = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
+
+      if (isFishMode) {
+        const flowInfo = TheoryScore.calcTideFlowInfo(pointsExtended, eventsExtended, min);
+        const fishResult = FishScore.calcFishScore(state.selectedFish, {
+          ...scoreParams,
+          minutesOfDay: min,
+          windSpeed: ws, windDir: wd, pressure: pr, waveHeight: wh,
+          portType: port[12] || 'port',
+          shelter: port[11],
+          seaTemp: seaTemp,
+          jiaiStatus: flowInfo.jiaiStatus,
+          flowRate: flowInfo.flowRate,
+          tideName: tideName
+        });
+        // jiaiStatusをTheoryScoreから流用（レインボー判定用）
+        const theoryResult = TheoryScore.calcScore({
+          ...scoreParams, minutesOfDay: min,
+          windSpeed: ws, windDir: wd, pressure: pr
+        });
+        fishResult.jiaiStatus = theoryResult.jiaiStatus;
+        return fishResult;
+      } else {
+        const result = TheoryScore.calcScore({
+          ...scoreParams,
+          minutesOfDay: min,
+          windSpeed: ws, windDir: wd, pressure: pr
+        });
+        return result;
+      }
+    }
+
+    // ヒートマップ (2時間×12ブロック)
+    const hourlyScores = [];
+    for (let h = 0; h < 24; h += 2) {
+      const min = h * 60 + 60;
+      const result = calcScoreAtMinute(min);
+      hourlyScores.push({
+        hour: h,
+        label: `${h}:00`,
+        score: result.total,
+        color: TheoryScore.getColor(result.total)
+      });
+    }
+    const bestTime = TheoryScore.findBestTime(hourlyScores);
+
+    // メインスコア (現在のスライダー位置)
+    let displayResult;
+    if (isFishMode) {
+      const mainResult = calcScoreAtMinute(minutesOfDay);
+      displayResult = {
+        ...scoreResult,
+        total: mainResult.total,
+        message: TheoryScore.getMessage(mainResult.total),
+        fishId: state.selectedFish
+      };
+    } else {
+      displayResult = scoreResult;
+    }
 
     // スライダー用にキャッシュ
     state.lastScoreParams = scoreParams;
@@ -141,19 +258,14 @@ const App = (() => {
     state.lastDynamicBestTimes = dynamicBestTimes;
     state.lastIsOnline = isOnline;
 
-    // GP棒グラフ (全48時点のスコアを一括計算)
+    // GP棒グラフ (30分×48本)
     if (state.gpEnabled) {
       const gpScores = [];
       for (let min = 0; min < 1440; min += 30) {
-        const wAt = weather ? DataFetch.getWeatherAtMinute(weather, d, min) : null;
-        const result = TheoryScore.calcScore({
-          ...scoreParams,
-          minutesOfDay: min,
-          windSpeed: wAt ? wAt.windSpeed : null,
-          windDir: wAt ? wAt.windDir : null,
-          pressure: wAt ? wAt.pressure : null
-        });
-        gpScores.push({ minutes: min, score: result.total, jiaiStatus: result.jiaiStatus });
+        const result = calcScoreAtMinute(min);
+        const rbThreshold = _getRainbowThreshold(state.selectedFish);
+        const isRainbow = result.total >= rbThreshold ? _checkRainbow(state.selectedFish, result.jiaiStatus, min) : false;
+        gpScores.push({ minutes: min, score: result.total, jiaiStatus: result.jiaiStatus, isRainbow });
       }
       state.gpScores = gpScores;
     } else {
@@ -161,7 +273,7 @@ const App = (() => {
     }
 
     // UI更新
-    UI.updateScore(scoreResult, bestTime, isOnline, state.portIndex, dynamicBestTimes);
+    UI.updateScore(displayResult, bestTime, isOnline, state.portIndex, dynamicBestTimes);
     UI.updateGraph(adjustedPoints, events, sunTimes, td, pressure, hourlyScores, state.gpScores, dynamicBestTimes);
     UI.updateTideEvents(events);
     UI.updateNextTide(events, td);
@@ -237,7 +349,36 @@ const App = (() => {
     const params = { ...state.lastScoreParams, minutesOfDay: minutes, windSpeed, windDir, pressure };
     const scoreResult = TheoryScore.calcScore(params);
 
-    UI.updateScore(scoreResult, state.lastBestTime, state.lastIsOnline, state.portIndex, state.lastDynamicBestTimes);
+    // 魚種選択時は魚種別スコアで表示
+    let displayResult = scoreResult;
+    if (state.selectedFish && typeof FishScore !== 'undefined') {
+      const port = PORTS[state.portIndex];
+      const marine = state.onlineData ? state.onlineData.marine : null;
+      const marineForDate = marine ? DataFetch.getMarineForDate(marine, state.date) : null;
+      const mAt = marine ? DataFetch.getMarineAtMinute(marine, state.date, minutes) : null;
+      const wh = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
+      const flowInfo = TheoryScore.calcTideFlowInfo(params.tidePoints, params.tideEvents, minutes);
+      const fishResult = FishScore.calcFishScore(state.selectedFish, {
+        ...params,
+        waveHeight: wh,
+        portType: port[12] || 'port',
+        shelter: port[11],
+        seaTemp: marineForDate ? (marineForDate.seaTemp || marineForDate.sst || null) : null,
+        jiaiStatus: flowInfo.jiaiStatus,
+        flowRate: flowInfo.flowRate,
+        tideName: params.tideName
+      });
+      if (fishResult) {
+        displayResult = {
+          ...scoreResult,
+          total: fishResult.total,
+          message: TheoryScore.getMessage(fishResult.total),
+          fishId: state.selectedFish
+        };
+      }
+    }
+
+    UI.updateScore(displayResult, state.lastBestTime, state.lastIsOnline, state.portIndex, state.lastDynamicBestTimes);
 
     const hh = Math.floor(minutes / 60);
     const mm = minutes % 60;
@@ -392,14 +533,72 @@ const App = (() => {
     UI.renderPortList(state.activeTab, state.favorites, selectPort, toggleFavorite);
   }
 
-  function selectPort(portIndex) {
+  function selectPort(portIndex, fishId) {
     state.portIndex = portIndex;
+    state.selectedFish = fishId || null;
     DataFetch.clearCache();
     saveState();
     UI.closePortModal();
     Nearby.hide();
+    updateFishModeButton();
     updateUI();
     fetchOnlineData();
+  }
+
+  function setFishMode(fishId) {
+    state.selectedFish = fishId || null;
+    updateFishModeButton();
+    updateUI();
+  }
+
+  function updateFishModeButton() {
+    const btn = document.getElementById('fishModeBtn');
+    if (!btn) return;
+    if (state.selectedFish && FISH_PROFILES[state.selectedFish]) {
+      const fp = FISH_PROFILES[state.selectedFish];
+      const iconSrc = fp.icon.endsWith('.png') ? fp.icon : '';
+      btn.innerHTML = (iconSrc ? `<img src="${iconSrc}" style="width:18px;height:18px;object-fit:contain;vertical-align:middle;margin-right:3px;border-radius:3px">` : fp.emoji + ' ') + fp.name;
+      btn.style.borderColor = FISH_COLORS[state.selectedFish] || '';
+      btn.style.color = FISH_COLORS[state.selectedFish] || '';
+    } else {
+      btn.innerHTML = '🎣 総合';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }
+  }
+
+  function showFishSelectPopup() {
+    const overlay = document.getElementById('spotPopupOverlay');
+    const titleEl = document.getElementById('spotPopupTitle');
+    const bodyEl = document.getElementById('spotPopupBody');
+    if (!overlay || !bodyEl) return;
+    titleEl.textContent = '魚種を選択';
+
+    let html = '<div class="fish-select-item' + (!state.selectedFish ? ' active' : '') + '" data-fish="">'
+      + '<span class="fish-select-emoji">🎣</span><span>総合</span></div>';
+
+    for (const fid of FISH_IDS) {
+      const fp = FISH_PROFILES[fid];
+      const active = state.selectedFish === fid ? ' active' : '';
+      const iconSrc = fp.icon.endsWith('.png') ? fp.icon : '';
+      const iconHtml = iconSrc
+        ? '<img src="' + iconSrc + '" alt="' + fp.name + '" style="border-radius:4px">'
+        : '<span class="fish-select-emoji">' + fp.emoji + '</span>';
+      html += '<div class="fish-select-item' + active + '" data-fish="' + fid + '">'
+        + iconHtml
+        + '<span>' + fp.name + '</span></div>';
+    }
+
+    bodyEl.innerHTML = html;
+    overlay.style.display = 'flex';
+
+    bodyEl.querySelectorAll('.fish-select-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const fid = item.dataset.fish || null;
+        overlay.style.display = 'none';
+        setFishMode(fid);
+      });
+    });
   }
 
   // ==================== GP棒グラフトグル ====================
@@ -468,6 +667,9 @@ const App = (() => {
     document.getElementById('prevDay').addEventListener('click', () => changeDay(-1));
     document.getElementById('nextDay').addEventListener('click', () => changeDay(1));
     document.getElementById('dateText').addEventListener('click', () => UI.openDatePicker(state.date, getMinDate(), getMaxDate()));
+
+    // 魚種切替ボタン
+    document.getElementById('fishModeBtn').addEventListener('click', showFishSelectPopup);
 
     // 検索
     document.getElementById('searchInput').addEventListener('input', () => {
@@ -587,5 +789,5 @@ const App = (() => {
 
   document.addEventListener('DOMContentLoaded', init);
 
-  return { state, updateUI, fetchOnlineData, selectPort };
+  return { state, updateUI, fetchOnlineData, selectPort, setFishMode };
 })();
