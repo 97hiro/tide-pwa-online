@@ -1,0 +1,1102 @@
+[
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/シーサイドコスモ",
+    "toilet": true,
+    "parking": true,
+    "name": "シーサイドコスモ",
+    "toiletText": "有り",
+    "parkingText": "有り（有料の民間駐車場を利用　駐車料金上限は４００円が多い）",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "ショアジギング,根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/大阪南港魚つり園護岸",
+    "toilet": true,
+    "parking": true,
+    "name": "大阪南港魚つり園護岸",
+    "toiletText": "有り",
+    "parkingText": "有り（有料　１時間まで４００円　１時間以上８００円）",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "根魚狙い,青物,ショアジギング",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/かもめ大橋下",
+    "toilet": false,
+    "parking": false,
+    "name": "かもめ大橋下",
+    "toiletText": "なし",
+    "parkingText": "なし（周辺道路は駐車禁止）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/南港大橋下",
+    "toilet": false,
+    "parking": false,
+    "name": "南港大橋下",
+    "toiletText": "無し",
+    "parkingText": "無し（路上駐車になるが、釣り場の近くは駐禁ではないが、少し離れると駐禁になるから注意）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.xn--u9jwc554om3rqo4bwmf.com/entry/常吉大橋下",
+    "toilet": false,
+    "parking": false,
+    "name": "常吉大橋下",
+    "toiletText": "無し",
+    "parkingText": "無し（路上駐車になるが、釣り場の近くは駐禁ではないが、橋から東側は駐禁になるから注意）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.xn--u9jwc554om3rqo4bwmf.com/entry/夢舞大橋下",
+    "toilet": true,
+    "parking": true,
+    "name": "夢舞大橋下",
+    "toiletText": "有り（少し距離あり）",
+    "parkingText": "有り（有料）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "ショアジギング,根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/海とのふれあい広場",
+    "toilet": true,
+    "parking": true,
+    "name": "海とのふれあい広場",
+    "toiletText": "有り",
+    "parkingText": "有り（無料）",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.xn--u9jwc554om3rqo4bwmf.com/entry/大浜埠頭",
+    "toilet": true,
+    "parking": true,
+    "name": "大浜埠頭",
+    "toiletText": "有り",
+    "parkingText": "有り（無料）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/花市場前",
+    "toilet": true,
+    "parking": true,
+    "name": "花市場前",
+    "toiletText": "有り",
+    "parkingText": "有り（無料）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/助松埠頭倉庫前１",
+    "toilet": false,
+    "parking": true,
+    "name": "助松埠頭倉庫前１",
+    "toiletText": "無し",
+    "parkingText": "有り（横付け　無料）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/助松埠頭倉庫前２",
+    "toilet": false,
+    "parking": true,
+    "name": "助松埠頭倉庫前２",
+    "toiletText": "無し",
+    "parkingText": "有り（横付け　無料）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/なぎさ公園",
+    "toilet": true,
+    "parking": true,
+    "name": "なぎさ公園",
+    "toiletText": "有り",
+    "parkingText": "有り（無料）",
+    "carAccess": true,
+    "fence": "一部有り",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/汐見埠頭砂上げ場",
+    "toilet": false,
+    "parking": true,
+    "name": "汐見埠頭砂上げ場",
+    "toiletText": "無し",
+    "parkingText": "有り（横付け　無料）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/大津川尻",
+    "toilet": false,
+    "parking": false,
+    "name": "大津川尻",
+    "toiletText": "無し（近くの汐見公園にトイレがある）",
+    "parkingText": "無し（路上駐車　駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "根魚狙い,青物",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/大津川河口",
+    "toilet": true,
+    "parking": false,
+    "name": "大津川河口",
+    "toiletText": "有り",
+    "parkingText": "無し（路上駐車　駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "青物,根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/大津川水銀灯",
+    "toilet": false,
+    "parking": false,
+    "name": "大津川水銀灯",
+    "toiletText": "無し",
+    "parkingText": "無し（路上駐車　駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/ホクシン前",
+    "toilet": false,
+    "parking": false,
+    "name": "ホクシン前",
+    "toiletText": "無し",
+    "parkingText": "無し（路上駐車　駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/阪南港木材整理場",
+    "toilet": false,
+    "parking": false,
+    "name": "阪南港木材整理場",
+    "toiletText": "無し",
+    "parkingText": "無し（路上駐車だが駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/岸和田渡船",
+    "toilet": null,
+    "parking": null,
+    "name": "岸和田渡船",
+    "fish": "ショアジギング,青物,カレイ釣り,根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/貝塚人工島",
+    "toilet": false,
+    "parking": true,
+    "name": "貝塚人工島",
+    "toiletText": "無し（国華園が近くにある、二色の浜海浜公園のトイレを利用）",
+    "parkingText": "有り（無料）",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "カレイ釣り,根魚狙い,青物",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "tsuriba.info"
+    ],
+    "address": "大阪府貝塚市二色南町、二色中町、二色北町",
+    "notes": "北波止など一部が釣り禁止画。夜間は車両進入禁止時間帯あり。標識に従うこと"
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/貝塚港",
+    "toilet": false,
+    "parking": true,
+    "name": "貝塚港",
+    "toiletText": "無し",
+    "parkingText": "有り（横付け）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/泉佐野食品コンビナート１",
+    "toilet": true,
+    "parking": true,
+    "name": "泉佐野食品コンビナート１",
+    "toiletText": "有り",
+    "parkingText": "有り（横付け）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "カレイ釣り,根魚狙い,青物",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/泉佐野食品コンビナート２",
+    "toilet": false,
+    "parking": true,
+    "name": "泉佐野食品コンビナート２",
+    "toiletText": "無し",
+    "parkingText": "有り（横付け）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "カレイ釣り,根魚狙い,青物",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%B0%8F%E5%B3%B6%E6%BC%81%E6%B8%AF",
+    "toilet": true,
+    "parking": true,
+    "name": "小島漁港",
+    "toiletText": "有り",
+    "parkingText": "有り（有料　６００円）領収書10枚で次回駐車料無料",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "根魚狙い,青物,イカ釣り,ショアジギング",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com",
+      "tsuriba.info"
+    ],
+    "address": "大阪府泉南郡岬町多奈川小島",
+    "notes": "作業エリアや立入禁止表示のある岸壁では釣り不可"
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/深日港",
+    "toilet": true,
+    "parking": true,
+    "name": "深日港",
+    "toiletText": "湾内に有り",
+    "parkingText": "有り（無料）",
+    "carAccess": false,
+    "fence": "無し",
+    "fish": "イカ釣り,カレイ釣り,根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/みさき公園裏",
+    "toilet": true,
+    "parking": false,
+    "name": "みさき公園裏",
+    "toiletText": "有り",
+    "parkingText": "無し（路上の路肩駐車だが駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "カレイ釣り,イカ釣り,根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/樽井漁港",
+    "toilet": true,
+    "parking": false,
+    "name": "樽井漁港",
+    "toiletText": "漁港内での釣りも可能だが、車の乗り入れはできない",
+    "parkingText": "無し（路上駐車だが駐車禁止では無い）",
+    "carAccess": true,
+    "fence": "無し",
+    "fish": "カレイ釣り,根魚狙い,イカ釣り",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com",
+      "tsuriba.info"
+    ],
+    "address": "大阪府泉南市りんくう南浜",
+    "notes": "立入禁止エリアあり。現地掲示に従うこと。隣接のサザンビーチは釣り禁止"
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/マリーナシティ",
+    "toilet": null,
+    "parking": true,
+    "name": "マリーナシティ",
+    "toiletText": "駐車場の入口の風景",
+    "parkingText": "有り（１回あたり５００円で駐車できる）",
+    "carAccess": true,
+    "fence": "有り（沖向きは、大人の腰位までのコンクリート壁がある。",
+    "fish": "根魚狙い",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/南芦屋浜ベランダ",
+    "toilet": true,
+    "parking": true,
+    "name": "南芦屋浜ベランダ",
+    "toiletText": "有り",
+    "parkingText": "駐車料金：３０分１００円（３０分以内無料）最大料金設定なし",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "青物",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.大阪湾の釣り.com/entry/鳴尾浜臨海公園海釣り広場",
+    "toilet": true,
+    "parking": true,
+    "name": "鳴尾浜臨海公園海釣り広場",
+    "toiletText": "有り",
+    "parkingText": "有り（有料）",
+    "carAccess": true,
+    "fence": "有り（低いので小さなお子様は注意）",
+    "fish": "青物",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.xn--u9jwc554om3rqo4bwmf.com/entry/%E7%A5%9E%E6%88%B8%E7%A9%BA%E6%B8%AF",
+    "toilet": true,
+    "parking": true,
+    "name": "神戸空港",
+    "toiletText": "有り（ベイシャトルターミナル営業時間中は利用可能）",
+    "parkingText": "有り（周辺は駐車禁止になる）２４時間入出庫可能",
+    "carAccess": true,
+    "fence": "有り",
+    "fish": "ショアジギング,青物,イカ釣り,カレイ釣り",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%83%9D%E3%83%BC%E3%83%88%E3%82%A2%E3%82%A4%E3%83%A9%E3%83%B3%E3%83%89%E5%8C%97%E5%85%AC%E5%9C%92",
+    "toilet": null,
+    "parking": null,
+    "name": "ポートアイランド北公園",
+    "fish": "",
+    "hasBanInfo": false,
+    "sources": [
+      "大阪湾の釣り.com",
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E8%8A%B1%E5%B8%82%E5%A0%B4%E5%89%8D",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/花市場前",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%81%AA%E3%81%8E%E3%81%95%E5%85%AC%E5%9C%92",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/なぎさ公園",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%A4%A7%E6%B4%A5%E5%B7%9D%E6%B2%B3%E5%8F%A3",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/大津川河口",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%A4%A7%E9%98%AA%E5%8D%97%E6%B8%AF%E9%AD%9A%E3%81%A4%E3%82%8A%E5%9C%92%E8%AD%B7%E5%B2%B8",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/大阪南港魚つり園護岸",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E6%B5%B7%E3%81%A8%E3%81%AE%E3%81%B5%E3%82%8C%E3%81%82%E3%81%84%E5%BA%83%E5%A0%B4",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/海とのふれあい広場",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%82%B7%E3%83%BC%E3%82%B5%E3%82%A4%E3%83%89%E3%82%B3%E3%82%B9%E3%83%A2",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/シーサイドコスモ",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%A4%A2%E8%88%9E%E5%A4%A7%E6%A9%8B%E4%B8%8B",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/夢舞大橋下",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%A4%A7%E6%B5%9C%E5%9F%A0%E9%A0%AD",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/大浜埠頭",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%B0%8F%E5%B3%B6%E6%BC%81%E6%B8%AF",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/小島漁港",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E7%A5%9E%E6%88%B8%E7%A9%BA%E6%B8%AF",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/神戸空港",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E9%B3%B4%E5%B0%BE%E6%B5%9C%E8%87%A8%E6%B5%B7%E5%85%AC%E5%9C%92%E6%B5%B7%E9%87%A3%E3%82%8A%E5%BA%83%E5%A0%B4",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/鳴尾浜臨海公園海釣り広場",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%8D%97%E8%8A%A6%E5%B1%8B%E6%B5%9C%E3%83%99%E3%83%A9%E3%83%B3%E3%83%80",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/南芦屋浜ベランダ",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E6%A8%BD%E4%BA%95%E6%BC%81%E6%B8%AF",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/樽井漁港",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%81%BF%E3%81%95%E3%81%8D%E5%85%AC%E5%9C%92%E8%A3%8F",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/みさき公園裏",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E6%B7%B1%E6%97%A5%E6%B8%AF",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/深日港",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%83%9E%E3%83%AA%E3%83%BC%E3%83%8A%E3%82%B7%E3%83%86%E3%82%A3",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/マリーナシティ",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E6%B3%89%E4%BD%90%E9%87%8E%E9%A3%9F%E5%93%81%E3%82%B3%E3%83%B3%E3%83%93%E3%83%8A%E3%83%BC%E3%83%88%EF%BC%91",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/泉佐野食品コンビナート１",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%8A%A9%E6%9D%BE%E5%9F%A0%E9%A0%AD%E5%80%89%E5%BA%AB%E5%89%8D%EF%BC%91",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/助松埠頭倉庫前１",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%8A%A9%E6%9D%BE%E5%9F%A0%E9%A0%AD%E5%80%89%E5%BA%AB%E5%89%8D%EF%BC%92",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/助松埠頭倉庫前２",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E6%B1%90%E8%A6%8B%E5%9F%A0%E9%A0%AD%E7%A0%82%E4%B8%8A%E3%81%92%E5%A0%B4",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/汐見埠頭砂上げ場",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%B8%B8%E5%90%89%E5%A4%A7%E6%A9%8B%E4%B8%8B",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/常吉大橋下",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E6%B3%89%E4%BD%90%E9%87%8E%E9%A3%9F%E5%93%81%E3%82%B3%E3%83%B3%E3%83%93%E3%83%8A%E3%83%BC%E3%83%88%EF%BC%92",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/泉佐野食品コンビナート２",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E8%B2%9D%E5%A1%9A%E6%B8%AF",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/貝塚港",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%A4%A7%E6%B4%A5%E5%B7%9D%E5%B0%BB",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/大津川尻",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%A4%A7%E6%B4%A5%E5%B7%9D%E6%B0%B4%E9%8A%80%E7%81%AF",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/大津川水銀灯",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%81%8B%E3%82%82%E3%82%81%E5%A4%A7%E6%A9%8B%E4%B8%8B",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/かもめ大橋下",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%8D%97%E6%B8%AF%E5%A4%A7%E6%A9%8B%E4%B8%8B",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/南港大橋下",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E3%83%9B%E3%82%AF%E3%82%B7%E3%83%B3%E5%89%8D",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/ホクシン前",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E5%B2%B8%E5%92%8C%E7%94%B0%E6%B8%A1%E8%88%B9",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/岸和田渡船",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "大阪湾の釣り.com",
+    "url": "https://b.hatena.ne.jp/entry/s/www.xn--u9jwc554om3rqo4bwmf.com/entry/%E9%98%AA%E5%8D%97%E6%B8%AF%E6%9C%A8%E6%9D%90%E6%95%B4%E7%90%86%E5%A0%B4",
+    "toilet": null,
+    "parking": null,
+    "name": "s/www.xn--u9jwc554om3rqo4bwmf.com/entry/阪南港木材整理場",
+    "sources": [
+      "大阪湾の釣り.com"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/378",
+    "name": "とっとパーク小島",
+    "address": "大阪府泉南郡岬町多奈川小島",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "大人1500円、小人750円。竿は1人2本までなど。天候により臨時休園あり",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/375",
+    "name": "泉佐野食品コンビナート",
+    "address": "大阪府泉佐野市住吉町",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "周辺は物流・工場エリアで立入禁止箇所が多い。看板・フェンスの指示に従うこと",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/373",
+    "name": "泉大津人工島",
+    "address": "大阪府泉大津市小津島町",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "夜間は立入禁止。21時〜5時は車の進入禁止。現地の規制に従う",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1276",
+    "name": "泉佐野・りんくう公園裏テトラ",
+    "address": "大阪府泉佐野市りんくう往来北",
+    "parkingText": "あり（有料） 400円",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "駐車場は1時間400円で、1時間ごとに＋100円。",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1275",
+    "name": "泉佐野・前島（旧フェリー乗り場）",
+    "address": "大阪府泉佐野市りんくう往来北",
+    "parkingText": "なし",
+    "parking": false,
+    "toiletText": "なし",
+    "toilet": false,
+    "notes": "駐車禁止の取締りが厳しいので注意。",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/377",
+    "name": "海釣ポート田尻",
+    "address": "大阪府泉南郡田尻町りんくうポート北",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "1日コース11000円（女性・子供は5500円）、半日コース5250円。釣り竿1本までなど。混雑時は整理券配布の場合あり",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1867",
+    "name": "大阪海上釣り堀サザン",
+    "address": "大阪府泉南市りんくう南浜2-202 樽井漁業協同組合",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "釣り竿3m以下、釣り竿1本・針1本まで、マキエサ・サビキ・ルアー・紀州釣り禁止など",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/362",
+    "name": "大阪南港魚つり園",
+    "address": "大阪府大阪市住之江区南港南",
+    "parkingText": "あり（有料） 800円",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "竿は1人2本まで、投げ釣り禁止など",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/500",
+    "name": "岡田浦漁港",
+    "address": "大阪府泉南市岡田、りんくう南浜",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "立入禁止の区画あり。係留船付近やロープ周りは作業の妨げになるため現地の掲示に従う",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1277",
+    "name": "尾崎漁港",
+    "address": "大阪府阪南市尾崎町",
+    "parkingText": "あり（有料） 500円",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "--",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1866",
+    "name": "海上釣り堀オーパ",
+    "address": "大阪府泉南郡岬町多奈川谷川3821",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "釣り竿1本・針1本まで、マキエサ・疑似餌・ルアー禁止など",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1864",
+    "name": "海上釣り堀 岬",
+    "address": "大阪府泉南郡岬町深日2917",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "釣り竿1本・釣り針1本まで、マキエサ・紀州ダンゴ・ルアー・疑似餌禁止など",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/484",
+    "name": "観音崎・谷川港",
+    "address": "大阪府泉南郡岬町多奈川谷川",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "立入禁止エリアあり。現地掲示に従うこと",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1865",
+    "name": "小島養漁場",
+    "address": "大阪府泉南郡岬町多奈川小島815",
+    "parkingText": "あり（無料）",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "釣り竿1人1本まで、竿ケース持込禁止、カゴ釣り禁止など。タモは各自持参すること",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/374",
+    "name": "汐見公園",
+    "address": "大阪府泉大津市汐見町",
+    "parkingText": "なし",
+    "parking": false,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "立入禁止エリアあり。園内の指示・掲示に従うこと",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/1279",
+    "name": "下荘漁港",
+    "address": "大阪府阪南市箱作",
+    "parkingText": "あり（有料） 1000円",
+    "parking": true,
+    "toiletText": "不明",
+    "toilet": true,
+    "notes": "--",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/2331",
+    "name": "食品コンビナート",
+    "address": "大阪府泉佐野市住吉町",
+    "parkingText": "不明",
+    "parking": true,
+    "toiletText": "不明",
+    "toilet": true,
+    "notes": "--",
+    "sources": [
+      "tsuriba.info"
+    ]
+  },
+  {
+    "source": "tsuriba.info",
+    "url": "https://tsuriba.info/spot/735",
+    "name": "せんなん里海公園",
+    "address": "大阪府泉南郡岬町淡輪、阪南市箱作",
+    "parkingText": "あり（有料） 600円",
+    "parking": true,
+    "toiletText": "あり",
+    "toilet": true,
+    "notes": "7、8月は駐車料金が1日1200円となる",
+    "sources": [
+      "tsuriba.info"
+    ]
+  }
+]

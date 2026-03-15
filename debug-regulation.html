@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>規制データ確認</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .banned { background: #ffcccc; }
+    .caution { background: #fff3cc; }
+    .area { background: #cce5ff; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #eee; }
+  </style>
+</head>
+<body>
+  <h1>規制データ確認</h1>
+  <div id="output"></div>
+
+  <script src="js/regulation-data.js"></script>
+  <script src="js/ports-data.js"></script>
+  <script>
+    // PORTS配列からindex→名前の変換
+    const out = document.getElementById('output');
+
+    // banned
+    let html = '<h2>🚫 banned（ランキング除外）' + 
+               REGULATION_DATA.banned.length + '件</h2>';
+    html += '<table><tr><th>portIndex</th><th>スポット名</th>' +
+            '<th>市区町村</th><th>都道府県</th></tr>';
+    REGULATION_DATA.banned.forEach(idx => {
+      const p = PORTS[idx];
+      html += `<tr class="banned"><td>${idx}</td>
+               <td>${p ? p[0] : '不明'}</td>
+               <td>${p ? p[1] : ''}</td>
+               <td>${p ? p[2] : ''}</td></tr>`;
+    });
+    html += '</table>';
+
+    // caution
+    html += '<h2>⚠️ caution（要注意表示）' + 
+            REGULATION_DATA.caution.length + '件</h2>';
+    html += '<table><tr><th>portIndex</th><th>スポット名</th>' +
+            '<th>市区町村</th><th>都道府県</th></tr>';
+    REGULATION_DATA.caution.forEach(idx => {
+      const p = PORTS[idx];
+      html += `<tr class="caution"><td>${idx}</td>
+               <td>${p ? p[0] : '不明'}</td>
+               <td>${p ? p[1] : ''}</td>
+               <td>${p ? p[2] : ''}</td></tr>`;
+    });
+    html += '</table>';
+
+    // areaWarning
+    html += '<h2>🔍 areaWarning（エリア警告）' + 
+            REGULATION_DATA.areaWarning.length + '件</h2>';
+    html += '<table><tr><th>portIndex</th><th>スポット名</th>' +
+            '<th>市区町村</th><th>都道府県</th></tr>';
+    REGULATION_DATA.areaWarning.forEach(idx => {
+      const p = PORTS[idx];
+      html += `<tr class="area"><td>${idx}</td>
+               <td>${p ? p[0] : '不明'}</td>
+               <td>${p ? p[1] : ''}</td>
+               <td>${p ? p[2] : ''}</td></tr>`;
+    });
+    html += '</table>';
+
+    out.innerHTML = html;
+  </script>
+</body>
+</html>
