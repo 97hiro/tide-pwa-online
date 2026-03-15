@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'tidegraph-theory-v74';
+const CACHE_VERSION = 'tidegraph-theory-v76';
 
 // プリキャッシュ対象（オフライン用）
 const STATIC_ASSETS = [
@@ -12,11 +12,12 @@ const STATIC_ASSETS = [
   './js/fish-profiles.js?v=74',
   './js/fish-score.js?v=74',
   './js/chart.js?v=74',
-  './js/ui.js?v=74',
+  './js/ui.js?v=76',
   './js/nearby.js?v=74',
   './js/regulation-data.js?v=74',
-  './js/ranking.js?v=74',
-  './js/app.js?v=74',
+  './js/spot-info.js?v=76',
+  './js/ranking.js?v=76',
+  './js/app.js?v=76',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

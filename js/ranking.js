@@ -201,6 +201,7 @@ const Ranking = (() => {
 
   function isBanned(portIndex) {
     if (REG.banned.includes(portIndex)) return true;
+    if (typeof SpotInfo !== 'undefined' && SpotInfo.isBanned(portIndex)) return true;
     const p = PORTS[portIndex];
     return p && p[15] === true; // hasBanInfo
   }
@@ -388,6 +389,17 @@ const Ranking = (() => {
     if (parking === true) parts.push('🅿✅');
     else if (parking === false) parts.push('🅿❌');
     if (ban === true) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔釣り禁止情報あり</span>');
+    // SpotInfo連携: クローラさんの情報でアイコン補完
+    if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
+      const si = SpotInfo.getByIndex(portIndex);
+      if (si) {
+        if (si.is_banned && !ban) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
+        if (si.parking && parking === undefined && parking !== true && parking !== false) parts.push('🅿');
+        if (si.toilet && toilet === undefined && toilet !== true && toilet !== false) {
+          parts.push(si.toilet === 'なし' ? '🚻❌' : '🚻');
+        }
+      }
+    }
     return parts.length > 0 ? `<div class="ranking-facility">${parts.join(' ')}</div>` : '';
   }
 

@@ -128,8 +128,13 @@ const UI = (() => {
         if (p[14] === true) parts.push('🅿\uFE0F✅');
         else if (p[14] === false) parts.push('🅿\uFE0F❌');
         if (p[15] === true) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔釣り禁止情報あり</span>');
-        facilityEl.innerHTML = parts.join(' ');
-        facilityEl.style.display = parts.length > 0 ? '' : 'none';
+        // SpotInfo連携: クローラさんの詳細情報を追加
+        let spotDetail = '';
+        if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
+          spotDetail = SpotInfo.renderDetail(portIndex);
+        }
+        facilityEl.innerHTML = parts.join(' ') + spotDetail;
+        facilityEl.style.display = (parts.length > 0 || spotDetail) ? '' : 'none';
       } else {
         facilityEl.innerHTML = '';
         facilityEl.style.display = 'none';
@@ -472,6 +477,15 @@ const UI = (() => {
     if (port[14] === true) fc.push('🅿\uFE0F✅');
     else if (port[14] === false) fc.push('🅿\uFE0F❌');
     if (port[15] === true) fc.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
+    // SpotInfo連携: クローラさんの情報でアイコン補完
+    if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
+      const si = SpotInfo.getByIndex(portIndex);
+      if (si) {
+        if (si.is_banned && port[15] !== true) fc.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
+        if (si.parking && port[14] === undefined) fc.push('🅿\uFE0F');
+        if (si.toilet && port[13] === undefined) fc.push(si.toilet === 'なし' ? '🚻❌' : '🚻');
+      }
+    }
     const facilityStr = fc.length > 0 ? `<span class="port-item-facility">${fc.join(' ')}</span>` : '';
     item.innerHTML = `
       <div>

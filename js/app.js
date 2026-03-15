@@ -454,6 +454,13 @@ const App = (() => {
     loadState();
     showDisclaimer();
 
+    // SpotInfo: クローラさん連携データ読み込み（完了後にUI再描画）
+    if (typeof SpotInfo !== 'undefined') {
+      SpotInfo.init().then(() => {
+        if (SpotInfo.isLoaded()) updateUI();
+      }).catch(() => {});
+    }
+
     // イベントリスナー
     document.getElementById('openPortSelect').addEventListener('click', UI.openPortModal);
     document.getElementById('modalOverlay').addEventListener('click', UI.closePortModal);
