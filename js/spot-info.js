@@ -66,16 +66,22 @@ const SpotInfo = (() => {
     const toilet = port[13];
     const siToilet = info && info.toilet;
     if (toilet === true || (siToilet && siToilet !== 'なし')) {
-      html += `<span class="spot-bar-btn" title="トイレあり">🚻○</span>`;
+      html += `<span class="spot-bar-btn" title="トイレあり">🚻✅</span>`;
     } else if (toilet === false || (siToilet && siToilet === 'なし')) {
-      html += `<span class="spot-bar-btn" title="トイレなし" style="opacity:0.5">🚻✕</span>`;
+      html += `<span class="spot-bar-btn" title="トイレなし" style="opacity:0.5">🚻❌</span>`;
+    } else {
+      html += `<span class="spot-bar-btn" title="トイレ情報なし" style="opacity:0.4">🚻－</span>`;
     }
 
     // 🅿 駐車場
     const parking = port[14];
     const siParking = info && info.parking;
-    if (parking === true || siParking) {
-      html += `<span class="spot-bar-btn" title="駐車場あり">🅿○</span>`;
+    if (parking === true || (siParking && siParking !== 'なし')) {
+      html += `<span class="spot-bar-btn" title="駐車場あり">🅿️✅</span>`;
+    } else if (parking === false || (siParking && siParking === 'なし')) {
+      html += `<span class="spot-bar-btn" title="駐車場なし" style="opacity:0.5">🅿️❌</span>`;
+    } else {
+      html += `<span class="spot-bar-btn" title="駐車場情報なし" style="opacity:0.4">🅿️－</span>`;
     }
 
     html += '<span class="spot-bar-sep"></span>';
@@ -143,16 +149,14 @@ const SpotInfo = (() => {
     }
 
     // 駐車場
-    const parking = (info && info.parking) || (port[14] === true ? 'あり' : port[14] === false ? 'なし' : '');
-    if (parking) {
-      html += '<div class="spot-popup-row"><span class="sp-label">🅿 駐車場</span><span class="sp-value">' + _esc(parking) + '</span></div>';
-    }
+    const parkingRaw = (info && info.parking) || (port[14] === true ? 'あり' : port[14] === false ? 'なし' : '');
+    const parkingIcon = parkingRaw && parkingRaw !== 'なし' ? '🅿️✅' : parkingRaw === 'なし' ? '🅿️❌' : '🅿️－';
+    html += '<div class="spot-popup-row"><span class="sp-label">' + parkingIcon + ' 駐車場</span><span class="sp-value">' + (parkingRaw ? _esc(parkingRaw) : '情報なし') + '</span></div>';
 
     // トイレ
-    const toilet = (info && info.toilet) || (port[13] === true ? 'あり' : port[13] === false ? 'なし' : '');
-    if (toilet) {
-      html += '<div class="spot-popup-row"><span class="sp-label">🚻 トイレ</span><span class="sp-value">' + _esc(toilet) + '</span></div>';
-    }
+    const toiletRaw = (info && info.toilet) || (port[13] === true ? 'あり' : port[13] === false ? 'なし' : '');
+    const toiletIcon = toiletRaw && toiletRaw !== 'なし' ? '🚻✅' : toiletRaw === 'なし' ? '🚻❌' : '🚻－';
+    html += '<div class="spot-popup-row"><span class="sp-label">' + toiletIcon + ' トイレ</span><span class="sp-value">' + (toiletRaw ? _esc(toiletRaw) : '情報なし') + '</span></div>';
 
     // アクセス
     if (info && info.access) {
@@ -189,8 +193,10 @@ const SpotInfo = (() => {
     const parts = [];
     if (info.is_banned) parts.push('<span style="color:#e74c5e">⛔</span>');
     else if (info.has_restriction) parts.push('<span style="color:#f0a030" title="' + _esc((info.restriction_reason || '').substring(0, 80)) + '">▲</span>');
-    if (info.parking) parts.push('🅿');
-    if (info.toilet && info.toilet !== 'なし') parts.push('🚻');
+    if (info.parking && info.parking !== 'なし') parts.push('🅿️✅');
+    else if (info.parking === 'なし') parts.push('🅿️❌');
+    if (info.toilet && info.toilet !== 'なし') parts.push('🚻✅');
+    else if (info.toilet === 'なし') parts.push('🚻❌');
     return parts.join('');
   }
 

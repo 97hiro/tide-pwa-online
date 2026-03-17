@@ -380,25 +380,36 @@ const Ranking = (() => {
   function facilityHtml(portIndex) {
     const p = PORTS[portIndex];
     if (!p) return '';
-    const toilet = p[13];
-    const parking = p[14];
+    let toilet = p[13];
+    let parking = p[14];
     const ban = p[15];
+    // SpotInfo連携: クローラの情報で補完
+    if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
+      const si = SpotInfo.getByIndex(portIndex);
+      if (si) {
+        if (toilet === undefined || toilet === null) {
+          if (si.toilet && si.toilet !== 'なし') toilet = true;
+          else if (si.toilet === 'なし') toilet = false;
+        }
+        if (parking === undefined || parking === null) {
+          if (si.parking && si.parking !== 'なし') parking = true;
+          else if (si.parking === 'なし') parking = false;
+        }
+      }
+    }
     const parts = [];
     if (toilet === true) parts.push('🚻✅');
     else if (toilet === false) parts.push('🚻❌');
-    if (parking === true) parts.push('🅿✅');
-    else if (parking === false) parts.push('🅿❌');
+    else parts.push('<span style="opacity:0.4">🚻－</span>');
+    if (parking === true) parts.push('🅿️✅');
+    else if (parking === false) parts.push('🅿️❌');
+    else parts.push('<span style="opacity:0.4">🅿️－</span>');
     if (ban === true) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔釣り禁止情報あり</span>');
-    // SpotInfo連携: クローラさんの情報でアイコン補完
     if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
       const si = SpotInfo.getByIndex(portIndex);
       if (si) {
         if (si.is_banned && !ban) parts.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
         else if (si.has_restriction && !ban) parts.push('<span style="color:#f0a030;font-weight:bold" title="' + (si.restriction_reason || '').replace(/"/g, '&quot;').substring(0, 80) + '">▲制限</span>');
-        if (si.parking && parking === undefined && parking !== true && parking !== false) parts.push('🅿');
-        if (si.toilet && toilet === undefined && toilet !== true && toilet !== false) {
-          parts.push(si.toilet === 'なし' ? '🚻❌' : '🚻');
-        }
       }
     }
     return parts.length > 0 ? `<div class="ranking-facility">${parts.join(' ')}</div>` : '';

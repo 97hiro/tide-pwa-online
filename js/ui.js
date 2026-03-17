@@ -455,20 +455,35 @@ const UI = (() => {
     const iconPrefix = typeIcon ? typeIcon + ' ' : '';
     const item = document.createElement('div');
     item.className = 'port-item';
+    let _toilet = port[13];
+    let _parking = port[14];
+    // SpotInfo連携: クローラの情報で補完
+    if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
+      const si = SpotInfo.getByIndex(portIndex);
+      if (si) {
+        if (_toilet === undefined || _toilet === null) {
+          if (si.toilet && si.toilet !== 'なし') _toilet = true;
+          else if (si.toilet === 'なし') _toilet = false;
+        }
+        if (_parking === undefined || _parking === null) {
+          if (si.parking && si.parking !== 'なし') _parking = true;
+          else if (si.parking === 'なし') _parking = false;
+        }
+      }
+    }
     const fc = [];
-    if (port[13] === true) fc.push('🚻✅');
-    else if (port[13] === false) fc.push('🚻❌');
-    if (port[14] === true) fc.push('🅿\uFE0F✅');
-    else if (port[14] === false) fc.push('🅿\uFE0F❌');
+    if (_toilet === true) fc.push('🚻✅');
+    else if (_toilet === false) fc.push('🚻❌');
+    else fc.push('<span style="opacity:0.4">🚻－</span>');
+    if (_parking === true) fc.push('🅿️✅');
+    else if (_parking === false) fc.push('🅿️❌');
+    else fc.push('<span style="opacity:0.4">🅿️－</span>');
     if (port[15] === true) fc.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
-    // SpotInfo連携: クローラさんの情報でアイコン補完
     if (typeof SpotInfo !== 'undefined' && SpotInfo.isLoaded()) {
       const si = SpotInfo.getByIndex(portIndex);
       if (si) {
         if (si.is_banned && port[15] !== true) fc.push('<span style="color:#e74c5e;font-weight:bold">⛔禁止</span>');
         else if (si.has_restriction && port[15] !== true) fc.push('<span style="color:#f0a030;font-weight:bold">▲制限</span>');
-        if (si.parking && port[14] === undefined) fc.push('🅿\uFE0F');
-        if (si.toilet && port[13] === undefined) fc.push(si.toilet === 'なし' ? '🚻❌' : '🚻');
       }
     }
     const facilityStr = fc.length > 0 ? `<span class="port-item-facility">${fc.join(' ')}</span>` : '';
