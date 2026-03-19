@@ -36,7 +36,7 @@ if ('serviceWorker' in navigator) {
 <title>タイドグラフ Theory - 釣り総合情報</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/style.css?v=95">
+<link rel="stylesheet" href="css/style.css">
 <style>
 /* fishBar スライダー制御方式 */
 #fishBar{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;overflow:hidden!important;gap:6px;padding:6px}
@@ -324,19 +324,19 @@ if ('serviceWorker' in navigator) {
 </div>
 
 <!-- ===== Scripts (load order matters) ===== -->
-<script src="js/ports-data.js?v=74"></script>
-<script src="js/tide-calc.js?v=74"></script>
-<script src="js/data-fetch.js?v=74"></script>
-<script src="js/theory-score.js?v=74"></script>
-<script src="js/fish-profiles.js?v=74"></script>
-<script src="js/fish-score.js?v=74"></script>
-<script src="js/chart.js?v=74"></script>
-<script src="js/ui.js?v=92"></script>
-<script src="js/regulation-data.js?v=74"></script>
-<script src="js/spot-info.js?v=92"></script>
-<script src="js/nearby.js?v=74"></script>
-<script src="js/ranking.js?v=92"></script>
-<script src="js/app.js?v=92"></script>
+<script src="js/ports-data.js"></script>
+<script src="js/tide-calc.js"></script>
+<script src="js/data-fetch.js"></script>
+<script src="js/theory-score.js"></script>
+<script src="js/fish-profiles.js"></script>
+<script src="js/fish-score.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/regulation-data.js"></script>
+<script src="js/spot-info.js"></script>
+<script src="js/nearby.js"></script>
+<script src="js/ranking.js"></script>
+<script src="js/app.js"></script>
 <script>
 // デバッグ：全モジュール読み込み確認
 console.log('[DEBUG] Nearby defined:', typeof Nearby);

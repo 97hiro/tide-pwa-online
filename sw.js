@@ -1,24 +1,24 @@
-// ※ git pushのたびにバージョンを+1すること（SWキャッシュ更新のため）
-const CACHE_VERSION = 'tidegraph-theory-v95';
+// CACHE_VERSIONはタイムスタンプベース（SW更新を自動検出）
+const CACHE_VERSION = 'tide-' + Date.now();
 
 // プリキャッシュ対象（オフライン用）
 const STATIC_ASSETS = [
   './',
   './index.html',
   './css/style.css',
-  './js/ports-data.js?v=74',
-  './js/tide-calc.js?v=74',
-  './js/data-fetch.js?v=74',
-  './js/theory-score.js?v=74',
-  './js/fish-profiles.js?v=74',
-  './js/fish-score.js?v=74',
-  './js/chart.js?v=74',
-  './js/ui.js?v=76',
-  './js/nearby.js?v=74',
-  './js/regulation-data.js?v=74',
-  './js/spot-info.js?v=76',
-  './js/ranking.js?v=76',
-  './js/app.js?v=76',
+  './js/ports-data.js',
+  './js/tide-calc.js',
+  './js/data-fetch.js',
+  './js/theory-score.js',
+  './js/fish-profiles.js',
+  './js/fish-score.js',
+  './js/chart.js',
+  './js/ui.js',
+  './js/nearby.js',
+  './js/regulation-data.js',
+  './js/spot-info.js',
+  './js/ranking.js',
+  './js/app.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
@@ -72,15 +72,20 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 全リクエスト: Network First（失敗時のみキャッシュ）
+  // クエリ文字列を除去してキャッシュキーを統一
+  const url = new URL(event.request.url);
+  url.search = '';
+  const cacheKey = url.toString();
+
   event.respondWith(
     fetch(event.request)
       .then(response => {
         if (response && response.status === 200) {
           const clone = response.clone();
-          caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
+          caches.open(CACHE_VERSION).then(cache => cache.put(cacheKey, clone));
         }
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => caches.match(cacheKey))
   );
 });
