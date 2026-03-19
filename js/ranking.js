@@ -293,7 +293,7 @@ const Ranking = (() => {
         windSpeed: wAt ? wAt.windSpeed : null,
         waveHeight, seaTemp, moonAge,
         minutesOfDay: min, sunTimes, spotType, shelter,
-        tideName
+        tideName, month: date.getMonth() + 1
       });
 
       if (result.total > bestScore) {
@@ -485,6 +485,8 @@ const Ranking = (() => {
         const idx = parseInt(row.dataset.portIndex);
         // 魚種別ランキングの場合は魚種IDを渡す
         const fishId = (currentFishMode && currentFishMode !== 'bestAll') ? currentFishMode : null;
+        // ランキングの日付をメイン画面に引き継ぐ
+        App.state.date = new Date(state.date.getTime());
         close();
         App.selectPort(idx, fishId);
       });
@@ -569,6 +571,8 @@ const Ranking = (() => {
       row.addEventListener('click', () => {
         const idx = parseInt(row.dataset.portIndex);
         const fishId = (currentFishMode2 && currentFishMode2 !== 'bestAll') ? currentFishMode2 : null;
+        // ランキングの日付をメイン画面に引き継ぐ
+        App.state.date = new Date(state.date.getTime());
         close();
         App.selectPort(idx, fishId);
       });
@@ -647,7 +651,11 @@ const Ranking = (() => {
 
   // ==================== モーダル制御 ====================
   function open() {
-    state.date = new Date(App.state.date.getTime());
+    // モーダルが既に表示中なら日付を維持、新規オープンならメイン画面の日付を使用
+    const modal = document.getElementById('rankingModal');
+    if (!modal || !modal.classList.contains('active')) {
+      state.date = new Date(App.state.date.getTime());
+    }
     state.areaFilter = 'all';
     state.timePeriod = 'best';
     state.fishMode = 'bestAll';
@@ -673,6 +681,9 @@ const Ranking = (() => {
     // モーダル表示
     document.getElementById('rankingOverlay').classList.add('active');
     document.getElementById('rankingModal').classList.add('active');
+
+    // スライダー初期化
+    initFishBarSlider();
 
     // 自動計算開始
     calculate();
@@ -728,11 +739,24 @@ const Ranking = (() => {
         calculate();
       });
     });
+
+    // 魚種バースライダー
+    const fishSlider = document.getElementById('fishBarSlider');
+    const fishBar = document.getElementById('fishBar');
+    if (fishSlider && fishBar) {
+      fishSlider.addEventListener('input', () => {
+        fishBar.scrollLeft = Number(fishSlider.value);
+      });
+    }
   }
 
   // 外部から魚種モードでランキング開く
   function openWithFish(fishId) {
-    state.date = new Date(App.state.date.getTime());
+    // モーダルが既に表示中なら日付を維持
+    const modal = document.getElementById('rankingModal');
+    if (!modal || !modal.classList.contains('active')) {
+      state.date = new Date(App.state.date.getTime());
+    }
     state.areaFilter = 'all';
     state.timePeriod = 'best';
     state.fishMode = fishId;
@@ -754,7 +778,21 @@ const Ranking = (() => {
     document.getElementById('rankingOverlay').classList.add('active');
     document.getElementById('rankingModal').classList.add('active');
 
+    // スライダー初期化
+    initFishBarSlider();
+
     calculate();
+  }
+
+  function initFishBarSlider() {
+    requestAnimationFrame(() => {
+      const bar = document.getElementById('fishBar');
+      const slider = document.getElementById('fishBarSlider');
+      if (!bar || !slider) return;
+      const maxScroll = bar.scrollWidth - bar.clientWidth;
+      slider.max = Math.max(0, maxScroll);
+      slider.value = bar.scrollLeft;
+    });
   }
 
   return { open, close, init, openWithFish };

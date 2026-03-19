@@ -1,5 +1,5 @@
 // ※ git pushのたびにバージョンを+1すること（SWキャッシュ更新のため）
-const CACHE_VERSION = 'tidegraph-theory-v92';
+const CACHE_VERSION = 'tidegraph-theory-v95';
 
 // プリキャッシュ対象（オフライン用）
 const STATIC_ASSETS = [
@@ -31,7 +31,17 @@ const STATIC_ASSETS = [
   './img/fish/aomono.png',
   './img/fish/tako.png',
   './img/fish/chinu.png',
-  './img/fish/madai.png'
+  './img/fish/madai.png',
+  './img/fish/gure.png',
+  './img/fish/kisu.png',
+  './img/fish/karei.png',
+  './img/fish/mebaru.png',
+  './img/fish/kamasu.png',
+  './img/fish/tachiuo.png',
+  './img/fish/sagoshi.png',
+  './img/fish/buri.png',
+  './img/fish/seabass.png',
+  './img/fish/kawahagi.png'
 ];
 
 // Install: 静的ファイルをプリキャッシュ

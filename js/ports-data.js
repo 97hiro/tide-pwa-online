@@ -245,64 +245,64 @@ const PORTS = [
   ["和歌山北港魚つり公園","和歌山市","wakayama",34.2303,135.1047,"wakayama",null,1,null,null,270,0.45,"park",true],
 
   // ==================== 大阪府 ==================== (大阪湾西向き、南へ行くほど開放的)
-  ["大阪港","大阪市","osaka",34.6536,135.4319,"osaka",null,1,"270000","270000",200,0.9,"port"],
+  ["大阪港","大阪市","osaka",34.6536,135.4319,"osaka",null,1,"270000","270000",200,0.9,"port",true],
   ["堺泉北港","堺市〜泉大津市","osaka",34.5941,135.3967,"osaka",null,1,"270000","270000",240,0.85,"port"],
-  ["堺出島漁港","堺市","osaka",34.5757,135.4578,"osaka",null,1,"270000","270000",230,0.8,"port"],
+  ["堺出島漁港","堺市","osaka",34.5757,135.4578,"osaka",null,1,"270000","270000",230,0.8,"port",null,true],
   ["石津漁港","堺市","osaka",34.5553,135.4259,"osaka",null,1,"270000","270000",240,0.8,"port"],
-  ["高石漁港","高石市","osaka",34.5299,135.4308,"osaka",null,1,"270000","270000",255,0.75,"port"],
-  ["忠岡港","忠岡町","osaka",34.489,135.3963,"osaka",null,1,"270000","270000",265,0.75,"port"], // 要確認: 座標
-  ["泉大津港","泉大津市","osaka",34.5061,135.3984,"osaka",null,1,"270000","270000",265,0.7,"port"], // 要確認: 座標
-  ["岸和田漁港","岸和田市","osaka",34.4662,135.3698,"osaka",null,1,"270000","270000",270,0.65,"port"], // 要確認: 座標
+  ["高石漁港","高石市","osaka",34.5299,135.4308,"osaka",null,1,"270000","270000",255,0.75,"port",true,true],
+  ["忠岡港","忠岡町","osaka",34.489,135.3963,"osaka",null,1,"270000","270000",265,0.75,"port",true,false], // 要確認: 座標
+  ["泉大津港","泉大津市","osaka",34.5061,135.3984,"osaka",null,1,"270000","270000",265,0.7,"port",true,true], // 要確認: 座標
+  ["岸和田漁港","岸和田市","osaka",34.4662,135.3698,"osaka",null,1,"270000","270000",270,0.65,"port",false], // 要確認: 座標
   ["貝塚港","貝塚市","osaka",34.4501,135.3379,"osaka",null,1,"270000","270000",270,0.6,"port",false,true,false], // 要確認: 座標
-  ["佐野漁港","泉佐野市","osaka",34.412,135.322,"osaka","wakayama",0.8,"270000","270000",275,0.55,"port"], // 要確認: 座標
-  ["田尻漁港","田尻町","osaka",34.4003,135.2887,"osaka","wakayama",0.75,"270000","270000",275,0.5,"port"], // 要確認: 座標
-  ["岡田漁港","泉南市","osaka",34.3896,135.2739,"osaka","wakayama",0.7,"270000","270000",280,0.45,"port"],
+  ["佐野漁港","泉佐野市","osaka",34.412,135.322,"osaka","wakayama",0.8,"270000","270000",275,0.55,"port",null,true], // 要確認: 座標
+  ["田尻漁港","田尻町","osaka",34.4003,135.2887,"osaka","wakayama",0.75,"270000","270000",275,0.5,"port",true,true], // 要確認: 座標
+  ["岡田漁港","泉南市","osaka",34.3896,135.2739,"osaka","wakayama",0.7,"270000","270000",280,0.45,"port",true,true],
   ["樽井漁港","泉南市","osaka",34.378,135.248,"osaka","wakayama",0.65,"270000","270000",285,0.4,"port",true,false,false],
-  ["西鳥取漁港","阪南市","osaka",34.3551,135.2295,"osaka","wakayama",0.6,"270000","270000",290,0.4,"port"],
+  ["西鳥取漁港","阪南市","osaka",34.3551,135.2295,"osaka","wakayama",0.6,"270000","270000",290,0.4,"port",false,true],
   ["下荘漁港","阪南市","osaka",34.3437,135.2073,"osaka","wakayama",0.55,"270000","270000",295,0.35,"port",true,true,false],
-  ["淡輪漁港","岬町","osaka",34.328,135.17,"osaka","wakayama",0.5,"270000","270000",310,0.35,"port"],
-  ["深日漁港","岬町","osaka",34.3197,135.1419,"osaka","wakayama",0.4,"270000","270000",169,0.3,"port"],
+  ["淡輪漁港","岬町","osaka",34.328,135.17,"osaka","wakayama",0.5,"270000","270000",310,0.35,"port",true,true],
+  ["深日漁港","岬町","osaka",34.3197,135.1419,"osaka","wakayama",0.4,"270000","270000",169,0.3,"port",true,true],
   ["小島漁港","岬町","osaka",34.31,135.13,"osaka","wakayama",0.35,"270000","270000",315,0.25,"port",true,true,false],
 
   // --- 大阪 新規: 波止 ---
   ["かもめ大橋","大阪市","osaka",34.6118,135.4213,"osaka",null,1,null,null,195,0.5,"pier",false,false,false], // 要確認: 座標
   ["シーサイドコスモ","大阪市","osaka",34.6386,135.4027,"osaka",null,1,null,null,185,0.55,"pier",true,true,false],
-  ["舞洲","大阪市","osaka",34.663,135.401,"osaka",null,1,null,null,175,0.5,"pier",null,null,false], // 要確認: 座標
+  ["舞洲","大阪市","osaka",34.663,135.401,"osaka",null,1,null,null,175,0.5,"pier",true,true,false], // 要確認: 座標
   ["汐見埠頭","泉大津市","osaka",34.505,135.375,"osaka",null,1,null,null,240,0.6,"pier",false,true,false],
   ["貝塚人工島","貝塚市","osaka",34.4557,135.3321,"osaka",null,1,null,null,270,0.45,"pier",false,true,false],
-  ["岸和田一文字","岸和田市","osaka",34.4863,135.3651,"osaka",null,1,null,null,270,0.25,"pier"],
+  ["岸和田一文字","岸和田市","osaka",34.4863,135.3651,"osaka",null,1,null,null,270,0.25,"pier",true],
   ["忠岡一文字","忠岡町","osaka",34.4931,135.3696,"osaka",null,1,null,null,260,0.25,"pier"],
   ["助松埠頭","泉大津市","osaka",34.5112,135.3812,"osaka",null,1,null,null,260,0.55,"pier",false,true,false],
   ["大浜埠頭","堺市","osaka",34.568,135.455,"osaka",null,1,null,null,225,0.6,"pier",true,true,false],
-  ["夢洲","大阪市","osaka",34.6529,135.3905,"osaka",null,1,null,null,200,0.5,"pier",null,null,false], // 要確認: 座標
-  ["咲洲","大阪市","osaka",34.63,135.42,"osaka",null,1,null,null,190,0.55,"pier"],
+  ["夢洲","大阪市","osaka",34.6529,135.3905,"osaka",null,1,null,null,200,0.5,"pier",null,true,false], // 要確認: 座標
+  ["咲洲","大阪市","osaka",34.63,135.42,"osaka",null,1,null,null,190,0.55,"pier",null,true],
   ["泉佐野食品コンビナート","泉佐野市","osaka",34.4311,135.3231,"osaka",null,1,null,null,280,0.5,"pier",true,true,false],
   ["りんくう公園","泉佐野市","osaka",34.4144,135.2937,"osaka",null,1,null,null,285,0.4,"pier",true,true,false],
-  ["岬公園","岬町","osaka",34.3321,135.1644,"osaka",null,1,null,null,225,0.35,"pier"],
+  ["岬公園","岬町","osaka",34.3321,135.1644,"osaka",null,1,null,null,225,0.35,"pier",true],
   ["多奈川護岸","岬町","osaka",34.3175,135.0801,"osaka",null,1,null,null,215,0.3,"pier"],
   ["平林貯木場","大阪市","osaka",34.6164,135.4561,"osaka",null,1,null,null,195,0.6,"pier",null,null,true],
   ["泉佐野旧港","泉佐野市","osaka",34.4144,135.2994,"osaka",null,1,null,null,275,0.55,"pier"],
   ["岸和田旧港","岸和田市","osaka",34.46,135.3717,"osaka",null,1,null,null,270,0.55,"pier"], // 要確認: 座標
-  ["大阪北港","大阪市","osaka",34.6678,135.4079,"osaka",null,1,null,null,175,0.55,"pier"], // 要確認: 座標
+  ["大阪北港","大阪市","osaka",34.6678,135.4079,"osaka",null,1,null,null,175,0.55,"pier",true,true], // 要確認: 座標
   // --- 大阪 新規: 釣り公園 ---
   ["大阪南港魚つり園","大阪市","osaka",34.6112,135.3934,"osaka",null,1,null,null,195,0.5,"park",true,true,false],
   ["とっとパーク小島","岬町","osaka",34.3164,135.0986,"osaka",null,1,null,null,215,0.35,"park",true,true,false],
 
   // --- 大阪 新規: 河口 ---
-  ["淀川河口","大阪市","osaka",34.6875,135.4184,"osaka",null,1,null,null,170,0.35,"river"],
-  ["大和川河口","堺市","osaka",34.595,135.468,"osaka",null,1,null,null,220,0.3,"river"],
+  ["淀川河口","大阪市","osaka",34.6875,135.4184,"osaka",null,1,null,null,170,0.35,"river",true,true],
+  ["大和川河口","堺市","osaka",34.595,135.468,"osaka",null,1,null,null,220,0.3,"river",null,true],
   ["石津川河口","堺市","osaka",34.5252,135.4708,"osaka",null,1,null,null,230,0.3,"river"],
   ["大津川河口","泉大津市","osaka",34.5015,135.3777,"osaka",null,1,null,null,260,0.3,"river",true,false,false],
   ["近木川河口","貝塚市","osaka",34.447,135.3014,"osaka",null,1,null,null,270,0.3,"river"],
   ["男里川河口","泉南市","osaka",34.3674,135.2513,"osaka",null,1,null,null,280,0.3,"river"],
-  ["樫井川河口","泉佐野市","osaka",34.3827,135.2324,"osaka",null,1,null,null,275,0.3,"river"],
+  ["樫井川河口","泉佐野市","osaka",34.3827,135.2324,"osaka",null,1,null,null,275,0.3,"river",true,true],
 
   // --- 大阪 新規: サーフ ---
-  ["りんくうビーチ","田尻町","osaka",34.3825,135.2645,"osaka",null,1,null,null,280,0.1,"surf"],
-  ["二色の浜","貝塚市","osaka",34.4335,135.3397,"osaka",null,1,null,null,270,0.1,"surf"], // 要確認: 座標
+  ["りんくうビーチ","田尻町","osaka",34.3825,135.2645,"osaka",null,1,null,null,280,0.1,"surf",true,true],
+  ["二色の浜","貝塚市","osaka",34.4335,135.3397,"osaka",null,1,null,null,270,0.1,"surf",true,true], // 要確認: 座標
   ["淡輪ビーチ","岬町","osaka",34.3367,135.1882,"osaka",null,1,null,null,310,0.1,"surf"], // 要確認: 座標
   ["箱作ビーチ","阪南市","osaka",34.3413,135.2008,"osaka",null,1,null,null,300,0.1,"surf"], // 要確認: 座標
-  ["泉南マーブルビーチ","泉南市","osaka",34.3845,135.2505,"osaka",null,1,null,null,285,0.1,"surf"],
+  ["泉南マーブルビーチ","泉南市","osaka",34.3845,135.2505,"osaka",null,1,null,null,285,0.1,"surf",true,true],
   // --- 大阪 新規: スクレイピング追加 ---
   ["南港大橋下","","osaka",34.6670632,135.5333073,"osaka",null,1,null,null,185,0.4,"port",false,false,false],
   ["常吉大橋下","","osaka",34.7368501,135.560202,"osaka",null,1,null,null,281,0,"pier",false,false,false],

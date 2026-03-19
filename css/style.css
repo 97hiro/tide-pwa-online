@@ -204,11 +204,65 @@ body {
   align-items: center;
   gap: 10px;
 }
+.score-ratings-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
 .score-ratings {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
   flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+}
+.fish-cycle-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.fish-cycle-btn {
+  width: 22px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+}
+.fish-cycle-btn:active { background: var(--bg-hover); }
+.fish-toggle-btn {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  font-size: 16px;
+  transition: border-color 0.15s;
+}
+.fish-toggle-btn img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.fish-toggle-btn.active {
+  border-color: var(--accent-cyan, #3ec6e0);
+  background: rgba(62, 198, 224, 0.10);
 }
 .score-rating-item {
   font-size: 11px;
@@ -752,6 +806,7 @@ body {
   z-index: 201;
   display: none;
   flex-direction: column;
+  overflow: hidden;
   transform: translateY(100%);
   transition: transform .3s ease;
 }
@@ -984,8 +1039,14 @@ body {
 .ranking-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding-bottom: var(--safe-bottom);
+}
+.ranking-content::-webkit-scrollbar {
+  display: none;
 }
 .ranking-placeholder {
   padding: 40px 16px;
@@ -1109,24 +1170,54 @@ body {
 }
 
 /* ===== Fish Bar (Ranking Modal) ===== */
-.fish-bar {
+#fishBar {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  overflow: hidden;
   gap: 6px;
-  padding: 6px 8px;
-  overflow-x: auto;
-  flex-shrink: 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  padding: 6px;
 }
-.fish-bar::-webkit-scrollbar { display: none; }
+.fish-bar-slider-row {
+  padding: 2px 12px 4px;
+  flex-shrink: 0;
+}
+.fish-bar-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border, #333);
+  outline: none;
+  cursor: pointer;
+}
+.fish-bar-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--accent-cyan, #3ec6e0);
+  cursor: pointer;
+}
+.fish-bar-slider::-moz-range-thumb {
+  width: 28px;
+  height: 14px;
+  border-radius: 7px;
+  background: var(--accent-cyan, #3ec6e0);
+  border: none;
+  cursor: pointer;
+}
 .fish-bar-item {
+  flex: 0 0 auto;
+  min-width: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 3px;
   width: 94px;
-  min-width: 94px;
   height: 144px;
   padding: 4px 2px;
   border: 2px solid var(--border);
@@ -1183,6 +1274,13 @@ body {
 /* ===== Fish Mini Scores (Main Screen) ===== */
 .fish-mini-scores {
   display: none;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  flex-wrap: wrap;
+}
+.fish-mini-scores.open {
+  display: flex;
 }
 .fish-mini-item {
   display: flex;
@@ -1194,6 +1292,12 @@ body {
   padding: 2px 6px;
   border-radius: 8px;
   background: rgba(255,255,255,0.04);
+  border: 1.5px solid transparent;
+  transition: border-color 0.15s;
+}
+.fish-mini-item.active {
+  border-color: var(--accent-cyan, #3ec6e0);
+  background: rgba(62, 198, 224, 0.10);
 }
 .fish-mini-item:active { background: var(--bg-hover); }
 .fish-mini-icon { font-size: 13px; }
@@ -1204,6 +1308,22 @@ body {
 .fish-mini-score.high {
   font-weight: 800;
 }
+.fish-mini-next {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+.fish-mini-next:active { background: var(--bg-hover); }
 
 /* ===== Disclaimer Modal ===== */
 .disclaimer-overlay {

@@ -52,7 +52,7 @@ const SpotInfo = (() => {
     if (!port) { bar.innerHTML = ''; return; }
 
     const info = getByIndex(portIndex);
-    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${port[3]},${port[4]}`;
+    const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(port[0])}`;
 
     let html = '';
 

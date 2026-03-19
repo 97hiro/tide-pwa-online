@@ -500,7 +500,7 @@ const UI = (() => {
   }
 
   // ==================== Fish Mini Scores ====================
-  function updateFishMiniScores(fishResults) {
+  function updateFishMiniScores(fishResults, selectedFish) {
     const el = document.getElementById('fishMiniScores');
     if (!el) return;
     if (!fishResults) { el.innerHTML = ''; return; }
@@ -512,14 +512,16 @@ const UI = (() => {
       const p = FISH_PROFILES[fishId];
       const c = FISH_COLORS[fishId] || '#aaa';
       const isHigh = r.total >= 80;
+      const isActive = selectedFish === fishId;
       const iconHtml = p.icon.endsWith('.png')
         ? `<img src="${p.icon}" alt="${p.name}" style="width:16px;height:16px;object-fit:contain;border-radius:3px">`
         : p.icon;
-      html += `<div class="fish-mini-item" data-fish="${fishId}">` +
+      html += `<div class="fish-mini-item${isActive ? ' active' : ''}" data-fish="${fishId}">` +
         `<span class="fish-mini-icon">${iconHtml}</span>` +
         `<span class="fish-mini-score${isHigh ? ' high' : ''}" style="color:${isHigh ? c : 'var(--text-secondary)'}">${r.total}</span>` +
         `</div>`;
     }
+    html += `<button class="fish-mini-next" id="fishMiniNext" title="次の魚種">&#8250;</button>`;
     el.innerHTML = html;
 
     el.querySelectorAll('.fish-mini-item').forEach(item => {
@@ -527,6 +529,14 @@ const UI = (() => {
         Ranking.openWithFish(item.dataset.fish);
       });
     });
+
+    const nextBtn = document.getElementById('fishMiniNext');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (typeof App !== 'undefined' && App.cycleFish) App.cycleFish(1);
+      });
+    }
   }
 
   // ==================== Nav Buttons ====================

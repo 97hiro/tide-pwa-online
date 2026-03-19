@@ -242,6 +242,44 @@ const FishScore = (() => {
       }
     }
 
+    // シーバス特有: 雨・濁りがプラス、澄み潮は減点
+    if (profile.seabassMode) {
+      if (params.isRainy) {
+        total += profile.rainBonus || 0;         // 雨時 +5
+        total += profile.turbidityBonus || 0;    // 濁り推定 +5
+      } else if (params.wasRainyYesterday) {
+        total += profile.turbidityBonus || 0;    // 前日雨→濁り残り +5
+      } else {
+        total -= 5;                               // 澄み潮ペナルティ
+      }
+    }
+
+    // タチウオ特有: 潮が緩い時間帯にヒット集中
+    if (profile.tachiuoMode && params.jiaiStatus) {
+      if (params.jiaiStatus === '潮止まり') total += 3;
+    }
+
+    // ブリ特有: 潮流が強い外洋で大幅加算
+    if (profile.buriMode) {
+      if (params.shelter != null && params.shelter <= 0.2 && params.flowRate != null && params.flowRate > 0.8) {
+        total += 5;
+      }
+    }
+
+    // スポットタイプ別ペナルティ（汎用）
+    if (profile.spotPenalty) {
+      const st = params.spotType || params.portType;
+      if (st && profile.spotPenalty[st]) {
+        total += profile.spotPenalty[st];
+      }
+    }
+    // キス特有: park追加ペナルティ（spotPenalty + kisuMode併用）
+    if (profile.kisuMode) {
+      const st = params.spotType || params.portType;
+      if (st === 'rock') total -= 25;
+      else if (st === 'park') total -= 15;
+    }
+
     // ==================== 汎用特有補正（7魚種共通ロジック） ====================
 
     // マズメボーナス (朝・夕マズメ時に加算)
@@ -310,6 +348,20 @@ const FishScore = (() => {
       if (params.seaTemp >= profile.tempBonus.threshold) {
         total += profile.tempBonus.bonus;
       }
+    }
+
+    // シーズン補正（season外ペナルティ、peakMonthsボーナス）
+    if (params.month && profile.season) {
+      if (!profile.season.includes(params.month)) {
+        total -= 25; // season外: 大幅ペナルティ
+      } else if (profile.peakMonths && profile.peakMonths.includes(params.month)) {
+        total += 5;  // peakMonth: ボーナス
+      }
+    }
+
+    // 魚種固有のスコア調整（全体レベル補正）
+    if (profile.scoreAdjust) {
+      total += profile.scoreAdjust;
     }
 
     total = Math.round(Math.min(100, Math.max(0, total)));

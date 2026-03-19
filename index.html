@@ -36,7 +36,12 @@ if ('serviceWorker' in navigator) {
 <title>タイドグラフ Theory - 釣り総合情報</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=95">
+<style>
+/* fishBar スライダー制御方式 */
+#fishBar{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;overflow:hidden!important;gap:6px;padding:6px}
+#fishBar .fish-bar-item{flex:0 0 auto!important;min-width:70px}
+</style>
 </head>
 <body>
 
@@ -96,7 +101,14 @@ if ('serviceWorker' in navigator) {
   </div>
   <div class="score-facility" id="scoreFacility"></div>
   <div class="jiai-status" id="jiaiStatus" style="display:none"></div>
-  <div class="score-ratings" id="scoreRatings"></div>
+  <div class="score-ratings-row">
+    <div class="score-ratings" id="scoreRatings"></div>
+    <div class="fish-cycle-group">
+      <button class="fish-cycle-btn" id="fishCyclePrev" title="前の魚種">&#8249;</button>
+      <button class="fish-toggle-btn" id="fishToggleBtn" title="魚種スコア">🎣</button>
+      <button class="fish-cycle-btn" id="fishCycleNext" title="次の魚種">&#8250;</button>
+    </div>
+  </div>
   <div class="fish-mini-scores" id="fishMiniScores"></div>
   <!-- Weather summary -->
   <div id="weatherInfo" style="margin-top:8px;display:flex;align-items:center;gap:8px;"></div>
@@ -273,11 +285,24 @@ if ('serviceWorker' in navigator) {
     <div class="fish-bar-item" data-fish="hirame"><img class="fish-bar-icon" src="img/fish/hirame.png" alt="ヒラメ"><span class="fish-bar-name">ヒラメ</span></div>
     <div class="fish-bar-item" data-fish="hata"><img class="fish-bar-icon" src="img/fish/hata.png" alt="ハタ"><span class="fish-bar-name">ハタ</span></div>
     <div class="fish-bar-item" data-fish="gasira"><img class="fish-bar-icon" src="img/fish/gasira.png" alt="ガシラ"><span class="fish-bar-name">ガシラ</span></div>
-    <div class="fish-bar-item" data-fish="aomono"><img class="fish-bar-icon" src="img/fish/aomono.png" alt="青物"><span class="fish-bar-name">青物</span></div>
+    <div class="fish-bar-item" data-fish="aomono"><img class="fish-bar-icon" src="img/fish/aomono.png" alt="カンパチ・ヒラマサ"><span class="fish-bar-name">カンパチ・ヒラマサ</span></div>
     <div class="fish-bar-item" data-fish="tako"><img class="fish-bar-icon" src="img/fish/tako.png" alt="タコ"><span class="fish-bar-name">タコ</span></div>
     <div class="fish-bar-item" data-fish="chinu"><img class="fish-bar-icon" src="img/fish/chinu.png" alt="チヌ"><span class="fish-bar-name">チヌ</span></div>
     <div class="fish-bar-item" data-fish="madai"><img class="fish-bar-icon" src="img/fish/madai.png" alt="マダイ"><span class="fish-bar-name">マダイ</span></div>
+    <div class="fish-bar-item" data-fish="gure"><img class="fish-bar-icon" src="img/fish/gure.png" alt="グレ"><span class="fish-bar-name">グレ</span></div>
+    <div class="fish-bar-item" data-fish="kisu"><img class="fish-bar-icon" src="img/fish/kisu.png" alt="キス"><span class="fish-bar-name">キス</span></div>
+    <div class="fish-bar-item" data-fish="karei"><img class="fish-bar-icon" src="img/fish/karei.png" alt="カレイ"><span class="fish-bar-name">カレイ</span></div>
+    <div class="fish-bar-item" data-fish="mebaru"><img class="fish-bar-icon" src="img/fish/mebaru.png" alt="メバル"><span class="fish-bar-name">メバル</span></div>
+    <div class="fish-bar-item" data-fish="kamasu"><img class="fish-bar-icon" src="img/fish/kamasu.png" alt="カマス"><span class="fish-bar-name">カマス</span></div>
+    <div class="fish-bar-item" data-fish="tachiuo"><img class="fish-bar-icon" src="img/fish/tachiuo.png" alt="タチウオ"><span class="fish-bar-name">タチウオ</span></div>
+    <div class="fish-bar-item" data-fish="sagoshi"><img class="fish-bar-icon" src="img/fish/sagoshi.png" alt="サゴシ"><span class="fish-bar-name">サゴシ</span></div>
+    <div class="fish-bar-item" data-fish="buri"><img class="fish-bar-icon" src="img/fish/buri.png" alt="ブリ・ハマチ"><span class="fish-bar-name">ブリ・ハマチ</span></div>
+    <div class="fish-bar-item" data-fish="seabass"><img class="fish-bar-icon" src="img/fish/seabass.png" alt="シーバス"><span class="fish-bar-name">シーバス</span></div>
+    <div class="fish-bar-item" data-fish="kawahagi"><img class="fish-bar-icon" src="img/fish/kawahagi.png" alt="カワハギ"><span class="fish-bar-name">カワハギ</span></div>
     <div class="fish-bar-item" data-fish="bestAll"><span class="fish-bar-emoji">&#127942;</span><span class="fish-bar-name">ベスト</span></div>
+  </div>
+  <div class="fish-bar-slider-row">
+    <input type="range" id="fishBarSlider" min="0" max="100" value="0" class="fish-bar-slider">
   </div>
   <div class="ranking-time-row">
     <button class="ranking-time-btn active" data-period="best">終日ベスト</button>

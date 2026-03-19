@@ -86,6 +86,16 @@ const App = (() => {
     aori:     ['潮止まり', '上げ三分'],
     hirame:   ['上げ七分', '下げ三分', '_morning'],
     gasira:   ['潮止まり', '下げ七分', '_latenight'],
+    gure:     ['上げ七分', '下げ三分', '_morning', '_evening'],
+    kisu:     ['上げ三分', '上げ潮中盤', '_morning'],
+    karei:    ['上げ三分', '下げ七分', '_morning'],
+    mebaru:   ['上げ三分', '下げ七分', '_night', '_evening'],
+    kamasu:   ['上げ七分', '下げ三分', '_morning', '_evening'],
+    tachiuo:  ['潮止まり', '上げ三分', '_night', '_evening'],
+    sagoshi:  ['上げ七分', '下げ三分', '_morning'],
+    buri:     ['上げ七分', '下げ三分', '_morning'],
+    seabass:  ['上げ三分', '上げ七分', '_night', '_evening'],
+    kawahagi: ['上げ潮中盤', '下げ潮中盤', '_morning'],
   };
 
   // 魚種別レインボースコア閾値
@@ -204,7 +214,8 @@ const App = (() => {
           seaTemp: seaTemp,
           jiaiStatus: flowInfo.jiaiStatus,
           flowRate: flowInfo.flowRate,
-          tideName: tideName
+          tideName: tideName,
+          month: d.getMonth() + 1
         });
         // jiaiStatusをTheoryScoreから流用（レインボー判定用）
         const theoryResult = TheoryScore.calcScore({
@@ -303,9 +314,9 @@ const App = (() => {
       moonAge, minutesOfDay, sunTimes,
       spotType: port[12] || 'port',
       shelter: port[11],
-      tideName
+      tideName, month: d.getMonth() + 1
     };
-    UI.updateFishMiniScores(FishScore.calcAllFishScores(fishParams));
+    UI.updateFishMiniScores(FishScore.calcAllFishScores(fishParams), state.selectedFish);
 
     // ナビボタン状態更新
     UI.updateNavButtons(d, getMinDate(), getMaxDate());
@@ -366,7 +377,8 @@ const App = (() => {
         seaTemp: marineForDate ? (marineForDate.seaTemp || marineForDate.sst || null) : null,
         jiaiStatus: flowInfo.jiaiStatus,
         flowRate: flowInfo.flowRate,
-        tideName: params.tideName
+        tideName: params.tideName,
+        month: state.date.getMonth() + 1
       });
       if (fishResult) {
         displayResult = {
@@ -431,9 +443,10 @@ const App = (() => {
         sunTimes: state.lastScoreParams.sunTimes,
         spotType: port[12] || 'port',
         shelter: port[11],
-        tideName: state.lastScoreParams.tideName
+        tideName: state.lastScoreParams.tideName,
+        month: state.date.getMonth() + 1
       };
-      UI.updateFishMiniScores(FishScore.calcAllFishScores(fishParams));
+      UI.updateFishMiniScores(FishScore.calcAllFishScores(fishParams), state.selectedFish);
     }
   }
 
@@ -551,6 +564,24 @@ const App = (() => {
     updateUI();
   }
 
+  // 魚種ナビ: →で次の魚種に切替
+  function cycleFish(delta) {
+    const ids = FISH_IDS;
+    if (!state.selectedFish) {
+      state.selectedFish = delta > 0 ? ids[0] : ids[ids.length - 1];
+    } else {
+      const idx = ids.indexOf(state.selectedFish);
+      if (idx === -1) {
+        state.selectedFish = ids[0];
+      } else {
+        const next = (idx + delta + ids.length) % ids.length;
+        state.selectedFish = ids[next];
+      }
+    }
+    updateFishModeButton();
+    updateUI();
+  }
+
   function updateFishModeButton() {
     const btn = document.getElementById('fishModeBtn');
     if (!btn) return;
@@ -564,6 +595,20 @@ const App = (() => {
       btn.innerHTML = '🎣 総合';
       btn.style.borderColor = '';
       btn.style.color = '';
+    }
+    // 魚種トグルボタンのアイコン更新
+    const toggleBtn = document.getElementById('fishToggleBtn');
+    if (toggleBtn) {
+      if (state.selectedFish && FISH_PROFILES[state.selectedFish]) {
+        const fp = FISH_PROFILES[state.selectedFish];
+        toggleBtn.innerHTML = fp.icon.endsWith('.png')
+          ? `<img src="${fp.icon}" alt="${fp.name}">`
+          : fp.emoji;
+        toggleBtn.classList.add('active');
+      } else {
+        toggleBtn.innerHTML = '🎣';
+        toggleBtn.classList.remove('active');
+      }
     }
   }
 
@@ -670,6 +715,14 @@ const App = (() => {
 
     // 魚種切替ボタン
     document.getElementById('fishModeBtn').addEventListener('click', showFishSelectPopup);
+
+    // 魚種スコアトグルボタン
+    document.getElementById('fishToggleBtn').addEventListener('click', () => {
+      const el = document.getElementById('fishMiniScores');
+      if (el) el.classList.toggle('open');
+    });
+    document.getElementById('fishCyclePrev').addEventListener('click', () => cycleFish(-1));
+    document.getElementById('fishCycleNext').addEventListener('click', () => cycleFish(1));
 
     // 検索
     document.getElementById('searchInput').addEventListener('input', () => {
@@ -789,5 +842,5 @@ const App = (() => {
 
   document.addEventListener('DOMContentLoaded', init);
 
-  return { state, updateUI, fetchOnlineData, selectPort, setFishMode };
+  return { state, updateUI, fetchOnlineData, selectPort, setFishMode, cycleFish };
 })();
