@@ -682,9 +682,6 @@ const Ranking = (() => {
     document.getElementById('rankingOverlay').classList.add('active');
     document.getElementById('rankingModal').classList.add('active');
 
-    // スライダー初期化
-    initFishBarSlider();
-
     // 自動計算開始
     calculate();
   }
@@ -729,23 +726,42 @@ const Ranking = (() => {
       });
     });
 
-    // 魚種バー（キャッシュあれば即切替、なければ計算）
+    // 魚種バー: ダブルタップ/ダブルクリックで選択
+    let lastTapTime = 0;
     document.querySelectorAll('#fishBar .fish-bar-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('#fishBar .fish-bar-item').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const fish = btn.dataset.fish;
-        state.fishMode = (fish === 'none') ? null : fish;
-        calculate();
+      btn.addEventListener('click', (e) => {
+        const now = Date.now();
+        if (now - lastTapTime < 350) {
+          // ダブルタップ: 魚種選択
+          e.preventDefault();
+          document.querySelectorAll('#fishBar .fish-bar-item').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const fish = btn.dataset.fish;
+          state.fishMode = (fish === 'none') ? null : fish;
+          calculate();
+        }
+        lastTapTime = now;
       });
     });
 
-    // 魚種バースライダー
-    const fishSlider = document.getElementById('fishBarSlider');
+    // 魚種バー: マウスドラッグスクロール
     const fishBar = document.getElementById('fishBar');
-    if (fishSlider && fishBar) {
-      fishSlider.addEventListener('input', () => {
-        fishBar.scrollLeft = Number(fishSlider.value);
+    if (fishBar) {
+      let isDragging = false, startX = 0, scrollStart = 0;
+      fishBar.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.pageX;
+        scrollStart = fishBar.scrollLeft;
+        fishBar.classList.add('dragging');
+      });
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        fishBar.scrollLeft = scrollStart - (e.pageX - startX);
+      });
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+        fishBar.classList.remove('dragging');
       });
     }
   }
@@ -778,21 +794,7 @@ const Ranking = (() => {
     document.getElementById('rankingOverlay').classList.add('active');
     document.getElementById('rankingModal').classList.add('active');
 
-    // スライダー初期化
-    initFishBarSlider();
-
     calculate();
-  }
-
-  function initFishBarSlider() {
-    requestAnimationFrame(() => {
-      const bar = document.getElementById('fishBar');
-      const slider = document.getElementById('fishBarSlider');
-      if (!bar || !slider) return;
-      const maxScroll = bar.scrollWidth - bar.clientWidth;
-      slider.max = Math.max(0, maxScroll);
-      slider.value = bar.scrollLeft;
-    });
   }
 
   return { open, close, init, openWithFish };

@@ -27,7 +27,10 @@ const UI = (() => {
 
   // ==================== Header ====================
   function updateHeader(port, date, tideName, portIndex) {
-    document.getElementById('portName').textContent = port[0];
+    const portNameEl = document.getElementById('portName');
+    const weatherSpan = portNameEl.querySelector('.header-weather');
+    const weatherHtml = weatherSpan ? weatherSpan.outerHTML : '<span class="header-weather" id="headerWeather"></span>';
+    portNameEl.innerHTML = port[0] + ' ' + weatherHtml;
     const areaText = PREF_NAMES[port[2]] + ' ' + port[1];
     document.getElementById('portArea').textContent = areaText;
     // portLinks は行2(spotBar)に移行 → 非表示
@@ -294,23 +297,21 @@ const UI = (() => {
 
   // --- 天気情報 ---
   function updateWeatherInfo(weatherAtTime, weatherForDate) {
-    const weatherEl = document.getElementById('weatherInfo');
     const code = weatherAtTime ? weatherAtTime.weatherCode :
                  (weatherForDate ? weatherForDate.weatherCode : null);
 
-    if (code != null) {
-      const icon = DataFetch.getWeatherIcon(code);
-      const text = DataFetch.getWeatherText(code);
-      const precipProb = weatherForDate && weatherForDate.precipProb != null ? weatherForDate.precipProb :
-                         (weatherAtTime && weatherAtTime.precipProb != null ? weatherAtTime.precipProb : null);
-      const precipText = precipProb != null ? precipProb : '--';
-      weatherEl.innerHTML = `
-        <span style="font-size:20px">${icon}</span>
-        <span style="font-size:12px;color:var(--text-secondary)">${text}</span>
-        <span style="font-size:11px;color:var(--accent-cyan)">降水${precipText}%</span>
-      `;
-    } else {
-      weatherEl.innerHTML = '<span style="color:var(--text-secondary);font-size:12px">--</span>';
+    // ヘッダーに天気アイコン+降水確率を表示
+    const headerEl = document.getElementById('headerWeather');
+    if (headerEl) {
+      if (code != null) {
+        const icon = DataFetch.getWeatherIcon(code);
+        const precipProb = weatherForDate && weatherForDate.precipProb != null ? weatherForDate.precipProb :
+                           (weatherAtTime && weatherAtTime.precipProb != null ? weatherAtTime.precipProb : null);
+        const precipText = precipProb != null ? precipProb + '%' : '';
+        headerEl.textContent = icon + ' ' + precipText;
+      } else {
+        headerEl.textContent = '';
+      }
     }
   }
 

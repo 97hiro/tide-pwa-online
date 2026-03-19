@@ -63,6 +63,12 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.header-weather {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
 .header-left .port-area {
   font-size: 10px;
   color: var(--text-secondary);
@@ -1174,41 +1180,20 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   gap: 6px;
   padding: 6px;
+  touch-action: pan-x;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.fish-bar-slider-row {
-  padding: 2px 12px 4px;
-  flex-shrink: 0;
-}
-.fish-bar-slider {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--border, #333);
-  outline: none;
-  cursor: pointer;
-}
-.fish-bar-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 28px;
-  height: 14px;
-  border-radius: 7px;
-  background: var(--accent-cyan, #3ec6e0);
-  cursor: pointer;
-}
-.fish-bar-slider::-moz-range-thumb {
-  width: 28px;
-  height: 14px;
-  border-radius: 7px;
-  background: var(--accent-cyan, #3ec6e0);
-  border: none;
-  cursor: pointer;
-}
+#fishBar::-webkit-scrollbar { display: none; }
+#fishBar.dragging { cursor: grabbing; }
 .fish-bar-item {
   flex: 0 0 auto;
   min-width: 70px;
@@ -1227,6 +1212,7 @@ body {
   cursor: pointer;
   overflow: hidden;
   flex-shrink: 0;
+  touch-action: manipulation;
 }
 .fish-bar-icon {
   width: 86px;

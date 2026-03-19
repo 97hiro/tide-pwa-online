@@ -38,9 +38,10 @@ if ('serviceWorker' in navigator) {
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="css/style.css">
 <style>
-/* fishBar スライダー制御方式 */
-#fishBar{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;overflow:hidden!important;gap:6px;padding:6px}
-#fishBar .fish-bar-item{flex:0 0 auto!important;min-width:70px}
+/* fishBar タッチスクロール */
+#fishBar{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch;scrollbar-width:none;touch-action:pan-x;user-select:none;-webkit-user-select:none}
+#fishBar::-webkit-scrollbar{display:none}
+#fishBar .fish-bar-item{flex:0 0 auto!important;min-width:70px;touch-action:manipulation}
 </style>
 </head>
 <body>
@@ -49,7 +50,7 @@ if ('serviceWorker' in navigator) {
 <div class="header">
   <div class="header-left" id="openPortSelect">
     <div>
-      <div class="port-name" id="portName">串本漁港</div>
+      <div class="port-name" id="portName">串本漁港 <span class="header-weather" id="headerWeather"></span></div>
       <div class="port-area" id="portArea">和歌山県 串本町</div>
       <div class="port-links" id="portLinks"></div>
     </div>
@@ -111,7 +112,7 @@ if ('serviceWorker' in navigator) {
   </div>
   <div class="fish-mini-scores" id="fishMiniScores"></div>
   <!-- Weather summary -->
-  <div id="weatherInfo" style="margin-top:8px;display:flex;align-items:center;gap:8px;"></div>
+  <div id="weatherInfo" style="display:none"></div>
 </div>
 
 <!-- ===== Tide Graph ===== -->
@@ -300,9 +301,6 @@ if ('serviceWorker' in navigator) {
     <div class="fish-bar-item" data-fish="seabass"><img class="fish-bar-icon" src="img/fish/seabass.png" alt="シーバス"><span class="fish-bar-name">シーバス</span></div>
     <div class="fish-bar-item" data-fish="kawahagi"><img class="fish-bar-icon" src="img/fish/kawahagi.png" alt="カワハギ"><span class="fish-bar-name">カワハギ</span></div>
     <div class="fish-bar-item" data-fish="bestAll"><span class="fish-bar-emoji">&#127942;</span><span class="fish-bar-name">ベスト</span></div>
-  </div>
-  <div class="fish-bar-slider-row">
-    <input type="range" id="fishBarSlider" min="0" max="100" value="0" class="fish-bar-slider">
   </div>
   <div class="ranking-time-row">
     <button class="ranking-time-btn active" data-period="best">終日ベスト</button>
