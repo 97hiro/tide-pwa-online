@@ -350,6 +350,23 @@ const FishScore = (() => {
       }
     }
 
+    // shelterPenalty: 遮蔽度に応じた段階ペナルティ (カレイ等: 外海露出スポットは不適)
+    // veryLow: shelter<=0.15 で追加適用, low: shelter<=0.3 で適用
+    // exemptSpot: 指定spotTypeはペナルティ免除 (カレイ: surfは砂浜なので免除)
+    if (profile.shelterPenalty && params.shelter != null) {
+      const spt = params.spotType || params.portType;
+      const exempt = profile.shelterPenalty.exemptSpot;
+      const isExempt = exempt && spt && exempt.indexOf(spt) >= 0;
+      if (!isExempt) {
+        if (profile.shelterPenalty.low != null && params.shelter <= 0.3) {
+          total += profile.shelterPenalty.low;
+        }
+        if (profile.shelterPenalty.veryLow != null && params.shelter <= 0.15) {
+          total += profile.shelterPenalty.veryLow;
+        }
+      }
+    }
+
     // シーズン補正（season外ペナルティ、peakMonthsボーナス）
     if (params.month && profile.season) {
       if (!profile.season.includes(params.month)) {

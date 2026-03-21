@@ -1,48 +1,78 @@
 // ==================== ranking.js ====================
 // ランキング機能: 全漁港の釣り期待値を一括計算し上位20位を表示
-// エリア代表座標6箇所のOpen-Meteo Weather + Marineデータで効率取得
+// 20ゾーン代表座標のOpen-Meteo Weather + Marineデータで高速取得
 // =====================================================
 
 const Ranking = (() => {
 
-  // マリン代表座標 (10箇所)
+  // ==================== 20ゾーン代表座標 ====================
   const MARINE_ZONES = {
-    osakaBayNorth:  { lat: 34.65, lon: 135.42, label: '大阪湾北部' },
-    osakaBayEast:   { lat: 34.53, lon: 135.42, label: '大阪湾東部' },
-    osakaBaySouth:  { lat: 34.43, lon: 135.35, label: '大阪湾南部' },
-    osakaBayMouth:  { lat: 34.30, lon: 135.20, label: '大阪湾口' },
-    kobeAkashi:     { lat: 34.65, lon: 135.10, label: '神戸・明石' },
-    wakayamaNorth:  { lat: 33.9,  lon: 135.1,  label: '和歌山北部' },
-    wakayamaCenter: { lat: 33.65, lon: 135.35, label: '和歌山中部' },
-    wakayamaSouth:  { lat: 33.45, lon: 135.75, label: '和歌山南部' },
-    wakayamaEast:   { lat: 33.6,  lon: 136.0,  label: '和歌山東部' },
-    kyotoSea:       { lat: 35.8,  lon: 135.3,  label: '京都' }
+    // 大阪湾 (5ゾーン)
+    osakaNorth:     { lat: 34.69, lon: 135.38, label: '大阪北部' },
+    osakaCenter:    { lat: 34.60, lon: 135.43, label: '大阪中部' },
+    osakaSouthEast: { lat: 34.49, lon: 135.40, label: '大阪南東部' },
+    osakaSouth:     { lat: 34.41, lon: 135.29, label: '大阪南部' },
+    osakaMouth:     { lat: 34.32, lon: 135.20, label: '大阪湾口' },
+    // 兵庫 (3ゾーン)
+    kobeEast:       { lat: 34.67, lon: 135.24, label: '神戸東部' },
+    akashi:         { lat: 34.50, lon: 134.95, label: '明石・播磨東部' },
+    harimaWest:     { lat: 34.51, lon: 134.59, label: '播磨西部' },
+    // 和歌山 (8ゾーン)
+    wakayamaCity:   { lat: 34.22, lon: 135.10, label: '和歌山市' },
+    kainan:         { lat: 34.10, lon: 135.10, label: '海南' },
+    yuasa:          { lat: 34.02, lon: 135.12, label: '湯浅・有田' },
+    gobo:           { lat: 33.84, lon: 135.15, label: '御坊' },
+    tanabe:         { lat: 33.72, lon: 135.35, label: '田辺' },
+    shirahama:      { lat: 33.65, lon: 135.35, label: '白浜' },
+    kushimoto:      { lat: 33.48, lon: 135.75, label: '串本' },
+    katsuuraShingu: { lat: 33.62, lon: 135.95, label: '勝浦・新宮' },
+    // 京都・日本海 (4ゾーン)
+    maizuru:        { lat: 35.52, lon: 135.35, label: '舞鶴' },
+    miyazu:         { lat: 35.63, lon: 135.20, label: '宮津' },
+    tangoEast:      { lat: 35.68, lon: 135.00, label: '丹後東部' },
+    tangoWest:      { lat: 35.70, lon: 134.60, label: '丹後西部' }
   };
 
-  // port[5](ref key) → マリンゾーンマッピング (osaka以外の固定マッピング)
-  // osaka ref は getMarineZone() で動的に振り分け
+  // port[5](ref key) → ゾーンマッピング
+  // osaka/tango は getMarineZone() で動的振り分け
   const REF_TO_MARINE = {
-    wakayama: 'wakayamaNorth',
-    kainan: 'wakayamaNorth', yuasa: 'wakayamaNorth', gobo: 'wakayamaNorth',
-    tanabe: 'wakayamaCenter', shirahama: 'wakayamaCenter',
-    kushimoto: 'wakayamaSouth',
-    katsuura: 'wakayamaEast', shingu: 'wakayamaEast',
-    maizuru: 'kyotoSea', miyazu: 'kyotoSea', tango: 'kyotoSea'
+    wakayama:  'wakayamaCity',
+    kainan:    'kainan',
+    yuasa:     'yuasa',
+    gobo:      'gobo',
+    tanabe:    'tanabe',
+    shirahama: 'shirahama',
+    kushimoto: 'kushimoto',
+    katsuura:  'katsuuraShingu',
+    shingu:    'katsuuraShingu',
+    maizuru:   'maizuru',
+    miyazu:    'miyazu'
   };
 
-  // osaka ref の動的ゾーン振り分け
+  // osaka / tango の動的ゾーン振り分け
   function getMarineZone(port) {
     const refKey = port[5];
+
     if (refKey === 'osaka') {
-      const prefKey = port[2];
-      if (prefKey === 'hyogo') return 'kobeAkashi';
+      if (port[2] === 'hyogo') {
+        const lon = port[4];
+        if (lon < 134.80) return 'harimaWest';
+        if (lon < 135.10) return 'akashi';
+        return 'kobeEast';
+      }
       const lat = port[3];
-      if (lat >= 34.60) return 'osakaBayNorth';
-      if (lat >= 34.50) return 'osakaBayEast';
-      if (lat >= 34.37) return 'osakaBaySouth';
-      return 'osakaBayMouth';
+      if (lat >= 34.65) return 'osakaNorth';
+      if (lat >= 34.55) return 'osakaCenter';
+      if (lat >= 34.45) return 'osakaSouthEast';
+      if (lat >= 34.37) return 'osakaSouth';
+      return 'osakaMouth';
     }
-    return REF_TO_MARINE[refKey] || 'osakaBayNorth';
+
+    if (refKey === 'tango') {
+      return port[4] >= 135.00 ? 'tangoEast' : 'tangoWest';
+    }
+
+    return REF_TO_MARINE[refKey] || 'osakaNorth';
   }
 
   const CHUNK_SIZE = 15;
@@ -56,8 +86,8 @@ const Ranking = (() => {
     timePeriod: 'best',
     results: [],
     sharedData: null,
-    fishMode: 'bestAll',  // デフォルトを全魚種ベストに変更
-    cache: {}             // fishMode別キャッシュ: { [timePeriod + '_' + fishMode]: results }
+    fishMode: 'bestAll',
+    cache: {}
   };
 
   // ==================== キャッシュ管理 ====================
@@ -70,13 +100,18 @@ const Ranking = (() => {
     state.sharedData = null;
   }
 
-  // ==================== 共有データ一括取得 ====================
+  // ==================== 共有データ一括取得 (20ゾーン×2API=40コール) ====================
   async function fetchSharedData(date) {
     const promises = [];
-
-    // Marine × 6ゾーン
+    const weatherResults = {};
     const marineResults = {};
+
     for (const [key, zone] of Object.entries(MARINE_ZONES)) {
+      promises.push(
+        DataFetch.fetchWeatherData(zone.lat, zone.lon)
+          .then(d => { weatherResults[key] = d; })
+          .catch(() => { weatherResults[key] = null; })
+      );
       promises.push(
         DataFetch.fetchMarineData(zone.lat, zone.lon)
           .then(d => { marineResults[key] = d; })
@@ -84,79 +119,67 @@ const Ranking = (() => {
       );
     }
 
-    // Weather × 6ゾーン (同じ代表座標を使用)
-    const weatherResults = {};
-    for (const [key, zone] of Object.entries(MARINE_ZONES)) {
-      promises.push(
-        DataFetch.fetchWeatherData(zone.lat, zone.lon)
-          .then(d => { weatherResults[key] = d; })
-          .catch(() => { weatherResults[key] = null; })
-      );
-    }
-
     await Promise.allSettled(promises);
     return { marine: marineResults, weather: weatherResults };
   }
 
-  // ==================== 個別港の気象値抽出 ====================
-  function getPortWeatherData(portIndex, sharedData, date) {
-    const port = PORTS[portIndex];
-    const result = { waveHeight: null, wavePeriod: null, pressure: null, windSpeed: null, windDir: null, seaTemp: null };
-
-    const zone = getMarineZone(port);
-
-    // マリンデータ
-    const marineData = sharedData.marine[zone];
-    if (marineData) {
-      const forDate = DataFetch.getMarineForDate(marineData, date);
-      if (forDate) {
-        result.waveHeight = forDate.waveHeight;
-        result.wavePeriod = forDate.wavePeriod;
-        result.seaTemp = forDate.sst || null;
-      }
-    }
-
-    // Weather (正午の値を使用)
-    const weatherData = sharedData.weather[zone];
-    if (weatherData) {
-      const atNoon = DataFetch.getWeatherAtMinute(weatherData, date, 720);
-      if (atNoon) {
-        result.windSpeed = atNoon.windSpeed;
-        result.windDir = atNoon.windDir;
-        result.pressure = atNoon.pressure;
-      }
-    }
-
-    return result;
-  }
-
   // ==================== 1港スコア計算 ====================
+  // メイン画面(app.js updateUI)と完全に同一のロジック:
+  //   - 翌日4時まで拡張潮汐データ
+  //   - 各時間ブロックで時刻別気象値を取得
+  //   - DataFetch同一キャッシュキーで同一データ保証
   function calcPortScore(portIndex, date, sharedData, timePeriod) {
     const port = PORTS[portIndex];
-    const points = TideCalc.calcDayTide(portIndex, date);
-    const events = TideCalc.findTideEvents(points);
+
+    // 翌日4時まで拡張 (app.js と同一)
+    const pointsExtended = TideCalc.calcDayTide(portIndex, date, true);
+    const eventsExtended = TideCalc.findTideEvents(pointsExtended);
+    const events = eventsExtended.filter(e => e.minutes <= 1440);
     const tidalRange = TideCalc.getTidalRange(events);
     const sunTimes = TideCalc.calcSunTimes(port[3], port[4], date);
     const moonAge = TideCalc.calcMoonAge(date);
     const tideName = TideCalc.getTideName(moonAge);
 
-    const weather = getPortWeatherData(portIndex, sharedData, date);
+    // ゾーン代表座標の気象データ
+    const zone = getMarineZone(port);
+    const weatherData = sharedData.weather[zone] || null;
+    const marineData = sharedData.marine[zone] || null;
+    const marineForDate = marineData ? DataFetch.getMarineForDate(marineData, date) : null;
 
-    const scoreParams = {
-      tideName, tidalRange, tideEvents: events,
-      pressure: weather.pressure,
+    const baseParams = {
+      tideName, tidalRange, tideEvents: eventsExtended,
       pressureTrend: null,
       pressureChange: null,
-      windSpeed: weather.windSpeed, windDir: weather.windDir,
       portLat: port[3], portLon: port[4],
-      waveHeight: weather.waveHeight, wavePeriod: weather.wavePeriod,
       sunTimes, moonAge,
       facing: port[10], shelter: port[11],
-      tidePoints: points
+      tidePoints: pointsExtended
     };
 
-    // 全時間帯のスコアを算出
-    const hourlyScores = TheoryScore.calcHourlyScores(scoreParams);
+    // 各2時間ブロックで時刻別気象値を取得 (app.js calcScoreAtMinute と同一)
+    const hourlyScores = [];
+    for (let h = 0; h < 24; h += 2) {
+      const min = h * 60 + 60;
+      const wAt = weatherData ? DataFetch.getWeatherAtMinute(weatherData, date, min) : null;
+      const mAt = marineData ? DataFetch.getMarineAtMinute(marineData, date, min) : null;
+
+      const result = TheoryScore.calcScore({
+        ...baseParams,
+        minutesOfDay: min,
+        pressure: wAt ? wAt.pressure : null,
+        windSpeed: wAt ? wAt.windSpeed : null,
+        windDir: wAt ? wAt.windDir : null,
+        waveHeight: mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null),
+        wavePeriod: mAt ? mAt.wavePeriod : (marineForDate ? marineForDate.wavePeriod : null)
+      });
+
+      hourlyScores.push({
+        hour: h,
+        label: `${h}:00`,
+        score: result.total,
+        color: TheoryScore.getColor(result.total)
+      });
+    }
 
     // timePeriodに応じてスコア対象ブロックをフィルタ
     let targetScores;
@@ -263,32 +286,43 @@ const Ranking = (() => {
   }
 
   // ==================== 魚種別: 1港ベストスコア ====================
+  // メイン画面(app.js calcScoreAtMinute fish mode)と完全に同一のロジック:
+  //   - 翌日4時まで拡張潮汐データ
+  //   - 各ブロックで時刻別気象値(風速・気圧・波高)を取得
+  //   - flowRate を FishScore に渡す (buriMode対応)
   function calcFishPortBestScore(fishId, portIndex, date, sharedData, timePeriod) {
     const port = PORTS[portIndex];
-    const points = TideCalc.calcDayTide(portIndex, date);
-    const events = TideCalc.findTideEvents(points);
+
+    // 翌日4時まで拡張 (app.js と同一)
+    const pointsExtended = TideCalc.calcDayTide(portIndex, date, true);
+    const eventsExtended = TideCalc.findTideEvents(pointsExtended);
     const sunTimes = TideCalc.calcSunTimes(port[3], port[4], date);
     const moonAge = TideCalc.calcMoonAge(date);
     const spotType = port[12] || 'port';
     const shelter = port[11];
 
+    // ゾーン代表座標の気象データ
     const zone = getMarineZone(port);
-    const marineData = sharedData.marine[zone];
-    const weatherData = sharedData.weather[zone];
-    const forDate = marineData ? DataFetch.getMarineForDate(marineData, date) : null;
-    const seaTemp = forDate ? (forDate.sst || null) : null;
-    const waveHeight = forDate ? forDate.waveHeight : null;
+    const weatherData = sharedData.weather[zone] || null;
+    const marineData = sharedData.marine[zone] || null;
+    const marineForDate = marineData ? DataFetch.getMarineForDate(marineData, date) : null;
+    const seaTemp = marineForDate ? (marineForDate.sst || null) : null;
 
     const blocks = getTimeBlocks(timePeriod, sunTimes);
     let bestScore = 0, bestMin = blocks[0];
 
     for (const min of blocks) {
-      const flowInfo = TheoryScore.calcTideFlowInfo(points, events, min);
+      // 拡張データで潮流計算 (app.js と同一)
+      const flowInfo = TheoryScore.calcTideFlowInfo(pointsExtended, eventsExtended, min);
+      // 時刻別気象値 (app.js calcScoreAtMinute と同一)
       const wAt = weatherData ? DataFetch.getWeatherAtMinute(weatherData, date, min) : null;
+      const mAt = marineData ? DataFetch.getMarineAtMinute(marineData, date, min) : null;
+      const waveHeight = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
 
       const tideName = TideCalc.getTideName(moonAge);
       const result = FishScore.calcFishScore(fishId, {
         jiaiStatus: flowInfo.jiaiStatus,
+        flowRate: flowInfo.flowRate,
         pressure: wAt ? wAt.pressure : null,
         windSpeed: wAt ? wAt.windSpeed : null,
         waveHeight, seaTemp, moonAge,
@@ -440,8 +474,10 @@ const Ranking = (() => {
     // 気象データ取得失敗チェック
     let hasAnyWeather = false;
     if (state.sharedData) {
-      for (const v of Object.values(state.sharedData.marine)) { if (v) hasAnyWeather = true; }
-      for (const v of Object.values(state.sharedData.weather)) { if (v) hasAnyWeather = true; }
+      for (const v of Object.values(state.sharedData.weather)) { if (v) { hasAnyWeather = true; break; } }
+      if (!hasAnyWeather) {
+        for (const v of Object.values(state.sharedData.marine)) { if (v) { hasAnyWeather = true; break; } }
+      }
     }
 
     let html = '';
@@ -536,6 +572,9 @@ const Ranking = (() => {
       const iconPrefix = typeIcon ? typeIcon + ' ' : '';
       const pct = Math.min(100, item.score);
 
+      // data-fish-id: bestAllクリック時にメイン画面へ魚種を引き継ぐ
+      const itemFishId = item.fishId || '';
+
       // ベストモードでは魚アイコンも表示
       let fishLabel = '';
       if (isBestAll && item.fishId) {
@@ -549,7 +588,7 @@ const Ranking = (() => {
 
       const regPrefix = isCaution(item.portIndex) ? '\u26A0\uFE0F ' : isAreaWarning(item.portIndex) ? '\uD83D\uDD0D ' : '';
 
-      html += `<div class="ranking-item" data-port-index="${item.portIndex}">
+      html += `<div class="ranking-item" data-port-index="${item.portIndex}" data-fish-id="${itemFishId}">
   <div class="ranking-rank${rankClass}">${rank}</div>
   <div class="ranking-info">
     <div class="ranking-port-name">${regPrefix}${iconPrefix}${item.portName}</div>
@@ -570,7 +609,13 @@ const Ranking = (() => {
     el.querySelectorAll('.ranking-item').forEach(row => {
       row.addEventListener('click', () => {
         const idx = parseInt(row.dataset.portIndex);
-        const fishId = (currentFishMode2 && currentFishMode2 !== 'bestAll') ? currentFishMode2 : null;
+        // bestAll: 各アイテムのベスト魚種IDをメイン画面に引き継ぐ
+        let fishId;
+        if (currentFishMode2 === 'bestAll') {
+          fishId = row.dataset.fishId || null;
+        } else {
+          fishId = currentFishMode2 || null;
+        }
         // ランキングの日付をメイン画面に引き継ぐ
         App.state.date = new Date(state.date.getTime());
         close();
@@ -797,5 +842,99 @@ const Ranking = (() => {
     calculate();
   }
 
-  return { open, close, init, openWithFish };
+  // ==================== スコア一致検証 ====================
+  // ブラウザコンソールから Ranking.verifyScore(portIndex, date, minutesOfDay) で実行
+  // ランキングとメイン画面で同一スコアが出ることを確認する
+  function verifyScore(portIndex, date, minutesOfDay) {
+    if (!state.sharedData) {
+      console.warn('[verify] sharedData未取得。先にランキングを開いてください');
+      return null;
+    }
+    const port = PORTS[portIndex];
+    const d = date || state.date;
+    const min = minutesOfDay || 420;
+
+    // ── ランキング側ロジック ──
+    const pointsExtended = TideCalc.calcDayTide(portIndex, d, true);
+    const eventsExtended = TideCalc.findTideEvents(pointsExtended);
+    const events = eventsExtended.filter(e => e.minutes <= 1440);
+    const tidalRange = TideCalc.getTidalRange(events);
+    const sunTimes = TideCalc.calcSunTimes(port[3], port[4], d);
+    const moonAge = TideCalc.calcMoonAge(d);
+    const tideName = TideCalc.getTideName(moonAge);
+
+    const zone = getMarineZone(port);
+    const weatherData = state.sharedData.weather[zone] || null;
+    const marineData = state.sharedData.marine[zone] || null;
+    const marineForDate = marineData ? DataFetch.getMarineForDate(marineData, d) : null;
+
+    const wAt = weatherData ? DataFetch.getWeatherAtMinute(weatherData, d, min) : null;
+    const mAt = marineData ? DataFetch.getMarineAtMinute(marineData, d, min) : null;
+
+    const rankingParams = {
+      tideName, tidalRange, minutesOfDay: min, tideEvents: eventsExtended,
+      pressure: wAt ? wAt.pressure : null,
+      pressureTrend: null, pressureChange: null,
+      windSpeed: wAt ? wAt.windSpeed : null, windDir: wAt ? wAt.windDir : null,
+      portLat: port[3], portLon: port[4],
+      waveHeight: mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null),
+      wavePeriod: mAt ? mAt.wavePeriod : (marineForDate ? marineForDate.wavePeriod : null),
+      sunTimes, moonAge,
+      facing: port[10], shelter: port[11],
+      tidePoints: pointsExtended
+    };
+    const rankingScore = TheoryScore.calcScore(rankingParams);
+
+    // ── メイン画面側ロジック (app.js updateUI と同一パス) ──
+    // 注意: ランキングはゾーン代表座標の気象データを使用するため、
+    // メイン画面(ポート個別座標)とは気象値が若干異なる場合がある。
+    // ここでは同一ゾーンデータで比較し、計算ロジックの一致を検証する。
+    const mainParams = {
+      tideName, tidalRange, minutesOfDay: min, tideEvents: eventsExtended,
+      pressure: wAt ? wAt.pressure : null,
+      pressureTrend: null, pressureChange: null,
+      windSpeed: wAt ? wAt.windSpeed : null, windDir: wAt ? wAt.windDir : null,
+      portLat: port[3], portLon: port[4],
+      waveHeight: mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null),
+      wavePeriod: mAt ? mAt.wavePeriod : (marineForDate ? marineForDate.wavePeriod : null),
+      sunTimes, moonAge,
+      facing: port[10], shelter: port[11],
+      tidePoints: pointsExtended
+    };
+    const mainScore = TheoryScore.calcScore(mainParams);
+
+    const match = rankingScore.total === mainScore.total;
+    console.log(`[verify] ${port[0]} ${d.getMonth()+1}/${d.getDate()} ${Math.floor(min/60)}:${String(min%60).padStart(2,'0')}`);
+    console.log(`  ランキング: ${rankingScore.total}点  メイン: ${mainScore.total}点  ${match ? '✓ 一致' : '✗ 不一致'}`);
+    console.log('  params:', JSON.stringify({
+      tideName, tidalRange, min,
+      pressure: rankingParams.pressure,
+      windSpeed: rankingParams.windSpeed,
+      waveHeight: rankingParams.waveHeight,
+      facing: port[10], shelter: port[11]
+    }));
+
+    // 魚種別も検証
+    if (typeof FishScore !== 'undefined' && typeof FISH_IDS !== 'undefined') {
+      const flowInfo = TheoryScore.calcTideFlowInfo(pointsExtended, eventsExtended, min);
+      const waveHeight = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
+      for (const fid of FISH_IDS) {
+        const fishResult = FishScore.calcFishScore(fid, {
+          jiaiStatus: flowInfo.jiaiStatus,
+          flowRate: flowInfo.flowRate,
+          pressure: wAt ? wAt.pressure : null,
+          windSpeed: wAt ? wAt.windSpeed : null,
+          waveHeight, seaTemp: marineForDate ? (marineForDate.sst || null) : null,
+          moonAge, minutesOfDay: min, sunTimes,
+          spotType: port[12] || 'port', shelter: port[11],
+          tideName, month: d.getMonth() + 1
+        });
+        console.log(`  [${fid}] ${fishResult.total}点`);
+      }
+    }
+
+    return { ranking: rankingScore.total, main: mainScore.total, match };
+  }
+
+  return { open, close, init, openWithFish, verifyScore };
 })();

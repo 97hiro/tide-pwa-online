@@ -269,7 +269,7 @@ const PORTS = [
   ["シーサイドコスモ","大阪市","osaka",34.6386,135.4027,"osaka",null,1,null,null,185,0.55,"pier",true,true,false],
   ["舞洲","大阪市","osaka",34.663,135.401,"osaka",null,1,null,null,175,0.5,"pier",true,true,false], // 要確認: 座標
   ["汐見埠頭","泉大津市","osaka",34.505,135.375,"osaka",null,1,null,null,240,0.6,"pier",false,true,false],
-  ["貝塚人工島","貝塚市","osaka",34.4557,135.3321,"osaka",null,1,null,null,270,0.45,"pier",false,true,false],
+  ["貝塚人工島","貝塚市","osaka",34.4557,135.3321,"osaka",null,1,null,null,270,0.28,"pier",false,true,false],
   ["岸和田一文字","岸和田市","osaka",34.4863,135.3651,"osaka",null,1,null,null,270,0.25,"pier",true],
   ["忠岡一文字","忠岡町","osaka",34.4931,135.3696,"osaka",null,1,null,null,260,0.25,"pier"],
   ["助松埠頭","泉大津市","osaka",34.5112,135.3812,"osaka",null,1,null,null,260,0.55,"pier",false,true,false],

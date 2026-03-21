@@ -195,6 +195,7 @@ const App = (() => {
     const seaTemp = marineForDate ? (marineForDate.seaTemp || marineForDate.sst || null) : null;
 
     // 時点別スコア計算ヘルパー
+    // ランキングと完全一致: 各時刻で気象値(風速・気圧・波高・周期)を個別取得
     function calcScoreAtMinute(min) {
       const wAt = weather ? DataFetch.getWeatherAtMinute(weather, d, min) : null;
       const mAt = marine ? DataFetch.getMarineAtMinute(marine, d, min) : null;
@@ -202,13 +203,15 @@ const App = (() => {
       const wd = wAt ? wAt.windDir : null;
       const pr = wAt ? wAt.pressure : null;
       const wh = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
+      const wp = mAt ? mAt.wavePeriod : (marineForDate ? marineForDate.wavePeriod : null);
 
       if (isFishMode) {
         const flowInfo = TheoryScore.calcTideFlowInfo(pointsExtended, eventsExtended, min);
         const fishResult = FishScore.calcFishScore(state.selectedFish, {
           ...scoreParams,
           minutesOfDay: min,
-          windSpeed: ws, windDir: wd, pressure: pr, waveHeight: wh,
+          windSpeed: ws, windDir: wd, pressure: pr,
+          waveHeight: wh, wavePeriod: wp,
           portType: port[12] || 'port',
           shelter: port[11],
           seaTemp: seaTemp,
@@ -220,7 +223,8 @@ const App = (() => {
         // jiaiStatusをTheoryScoreから流用（レインボー判定用）
         const theoryResult = TheoryScore.calcScore({
           ...scoreParams, minutesOfDay: min,
-          windSpeed: ws, windDir: wd, pressure: pr
+          windSpeed: ws, windDir: wd, pressure: pr,
+          waveHeight: wh, wavePeriod: wp
         });
         fishResult.jiaiStatus = theoryResult.jiaiStatus;
         return fishResult;
@@ -228,7 +232,8 @@ const App = (() => {
         const result = TheoryScore.calcScore({
           ...scoreParams,
           minutesOfDay: min,
-          windSpeed: ws, windDir: wd, pressure: pr
+          windSpeed: ws, windDir: wd, pressure: pr,
+          waveHeight: wh, wavePeriod: wp
         });
         return result;
       }
@@ -357,17 +362,20 @@ const App = (() => {
     const windDir = effectiveWeather ? effectiveWeather.windDir : null;
     const pressure = effectiveWeather ? effectiveWeather.pressure : null;
 
-    const params = { ...state.lastScoreParams, minutesOfDay: minutes, windSpeed, windDir, pressure };
+    // 時刻別マリンデータ（ランキングと同一ロジック）
+    const marine = state.onlineData ? state.onlineData.marine : null;
+    const marineForDate = marine ? DataFetch.getMarineForDate(marine, state.date) : null;
+    const mAt = marine ? DataFetch.getMarineAtMinute(marine, state.date, minutes) : null;
+    const wh = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
+    const wp = mAt ? mAt.wavePeriod : (marineForDate ? marineForDate.wavePeriod : null);
+
+    const params = { ...state.lastScoreParams, minutesOfDay: minutes, windSpeed, windDir, pressure, waveHeight: wh, wavePeriod: wp };
     const scoreResult = TheoryScore.calcScore(params);
 
     // 魚種選択時は魚種別スコアで表示
+    const port = PORTS[state.portIndex];
     let displayResult = scoreResult;
     if (state.selectedFish && typeof FishScore !== 'undefined') {
-      const port = PORTS[state.portIndex];
-      const marine = state.onlineData ? state.onlineData.marine : null;
-      const marineForDate = marine ? DataFetch.getMarineForDate(marine, state.date) : null;
-      const mAt = marine ? DataFetch.getMarineAtMinute(marine, state.date, minutes) : null;
-      const wh = mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
       const flowInfo = TheoryScore.calcTideFlowInfo(params.tidePoints, params.tideEvents, minutes);
       const fishResult = FishScore.calcFishScore(state.selectedFish, {
         ...params,
@@ -402,23 +410,17 @@ const App = (() => {
       minutes, state.lastHourlyScores
     );
 
-    // 時刻別マリンデータを取得
-    const marine = state.onlineData ? state.onlineData.marine : null;
-    const marineAtTime = marine ? DataFetch.getMarineAtMinute(marine, state.date, minutes) : null;
-    const marineForDate = marine ? DataFetch.getMarineForDate(marine, state.date) : null;
-
-    // 波浪値（時刻別優先、なければ日次）
-    const waveHeightNow = marineAtTime ? marineAtTime.waveHeight : (marineForDate ? marineForDate.waveHeight : null);
+    // 波浪値（上部で取得済みの mAt / marineForDate を再利用）
+    const waveHeightNow = wh;
 
     // 風・気圧・波浪・天気カードを更新
-    const port = PORTS[state.portIndex];
     UI.updateWindCard(effectiveWeather, port[10]);
     UI.updatePressureCard(effectiveWeather);
     // 波浪カード: 時刻別データでmarineForDateを上書き構築
-    const marineDisplay = marineAtTime ? {
-      waveHeight: marineAtTime.waveHeight,
-      wavePeriod: marineAtTime.wavePeriod,
-      waveDir: marineAtTime.waveDir,
+    const marineDisplay = mAt ? {
+      waveHeight: mAt.waveHeight,
+      wavePeriod: mAt.wavePeriod,
+      waveDir: mAt.waveDir,
       sst: marineForDate ? marineForDate.sst : null,
       sstYesterday: marineForDate ? marineForDate.sstYesterday : null,
       source: 'open-meteo'
