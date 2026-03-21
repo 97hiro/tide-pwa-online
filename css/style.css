@@ -1395,6 +1395,7 @@ body {
 .spot-bar-btn.warn { color: var(--accent-yellow); }
 .spot-bar-btn.danger { color: var(--accent-red); }
 .spot-bar-btn.info { font-size: 12px; color: var(--text-secondary); }
+.spot-bar-btn.judgment { font-size: 13px; color: var(--accent-cyan); }
 .spot-bar-sep { flex: 1; min-width: 4px; }
 
 /* ==================== Spot Popup ==================== */
@@ -1465,6 +1466,183 @@ body {
   color: var(--text-secondary);
   text-align: right;
   margin-top: 8px;
+}
+
+/* ==================== Judgment (釣行判断) ==================== */
+.judgment-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 32px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.judgment-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent-cyan);
+  border-radius: 50%;
+  animation: judgment-spin 0.8s linear infinite;
+}
+@keyframes judgment-spin { to { transform: rotate(360deg); } }
+
+.judgment-rank-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.judgment-rank-letter {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  min-width: 44px;
+  text-align: center;
+}
+.judgment-rank-body { flex: 1; }
+.judgment-rank-label {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+.judgment-rank-sub {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.judgment-section-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 14px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.judgment-reasons { display: flex; flex-direction: column; gap: 6px; }
+.judgment-reason {
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+.judgment-reason-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+.judgment-reason.positive .judgment-reason-icon { color: var(--accent-green); }
+.judgment-reason.negative .judgment-reason-icon { color: var(--accent-yellow); }
+
+.judgment-scores { display: flex; flex-direction: column; gap: 5px; }
+.judgment-score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.judgment-score-label {
+  width: 42px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.judgment-score-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.judgment-score-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.judgment-score-val {
+  width: 28px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.judgment-fish-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+.judgment-fish-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  background: var(--bg-card);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.judgment-fish-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.judgment-fish-name {
+  flex: 1;
+  color: var(--text-secondary);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.judgment-fish-offseason {
+  font-size: 9px;
+  color: var(--accent-red);
+  margin-left: 2px;
+}
+.judgment-fish-score {
+  font-weight: bold;
+  font-size: 13px;
+  min-width: 24px;
+  text-align: right;
+}
+
+.judgment-alts { display: flex; flex-direction: column; gap: 4px; }
+.judgment-alt-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-card);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.judgment-alt-item:active { background: var(--bg-hover); }
+.judgment-alt-info { flex: 1; min-width: 0; }
+.judgment-alt-name {
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.judgment-alt-detail {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.judgment-alt-score {
+  font-size: 22px;
+  font-weight: 900;
+  min-width: 36px;
+  text-align: center;
 }
 
 /* ==================== Fish Select Popup ==================== */

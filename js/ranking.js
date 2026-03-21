@@ -936,5 +936,126 @@ const Ranking = (() => {
     return { ranking: rankingScore.total, main: mainScore.total, match };
   }
 
-  return { open, close, init, openWithFish, verifyScore };
+  // ==================== 釣行判断用API ====================
+  // 外部から呼べるランキング計算（モーダルを開かない）
+  async function calcForJudgment(date, portIndex) {
+    // 共有データ取得（キャッシュがあれば再利用）
+    if (!state.sharedData || !state.date || state.date.toDateString() !== date.toDateString()) {
+      state.date = new Date(date.getTime());
+      state.sharedData = await fetchSharedData(date);
+    }
+    const sharedData = state.sharedData;
+
+    // 全港TheoryScoreランキング計算
+    const theoryResults = [];
+    for (let i = 0; i < PORTS.length; i++) {
+      if (isBanned(i)) continue;
+      try {
+        theoryResults.push(calcPortScore(i, date, sharedData, 'best'));
+      } catch (e) { /* skip */ }
+    }
+    theoryResults.sort((a, b) => b.score - a.score);
+
+    // 対象港のTheoryScore結果
+    const port = PORTS[portIndex];
+    const targetPref = port[2];
+
+    // 同エリア内ランキング（ユーザーが実際に行ける範囲での比較）
+    const areaResults = theoryResults.filter(r => r.pref === targetPref);
+    const targetTheory = areaResults.find(r => r.portIndex === portIndex);
+    const areaRank = areaResults.findIndex(r => r.portIndex === portIndex) + 1;
+    const areaTotalSpots = areaResults.length;
+
+    // 同エリア内での魚種ベストスコア比較用: 全エリア港の魚種ベストも計算
+    // 対象港の魚種別ベストスコア
+    const fishScores = {};
+    let bestFishScore = 0, bestFishId = null;
+    for (const fid of FISH_IDS) {
+      try {
+        const r = calcFishPortBestScore(fid, portIndex, date, sharedData, 'best');
+        fishScores[fid] = r;
+        if (r.score > bestFishScore) { bestFishScore = r.score; bestFishId = fid; }
+      } catch (e) { /* skip */ }
+    }
+
+    // 同エリアの代替スポット（対象港より上位）
+    const sameAreaAbove = areaResults.filter(r => r.portIndex !== portIndex);
+    // 代替スポットの魚種ベストスコアも計算（上位5件のみ）
+    const alternatives = [];
+    for (let i = 0; i < Math.min(5, sameAreaAbove.length); i++) {
+      const alt = sameAreaAbove[i];
+      let altBestFish = 0, altBestFishId = null;
+      for (const fid of FISH_IDS) {
+        try {
+          const r = calcFishPortBestScore(fid, alt.portIndex, date, sharedData, 'best');
+          if (r.score > altBestFish) { altBestFish = r.score; altBestFishId = fid; }
+        } catch (e) { /* skip */ }
+      }
+      alternatives.push({ ...alt, bestFishScore: altBestFish, bestFishId: altBestFishId });
+    }
+
+    // スコア内訳（現在時刻 or ベストタイム）
+    const pointsExtended = TideCalc.calcDayTide(portIndex, date, true);
+    const eventsExtended = TideCalc.findTideEvents(pointsExtended);
+    const events = eventsExtended.filter(e => e.minutes <= 1440);
+    const tidalRange = TideCalc.getTidalRange(events);
+    const sunTimes = TideCalc.calcSunTimes(port[3], port[4], date);
+    const moonAge = TideCalc.calcMoonAge(date);
+    const tideName = TideCalc.getTideName(moonAge);
+
+    const zone = getMarineZone(port);
+    const weatherData = sharedData.weather[zone] || null;
+    const marineData = sharedData.marine[zone] || null;
+    const marineForDate = marineData ? DataFetch.getMarineForDate(marineData, date) : null;
+
+    // ベストタイムでの内訳
+    const bestMin = targetTheory ? targetTheory.bestTime.hour * 60 + 60 : 420;
+    const wAt = weatherData ? DataFetch.getWeatherAtMinute(weatherData, date, bestMin) : null;
+    const mAt = marineData ? DataFetch.getMarineAtMinute(marineData, date, bestMin) : null;
+
+    const scoreDetail = TheoryScore.calcScore({
+      tideName, tidalRange, minutesOfDay: bestMin, tideEvents: eventsExtended,
+      pressure: wAt ? wAt.pressure : null,
+      pressureTrend: null, pressureChange: null,
+      windSpeed: wAt ? wAt.windSpeed : null, windDir: wAt ? wAt.windDir : null,
+      portLat: port[3], portLon: port[4],
+      waveHeight: mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null),
+      wavePeriod: mAt ? mAt.wavePeriod : (marineForDate ? marineForDate.wavePeriod : null),
+      sunTimes, moonAge,
+      facing: port[10], shelter: port[11],
+      tidePoints: pointsExtended
+    });
+
+    // 同エリア内の魚種ベスト中央値（相対評価用）
+    // 代替上位5件の魚種ベスト平均を算出
+    let areaFishAvg = bestFishScore;
+    if (alternatives.length > 0) {
+      const altFishScores = alternatives.map(a => a.bestFishScore).filter(s => s > 0);
+      if (altFishScores.length > 0) {
+        areaFishAvg = Math.round(altFishScores.reduce((a, b) => a + b, 0) / altFishScores.length);
+      }
+    }
+
+    return {
+      theoryRank: areaRank,
+      totalSpots: areaTotalSpots,
+      theoryScore: targetTheory ? targetTheory.score : 0,
+      theoryBestTime: targetTheory ? targetTheory.bestTime : null,
+      tideName,
+      moonAge,
+      shelter: port[11],
+      spotType: port[12],
+      month: date.getMonth() + 1,
+      scoreDetail,
+      fishScores,
+      bestFishScore,
+      bestFishId,
+      areaFishAvg,
+      alternatives,
+      weather: wAt,
+      marine: mAt || marineForDate
+    };
+  }
+
+  return { open, close, init, openWithFish, verifyScore, calcForJudgment, getMarineZone, calcPortScore, calcFishPortBestScore, fetchSharedData, isBanned, state: state };
 })();
