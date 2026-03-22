@@ -1153,14 +1153,29 @@ body {
 }
 
 .ranking-score-area {
-  width: 54px;
+  width: 64px;
   flex-shrink: 0;
   text-align: center;
+}
+.ranking-score-with-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
 }
 .ranking-score {
   font-size: 20px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+}
+.ranking-judgment-badge {
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  padding: 1px 3px;
+  border: 1.5px solid;
+  border-radius: 3px;
+  flex-shrink: 0;
 }
 .ranking-score-bar {
   width: 100%;
@@ -1466,6 +1481,86 @@ body {
   color: var(--text-secondary);
   text-align: right;
   margin-top: 8px;
+}
+
+/* ==================== Fish Detail Popup ==================== */
+.fd-header {
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+.fd-fish-name {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.fd-scores-row {
+  display: flex;
+  gap: 16px;
+}
+.fd-score-block { text-align: center; }
+.fd-score-value {
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+.fd-score-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.fd-section-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  margin: 12px 0 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+.fd-bars { display: flex; flex-direction: column; gap: 5px; }
+.fd-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.fd-bar-label {
+  width: 58px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.fd-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.fd-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.fd-bar-val {
+  width: 28px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 12px;
+}
+.fd-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.fd-info-label {
+  color: var(--text-secondary);
+  font-size: 11px;
 }
 
 /* ==================== Judgment (釣行判断) ==================== */

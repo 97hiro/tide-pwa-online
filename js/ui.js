@@ -527,7 +527,7 @@ const UI = (() => {
 
     el.querySelectorAll('.fish-mini-item').forEach(item => {
       item.addEventListener('click', () => {
-        Ranking.openWithFish(item.dataset.fish);
+        showFishDetail(item.dataset.fish);
       });
     });
 
@@ -569,12 +569,137 @@ const UI = (() => {
     document.getElementById('datePickerOverlay').classList.remove('active');
   }
 
+  // ==================== 魚種スコア詳細ポップアップ ====================
+  function showFishDetail(fishId) {
+    const profile = FISH_PROFILES[fishId];
+    if (!profile) return;
+    const port = PORTS[App.state.portIndex];
+    if (!port) return;
+
+    const d = App.state.date;
+    const pointsExtended = TideCalc.calcDayTide(App.state.portIndex, d, true);
+    const eventsExtended = TideCalc.findTideEvents(pointsExtended);
+    const sunTimes = TideCalc.calcSunTimes(port[3], port[4], d);
+    const moonAge = TideCalc.calcMoonAge(d);
+    const tideName = TideCalc.getTideName(moonAge);
+    const spotType = port[12] || 'port';
+    const shelter = port[11];
+
+    // オンラインデータ
+    const online = App.state.onlineData || {};
+    const weather = online.weather || null;
+    const marine = online.marine || null;
+    const marineForDate = marine ? DataFetch.getMarineForDate(marine, d) : null;
+    const seaTemp = marineForDate ? (marineForDate.sst || null) : null;
+
+    // 全時間帯をスキャンしてベストタイムと現在スコアを計算
+    let bestScore = 0, bestMin = 0, bestResult = null;
+    for (let min = 0; min < 1440; min += 30) {
+      const flowInfo = TheoryScore.calcTideFlowInfo(pointsExtended, eventsExtended, min);
+      const wAt = weather ? DataFetch.getWeatherAtMinute(weather, d, min) : null;
+      const mAt = marine ? DataFetch.getMarineAtMinute(marine, d, min) : null;
+      const result = FishScore.calcFishScore(fishId, {
+        jiaiStatus: flowInfo.jiaiStatus,
+        flowRate: flowInfo.flowRate,
+        pressure: wAt ? wAt.pressure : null,
+        windSpeed: wAt ? wAt.windSpeed : null,
+        waveHeight: mAt ? mAt.waveHeight : (marineForDate ? marineForDate.waveHeight : null),
+        seaTemp, moonAge, minutesOfDay: min, sunTimes,
+        spotType, shelter, tideName, month: d.getMonth() + 1
+      });
+      if (result.total > bestScore) {
+        bestScore = result.total;
+        bestMin = min;
+        bestResult = result;
+      }
+    }
+
+    if (!bestResult) return;
+
+    // 現在時刻のスコアも計算
+    const slider = document.getElementById('timeSlider');
+    const nowMin = slider ? parseInt(slider.value) : 720;
+    const nowFlow = TheoryScore.calcTideFlowInfo(pointsExtended, eventsExtended, nowMin);
+    const nowW = weather ? DataFetch.getWeatherAtMinute(weather, d, nowMin) : null;
+    const nowM = marine ? DataFetch.getMarineAtMinute(marine, d, nowMin) : null;
+    const nowResult = FishScore.calcFishScore(fishId, {
+      jiaiStatus: nowFlow.jiaiStatus,
+      flowRate: nowFlow.flowRate,
+      pressure: nowW ? nowW.pressure : null,
+      windSpeed: nowW ? nowW.windSpeed : null,
+      waveHeight: nowM ? nowM.waveHeight : (marineForDate ? marineForDate.waveHeight : null),
+      seaTemp, moonAge, minutesOfDay: nowMin, sunTimes,
+      spotType, shelter, tideName, month: d.getMonth() + 1
+    });
+
+    // HTML構築
+    const fishColor = FISH_COLORS[fishId] || '#4FC3F7';
+    const iconHtml = profile.icon.endsWith('.png')
+      ? `<img src="${profile.icon}" style="width:24px;height:24px;object-fit:contain;border-radius:4px;vertical-align:middle">`
+      : profile.icon;
+    const bestH = Math.floor(bestMin / 60);
+    const bestM = bestMin % 60;
+    const bestTimeStr = `${bestH}:${String(bestM).padStart(2, '0')}`;
+    const nowH = Math.floor(nowMin / 60);
+    const nowMM = nowMin % 60;
+    const nowTimeStr = `${nowH}:${String(nowMM).padStart(2, '0')}`;
+
+    const scoreColor = (v) => v >= 78 ? '#4ecb71' : v >= 65 ? '#a0d840' : v >= 46 ? '#f0c040' : v >= 31 ? '#f0943a' : '#e74c5e';
+
+    let html = '';
+
+    // ヘッダー: 魚種名とスコア
+    html += `<div class="fd-header" style="border-left:4px solid ${fishColor}">`;
+    html += `<div class="fd-fish-name">${iconHtml} ${profile.name}</div>`;
+    html += `<div class="fd-scores-row">`;
+    html += `<div class="fd-score-block"><div class="fd-score-value" style="color:${scoreColor(bestResult.total)}">${bestResult.total}</div><div class="fd-score-label">ベスト (${bestTimeStr})</div></div>`;
+    html += `<div class="fd-score-block"><div class="fd-score-value" style="color:${scoreColor(nowResult.total)}">${nowResult.total}</div><div class="fd-score-label">現在 (${nowTimeStr})</div></div>`;
+    html += `</div></div>`;
+
+    // スコア内訳 (ベストタイム)
+    html += `<div class="fd-section-title">スコア内訳 (${bestTimeStr})</div>`;
+    const labels = { tide: '潮汐', spot: 'スポット', shelter: '遮蔽適性', seaTemp: '水温', wind: '風', wave: '波', pressure: '気圧', time: '時間帯', moon: '月齢' };
+    html += `<div class="fd-bars">`;
+    for (const [key, label] of Object.entries(labels)) {
+      const val = bestResult.scores[key];
+      if (val == null) continue;
+      const pct = Math.min(100, val);
+      const c = scoreColor(val);
+      html += `<div class="fd-bar-row"><span class="fd-bar-label">${label}</span>`;
+      html += `<div class="fd-bar-bg"><div class="fd-bar-fill" style="width:${pct}%;background:${c}"></div></div>`;
+      html += `<span class="fd-bar-val" style="color:${c}">${val}</span></div>`;
+    }
+    html += `</div>`;
+
+    // シーズン情報
+    const inSeason = profile.season && profile.season.includes(d.getMonth() + 1);
+    const isPeak = profile.peakMonths && profile.peakMonths.includes(d.getMonth() + 1);
+    let seasonText = '';
+    if (isPeak) seasonText = `<span style="color:#4ecb71">最盛期</span>`;
+    else if (inSeason) seasonText = `<span style="color:#a0d840">シーズン中</span>`;
+    else seasonText = `<span style="color:#e74c5e">シーズン外</span>`;
+
+    html += `<div class="fd-info-row"><span class="fd-info-label">シーズン</span><span>${seasonText}</span></div>`;
+    html += `<div class="fd-info-row"><span class="fd-info-label">潮回り</span><span>${tideName}${profile.tidalBonus && profile.tidalBonus[tideName] != null ? ' (' + (profile.tidalBonus[tideName] >= 0 ? '+' : '') + profile.tidalBonus[tideName] + ')' : ''}</span></div>`;
+    html += `<div class="fd-info-row"><span class="fd-info-label">遮蔽度</span><span>${shelter != null ? shelter : '不明'} (${profile.shelterPref === 'low' ? '外海好み' : profile.shelterPref === 'high' ? '湾奥好み' : '中間'})</span></div>`;
+
+    // ポップアップ表示
+    const overlay = document.getElementById('spotPopupOverlay');
+    const titleEl = document.getElementById('spotPopupTitle');
+    const bodyEl = document.getElementById('spotPopupBody');
+    if (overlay && titleEl && bodyEl) {
+      titleEl.textContent = profile.name + ' スコア詳細';
+      bodyEl.innerHTML = html;
+      overlay.style.display = 'flex';
+    }
+  }
+
   return {
     formatDate, isToday, getTideBadgeClass,
     updateHeader, updateScore, updateGraph, updateWeatherCards,
     updateWindCard, updatePressureCard, updateWaveCard, updateSstCard, updateWeatherInfo,
     updateTideEvents, updateNextTide, updateSunMoon, updateWeekly,
-    updateNavButtons, updateFishMiniScores,
+    updateNavButtons, updateFishMiniScores, showFishDetail,
     openPortModal, closePortModal, renderPortList,
     openDatePicker, closeDatePicker
   };

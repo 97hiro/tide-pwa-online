@@ -270,16 +270,13 @@ const SpotInfo = (() => {
       ? data.bestFishScore - Math.round(fishGap * 0.5)
       : data.bestFishScore;
 
-    // shelter リスク補正: 遮蔽度が低いスポットは風・波リスクが高い
+    // shelter リスク補正: 遮蔽度が低く実際に風・波が悪い場合のみ減点
+    // 天候データ未取得の場合はペナルティを与えない（データ不足で判定不能）
     const hasWeather = data.scoreDetail.scores.wind != null;
-    if (data.shelter != null && data.shelter < 0.3) {
-      if (!hasWeather) {
-        effectiveFishScore -= 12;
-      } else if (data.scoreDetail.scores.wind < 60) {
+    if (hasWeather && data.shelter != null && data.shelter < 0.3) {
+      if (data.scoreDetail.scores.wind < 60) {
         effectiveFishScore -= 5;
       }
-    } else if (data.shelter != null && data.shelter < 0.5 && !hasWeather) {
-      effectiveFishScore -= 5;
     }
 
     // ランク判定
@@ -414,17 +411,16 @@ const SpotInfo = (() => {
         // 風速データあり + べた凪 → 潮止まりリスクを警告
         reasons.push({ positive: false, text: `大潮×べた凪(風速${windSpeed.toFixed(1)}m/s)は潮止まり時に水が完全に止まりやすく、仕掛けが動かず魚にアピールできないリスクがあります` });
         reasons.push({ positive: false, text: `外海テトラは大潮で潮流が速い時間と完全に止まる時間が極端になります。湾奥の港と違い潮止まりで水が完全に死ぬリスクがあります` });
-      } else if (!hasWeather) {
-        // 風速データなし → 天気不明の注記のみ
-        reasons.push({ positive: false, text: `大潮×低遮蔽スポット — 天気データが未取得のため潮止まりリスクの判定ができません。べた凪の場合は注意が必要です` });
       }
+      // 風速データなし → ランクには影響させない（注記は4.で出す）
       // 風速データあり + 風速>3 → 潮止まりリスクは低いので警告なし
     }
 
     // ==================== 4. shelter + 天気データ ====================
     if (data.shelter != null && data.shelter < 0.3) {
       if (!hasWeather) {
-        reasons.push({ positive: false, text: `遮蔽度が低い(${data.shelter}) — 天気データ未取得のため風・波リスクが不明。当日の天候次第で大幅減点の可能性` });
+        // 天候データ未取得は情報として表示するがネガティブ扱いにしない
+        reasons.push({ positive: true, text: `天気データ未取得 — 潮汐・魚種・順位のみで判定しています。当日の風・波は現地で確認してください` });
       } else if (d.scores.wind < 50) {
         reasons.push({ positive: false, text: `遮蔽度が低く(${data.shelter})、風の影響を受けやすい — 風スコア${d.scores.wind}点` });
       } else {
@@ -432,6 +428,8 @@ const SpotInfo = (() => {
       }
     } else if (data.shelter != null && data.shelter >= 0.6) {
       reasons.push({ positive: true, text: `遮蔽度が高く(${data.shelter})、風・波に強い` });
+    } else if (!hasWeather) {
+      reasons.push({ positive: true, text: `天気データ未取得 — 潮汐・魚種・順位のみで判定しています` });
     }
 
     // ==================== 5. 風・波・気圧 ====================

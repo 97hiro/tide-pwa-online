@@ -29,7 +29,7 @@ const Ranking = (() => {
     // 京都・日本海 (4ゾーン)
     maizuru:        { lat: 35.52, lon: 135.35, label: '舞鶴' },
     miyazu:         { lat: 35.63, lon: 135.20, label: '宮津' },
-    tangoEast:      { lat: 35.68, lon: 135.00, label: '丹後東部' },
+    tangoEast:      { lat: 35.78, lon: 135.08, label: '丹後東部' },
     tangoWest:      { lat: 35.70, lon: 134.60, label: '丹後西部' }
   };
 
@@ -243,7 +243,18 @@ const Ranking = (() => {
         for (let i = startIdx; i < end; i++) {
           if (isBanned(i)) { done++; continue; }
           try {
-            results.push(calcPortScore(i, date, sharedData, timePeriod));
+            const r = calcPortScore(i, date, sharedData, timePeriod);
+            // 魚種ベストスコアも計算（釣行判断ランク用）
+            let bestFish = 0, bestFishId = null;
+            for (const fid of FISH_IDS) {
+              try {
+                const fr = calcFishPortBestScore(fid, i, date, sharedData, timePeriod);
+                if (fr.score > bestFish) { bestFish = fr.score; bestFishId = fid; }
+              } catch (_) { /* skip */ }
+            }
+            r.bestFishScore = bestFish;
+            r.bestFishId = bestFishId;
+            results.push(r);
           } catch (e) {
             console.warn(`ランキング計算エラー (port ${i}):`, e);
           }
@@ -449,6 +460,34 @@ const Ranking = (() => {
     return parts.length > 0 ? `<div class="ranking-facility">${parts.join(' ')}</div>` : '';
   }
 
+  // ==================== 釣行判断ランク算出 ====================
+  // percentile: 0〜1 (0=1位, 1=最下位), fishScore: 最高魚種スコア
+  function calcJudgmentRank(percentile, fishScore) {
+    if (percentile <= 0.25 && fishScore >= 75) return { rank: 'A', color: '#4ecb71' };
+    if (percentile <= 0.50 && fishScore >= 65) return { rank: 'B', color: '#4FC3F7' };
+    if (percentile > 0.75 || fishScore < 55) return { rank: 'D', color: '#e74c5e' };
+    return { rank: 'C', color: '#f0c040' };
+  }
+
+  // results配列内での同エリアパーセンタイルを計算
+  function calcAreaPercentiles(allResults) {
+    // エリア別に分類してランク付き結果を返す
+    const byPref = {};
+    for (const r of allResults) {
+      if (!byPref[r.pref]) byPref[r.pref] = [];
+      byPref[r.pref].push(r);
+    }
+    // 各エリア内をスコア降順ソートしてpercentileを割り当て
+    const percentileMap = {};
+    for (const pref of Object.keys(byPref)) {
+      const sorted = byPref[pref].slice().sort((a, b) => b.score - a.score);
+      for (let i = 0; i < sorted.length; i++) {
+        percentileMap[sorted[i].portIndex] = (i + 1) / sorted.length;
+      }
+    }
+    return percentileMap;
+  }
+
   // ==================== UI描画 ====================
   function renderProgress(msg) {
     const el = document.getElementById('rankingContent');
@@ -470,6 +509,9 @@ const Ranking = (() => {
       el.innerHTML = '<div class="ranking-placeholder">該当する漁港がありません</div>';
       return;
     }
+
+    // 全結果からエリア内パーセンタイルを計算
+    const percentileMap = calcAreaPercentiles(state.results);
 
     // 気象データ取得失敗チェック
     let hasAnyWeather = false;
@@ -495,6 +537,12 @@ const Ranking = (() => {
       const typeIcon = TYPE_ICONS[portType] || '';
       const iconPrefix = typeIcon ? typeIcon + ' ' : '';
 
+      // 釣行判断ランク
+      const areaPercentile = percentileMap[item.portIndex] || 1;
+      const fishScore = item.bestFishScore || 0;
+      const jRank = calcJudgmentRank(areaPercentile, fishScore);
+      const judgmentBadge = `<span class="ranking-judgment-badge" style="color:${jRank.color};border-color:${jRank.color}">${jRank.rank}</span>`;
+
       const regPrefix = isCaution(item.portIndex) ? '\u26A0\uFE0F ' : isAreaWarning(item.portIndex) ? '\uD83D\uDD0D ' : '';
 
       html += `<div class="ranking-item" data-port-index="${item.portIndex}">
@@ -505,7 +553,10 @@ const Ranking = (() => {
     <div class="ranking-detail">${bestStr} <span class="ranking-tide-badge tide-badge ${UI.getTideBadgeClass(item.tideName)}">${item.tideName}</span></div>
   </div>
   <div class="ranking-score-area">
-    <div class="ranking-score" style="color:${item.color}">${item.score}</div>
+    <div class="ranking-score-with-badge">
+      <div class="ranking-score" style="color:${item.color}">${item.score}</div>
+      ${judgmentBadge}
+    </div>
     <div class="ranking-score-bar"><div class="ranking-score-fill" style="width:${pct}%;background:${item.color}"></div></div>
   </div>
   ${facilityHtml(item.portIndex)}
@@ -549,6 +600,9 @@ const Ranking = (() => {
       return;
     }
 
+    // 全結果からエリア内パーセンタイルを計算
+    const percentileMap = calcAreaPercentiles(state.results);
+
     const fishId = state.fishMode;
     const isBestAll = fishId === 'bestAll';
     const themeColor = isBestAll ? '#ffd700' : (FISH_COLORS[fishId] || '#4FC3F7');
@@ -575,6 +629,11 @@ const Ranking = (() => {
       // data-fish-id: bestAllクリック時にメイン画面へ魚種を引き継ぐ
       const itemFishId = item.fishId || '';
 
+      // 釣行判断ランク（魚種モードではscoreが魚種スコアそのもの）
+      const areaPercentile = percentileMap[item.portIndex] || 1;
+      const jRank = calcJudgmentRank(areaPercentile, item.score);
+      const judgmentBadge = `<span class="ranking-judgment-badge" style="color:${jRank.color};border-color:${jRank.color}">${jRank.rank}</span>`;
+
       // ベストモードでは魚アイコンも表示
       let fishLabel = '';
       if (isBestAll && item.fishId) {
@@ -587,6 +646,7 @@ const Ranking = (() => {
       }
 
       const regPrefix = isCaution(item.portIndex) ? '\u26A0\uFE0F ' : isAreaWarning(item.portIndex) ? '\uD83D\uDD0D ' : '';
+      const scoreColor = isBestAll ? (FISH_COLORS[item.fishId] || themeColor) : themeColor;
 
       html += `<div class="ranking-item" data-port-index="${item.portIndex}" data-fish-id="${itemFishId}">
   <div class="ranking-rank${rankClass}">${rank}</div>
@@ -596,8 +656,11 @@ const Ranking = (() => {
     <div class="ranking-detail">${timeStr}頃 <span class="ranking-tide-badge tide-badge ${UI.getTideBadgeClass(item.tideName)}">${item.tideName}</span></div>
   </div>
   <div class="ranking-score-area">
-    <div class="ranking-score" style="color:${isBestAll ? (FISH_COLORS[item.fishId] || themeColor) : themeColor}">${item.score}</div>
-    <div class="ranking-score-bar"><div class="ranking-score-fill" style="width:${pct}%;background:${isBestAll ? (FISH_COLORS[item.fishId] || themeColor) : themeColor}"></div></div>
+    <div class="ranking-score-with-badge">
+      <div class="ranking-score" style="color:${scoreColor}">${item.score}</div>
+      ${judgmentBadge}
+    </div>
+    <div class="ranking-score-bar"><div class="ranking-score-fill" style="width:${pct}%;background:${scoreColor}"></div></div>
   </div>
   ${facilityHtml(item.portIndex)}
 </div>`;

@@ -195,9 +195,8 @@ const FISH_PROFILES = {
     timeOfDay: { best: ['morning'], good: ['evening', 'daytime'] },
     spotType: { best: ['rock'], good: ['pier'], ok: ['port'] },
     shelterPref: 'low',
-    // マダイ: 砂浜・河口は不適、湾奥テトラ(shelter低)も不適
+    // マダイ: 砂浜・河口は不適
     spotPenalty: { surf: -15, river: -15 },
-    shelterPenalty: { low: -15 },
     // マダイ特有フラグ
     madaiMode: true,
     scoreAdjust: -5,
