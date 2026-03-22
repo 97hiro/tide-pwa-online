@@ -1487,6 +1487,34 @@ body {
 }
 @keyframes judgment-spin { to { transform: rotate(360deg); } }
 
+.judgment-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.judgment-tab {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.judgment-tab + .judgment-tab {
+  border-left: 1px solid var(--border);
+}
+.judgment-tab.active {
+  background: var(--accent-cyan);
+  color: #fff;
+}
+
 .judgment-rank-card {
   display: flex;
   align-items: center;

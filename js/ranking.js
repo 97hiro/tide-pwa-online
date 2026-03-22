@@ -938,7 +938,8 @@ const Ranking = (() => {
 
   // ==================== 釣行判断用API ====================
   // 外部から呼べるランキング計算（モーダルを開かない）
-  async function calcForJudgment(date, portIndex) {
+  async function calcForJudgment(date, portIndex, timePeriod) {
+    timePeriod = timePeriod || 'best';
     // 共有データ取得（キャッシュがあれば再利用）
     if (!state.sharedData || !state.date || state.date.toDateString() !== date.toDateString()) {
       state.date = new Date(date.getTime());
@@ -951,7 +952,7 @@ const Ranking = (() => {
     for (let i = 0; i < PORTS.length; i++) {
       if (isBanned(i)) continue;
       try {
-        theoryResults.push(calcPortScore(i, date, sharedData, 'best'));
+        theoryResults.push(calcPortScore(i, date, sharedData, timePeriod));
       } catch (e) { /* skip */ }
     }
     theoryResults.sort((a, b) => b.score - a.score);
@@ -972,7 +973,7 @@ const Ranking = (() => {
     let bestFishScore = 0, bestFishId = null;
     for (const fid of FISH_IDS) {
       try {
-        const r = calcFishPortBestScore(fid, portIndex, date, sharedData, 'best');
+        const r = calcFishPortBestScore(fid, portIndex, date, sharedData, timePeriod);
         fishScores[fid] = r;
         if (r.score > bestFishScore) { bestFishScore = r.score; bestFishId = fid; }
       } catch (e) { /* skip */ }
@@ -987,7 +988,7 @@ const Ranking = (() => {
       let altBestFish = 0, altBestFishId = null;
       for (const fid of FISH_IDS) {
         try {
-          const r = calcFishPortBestScore(fid, alt.portIndex, date, sharedData, 'best');
+          const r = calcFishPortBestScore(fid, alt.portIndex, date, sharedData, timePeriod);
           if (r.score > altBestFish) { altBestFish = r.score; altBestFishId = fid; }
         } catch (e) { /* skip */ }
       }

@@ -200,9 +200,50 @@ const SpotInfo = (() => {
     _showPopup(port[0] + ' 釣行判断', '<div class="judgment-loading"><div class="judgment-spinner"></div>ランキング計算中...</div>');
 
     try {
-      const data = await Ranking.calcForJudgment(date, portIndex);
+      // 3つの時間帯を並列計算
+      const [dataBest, dataMorning, dataEvening] = await Promise.all([
+        Ranking.calcForJudgment(date, portIndex, 'best'),
+        Ranking.calcForJudgment(date, portIndex, 'morning'),
+        Ranking.calcForJudgment(date, portIndex, 'evening')
+      ]);
+
+      const periodMap = {
+        best: { data: dataBest, label: '終日ベスト' },
+        morning: { data: dataMorning, label: '朝マズメ' },
+        evening: { data: dataEvening, label: '夕マズメ' }
+      };
+
       const bodyEl = document.getElementById('spotPopupBody');
-      if (bodyEl) bodyEl.innerHTML = _renderJudgment(data, portIndex, date);
+      if (!bodyEl) return;
+
+      // タブ + コンテンツ描画
+      let tabsHtml = '<div class="judgment-tabs">';
+      tabsHtml += '<button class="judgment-tab active" data-jperiod="best">終日ベスト</button>';
+      tabsHtml += '<button class="judgment-tab" data-jperiod="morning">朝マズメ</button>';
+      tabsHtml += '<button class="judgment-tab" data-jperiod="evening">夕マズメ</button>';
+      tabsHtml += '</div>';
+
+      let panelsHtml = '';
+      for (const [key, entry] of Object.entries(periodMap)) {
+        const display = key === 'best' ? 'block' : 'none';
+        panelsHtml += `<div class="judgment-panel" data-jpanel="${key}" style="display:${display}">`;
+        panelsHtml += _renderJudgment(entry.data, portIndex, date, entry.label);
+        panelsHtml += '</div>';
+      }
+
+      bodyEl.innerHTML = tabsHtml + panelsHtml;
+
+      // タブ切替イベント
+      bodyEl.querySelectorAll('.judgment-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          bodyEl.querySelectorAll('.judgment-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const period = tab.dataset.jperiod;
+          bodyEl.querySelectorAll('.judgment-panel').forEach(p => {
+            p.style.display = p.dataset.jpanel === period ? 'block' : 'none';
+          });
+        });
+      });
 
       // 代替スポットのクリックイベント
       bodyEl.querySelectorAll('.judgment-alt-item').forEach(el => {
@@ -219,7 +260,7 @@ const SpotInfo = (() => {
     }
   }
 
-  function _renderJudgment(data, portIndex, date) {
+  function _renderJudgment(data, portIndex, date, periodLabel) {
     const percentile = data.totalSpots > 0 ? data.theoryRank / data.totalSpots : 1;
     const topPercent = Math.round(percentile * 100);
 
@@ -239,13 +280,6 @@ const SpotInfo = (() => {
       }
     } else if (data.shelter != null && data.shelter < 0.5 && !hasWeather) {
       effectiveFishScore -= 5;
-    }
-
-    // 大潮×低shelter: 潮止まりリスクが極端に高い外海スポット
-    // 大潮は潮流が速い時間と完全に止まる時間が極端 → 低shelterでは潮止まりで水が死ぬ
-    // エリア上位でもスポット特性が致命的なのでランクを強制的に下げる
-    if (data.shelter != null && data.shelter <= 0.3 && data.tideName === '大潮') {
-      effectiveFishScore = Math.min(effectiveFishScore, 48);
     }
 
     // ランク判定
@@ -272,7 +306,8 @@ const SpotInfo = (() => {
     html += `<div class="judgment-rank-letter" style="color:${rankColor}">${rank}</div>`;
     html += `<div class="judgment-rank-body">`;
     html += `<div class="judgment-rank-label" style="color:${rankColor}">${rankLabel}</div>`;
-    html += `<div class="judgment-rank-sub">${dateStr} ${data.tideName} / ${data.totalSpots}スポット中 ${data.theoryRank}位 (上位${topPercent}%)</div>`;
+    const periodTag = periodLabel ? `【${periodLabel}】` : '';
+    html += `<div class="judgment-rank-sub">${periodTag}${dateStr} ${data.tideName} / ${data.totalSpots}スポット中 ${data.theoryRank}位 (上位${topPercent}%)</div>`;
     html += `</div></div>`;
 
     // 判断理由
@@ -373,17 +408,17 @@ const SpotInfo = (() => {
       reasons.push({ positive: false, text: `${data.tideName} — 潮の動きはやや控えめ` });
     }
 
-    // ==================== 2. 大潮×べた凪＝潮止まりリスク ====================
-    if (data.tideName === '大潮' && windSpeed != null && windSpeed <= 3) {
-      reasons.push({ positive: false, text: `大潮×べた凪は潮止まり時に水が完全に止まりやすく、仕掛けが動かず魚にアピールできないリスクがあります` });
-    } else if (data.tideName === '大潮' && !hasWeather) {
-      // 風データなしでも大潮の潮止まりリスクを警告
-      reasons.push({ positive: false, text: `大潮は潮流が速い時間と完全に止まる時間が極端。べた凪の場合は潮止まりで仕掛けが全く動かなくなるリスクがあります` });
-    }
-
-    // ==================== 3. 外海テトラ（低shelter）×大潮リスク ====================
+    // ==================== 2. 大潮×低shelter×風速 ====================
     if (data.shelter != null && data.shelter <= 0.3 && data.tideName === '大潮') {
-      reasons.push({ positive: false, text: `外海テトラは大潮で潮流が速い時間と完全に止まる時間が極端になります。湾奥の港と違い潮止まりで水が完全に死ぬリスクがあります` });
+      if (windSpeed != null && windSpeed <= 3) {
+        // 風速データあり + べた凪 → 潮止まりリスクを警告
+        reasons.push({ positive: false, text: `大潮×べた凪(風速${windSpeed.toFixed(1)}m/s)は潮止まり時に水が完全に止まりやすく、仕掛けが動かず魚にアピールできないリスクがあります` });
+        reasons.push({ positive: false, text: `外海テトラは大潮で潮流が速い時間と完全に止まる時間が極端になります。湾奥の港と違い潮止まりで水が完全に死ぬリスクがあります` });
+      } else if (!hasWeather) {
+        // 風速データなし → 天気不明の注記のみ
+        reasons.push({ positive: false, text: `大潮×低遮蔽スポット — 天気データが未取得のため潮止まりリスクの判定ができません。べた凪の場合は注意が必要です` });
+      }
+      // 風速データあり + 風速>3 → 潮止まりリスクは低いので警告なし
     }
 
     // ==================== 4. shelter + 天気データ ====================
