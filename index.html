@@ -326,7 +326,10 @@ if ('serviceWorker' in navigator) {
   <div class="help-modal" onclick="event.stopPropagation()">
     <div class="help-modal-header">
       <span class="help-modal-title">ヘルプ</span>
-      <button class="help-modal-close" onclick="document.getElementById('helpOverlay').style.display='none'">&times;</button>
+      <div class="help-header-right">
+        <button class="help-super-btn" id="helpSuperBtn" title="超詳細ヘルプ">超</button>
+        <button class="help-modal-close" onclick="document.getElementById('helpOverlay').style.display='none'">&times;</button>
+      </div>
     </div>
     <div class="help-modal-body">
 
@@ -396,6 +399,259 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
+<!-- ===== Super Help Modal ===== -->
+<div class="help-overlay" id="superHelpOverlay" style="display:none" onclick="this.style.display='none'">
+  <div class="help-modal help-modal-super" onclick="event.stopPropagation()">
+    <div class="help-modal-header">
+      <button class="help-back-btn" id="superHelpBack" title="戻る">← 戻る</button>
+      <span class="help-modal-title">超詳細ヘルプ</span>
+      <button class="help-modal-close" onclick="document.getElementById('superHelpOverlay').style.display='none'">&times;</button>
+    </div>
+    <div class="help-modal-body">
+
+      <!-- 1. 基本画面の操作方法 -->
+      <details class="help-section" open>
+        <summary class="help-section-title">📱 基本画面の操作方法</summary>
+        <div class="help-section-body">
+          <p><strong>■ 画面構成</strong></p>
+          <ul>
+            <li><strong>上部（ヘッダー）</strong>：釣り場名（タップで地点変更）、日付ナビ（◁ ▷で前日・翌日）、🏆ランキングボタン、潮名バッジ</li>
+            <li><strong>スポットバー</strong>：📍🏪🚻🅿️等のアイコンが並ぶ情報バー</li>
+            <li><strong>スコアエリア</strong>：釣り期待値スコア（0〜100）、個別評価（潮・気圧・風・波・時間・潮流）、時合ステータス</li>
+            <li><strong>グラフエリア</strong>：潮汐曲線とGPヒートマップ</li>
+            <li><strong>スライダー</strong>：時刻を自由に動かしてスコア変化を確認</li>
+            <li><strong>下部</strong>：天気カード（波浪・風・気圧・海水温）、満潮干潮時刻、日の出入り、月齢、3日間予測</li>
+          </ul>
+          <p><strong>■ スライダー操作</strong></p>
+          <ul>
+            <li>左右にドラッグ：0:00〜24:00の任意の時刻に移動</li>
+            <li>「今」ボタン：現在時刻にジャンプ</li>
+            <li>「◀ 前日」「翌日 ▶」：日付を切り替え</li>
+          </ul>
+          <p><strong>■ 日付テキストタップ</strong></p>
+          <p>ヘッダー中央の日付をタップすると、カレンダーから日付を直接選択できます。</p>
+        </div>
+      </details>
+
+      <!-- 2. 全アイコンの説明 -->
+      <details class="help-section">
+        <summary class="help-section-title">🔣 全アイコンの説明</summary>
+        <div class="help-section-body">
+          <p><strong>■ スポットバーのアイコン</strong></p>
+          <table class="help-icon-table">
+            <tr><td>📍</td><td>Google Mapsで釣り場の位置を表示</td></tr>
+            <tr><td>🏪</td><td>周辺施設（コンビニ・釣具店等）を表示</td></tr>
+            <tr><td>🚻✅ / 🚻❌</td><td>トイレあり / なし</td></tr>
+            <tr><td>🅿️✅ / 🅿️❌</td><td>駐車場あり / なし</td></tr>
+            <tr><td>▲</td><td>一部制限あり（タップで詳細）</td></tr>
+            <tr><td>⛔</td><td>釣り禁止エリアあり（タップで詳細）</td></tr>
+            <tr><td>🎯</td><td>釣行判断（AI判定でA〜Dランク表示）</td></tr>
+            <tr><td>📋</td><td>スポット詳細情報</td></tr>
+            <tr><td>❓</td><td>ヘルプ（このモーダル）</td></tr>
+          </table>
+          <p><strong>■ 個別評価アイコン（スコア下）</strong></p>
+          <table class="help-icon-table">
+            <tr><td style="color:#4ecb71">◎</td><td>非常に良い条件</td></tr>
+            <tr><td style="color:#a0d840">○</td><td>良い条件</td></tr>
+            <tr><td style="color:#f0c040">△</td><td>普通〜やや不利</td></tr>
+            <tr><td style="color:#e74c5e">×</td><td>厳しい条件</td></tr>
+            <tr><td style="color:#5a7090">-</td><td>データなし</td></tr>
+          </table>
+          <p>評価対象：<strong>潮</strong>（潮回り）・<strong>気圧</strong>・<strong>風</strong>（風速・風向）・<strong>波</strong>（波高）・<strong>時間</strong>（マズメ等）・<strong>潮流</strong>（潮の動き）</p>
+          <p><strong>■ 時合ステータス</strong></p>
+          <table class="help-icon-table">
+            <tr><td>🔥 上げ七分</td><td>最高の時合！魚の活性MAX</td></tr>
+            <tr><td>🎯 下げ三分</td><td>好時合。潮が動き出す瞬間</td></tr>
+            <tr><td>🎯 下げ七分</td><td>良い流れ。根魚やタコに◎</td></tr>
+            <tr><td>✨ 上げ三分</td><td>潮が動き始め。期待上昇</td></tr>
+            <tr><td>🌊 上げ潮/下げ潮中盤</td><td>潮が動いている状態</td></tr>
+            <tr><td>⏸️ 潮止まり</td><td>潮の動きが少ない。休憩推奨</td></tr>
+          </table>
+          <p><strong>■ 風の相性アイコン</strong></p>
+          <table class="help-icon-table">
+            <tr><td>😊 追い風</td><td style="color:#00cc66">仕掛けが飛ぶ＆釣りやすい</td></tr>
+            <tr><td>🙂 やや追い風</td><td style="color:#a0d840">おおむね良好</td></tr>
+            <tr><td>🤔 横風</td><td style="color:#f0c040">やや釣りにくい</td></tr>
+            <tr><td>😟 やや向かい風</td><td style="color:#f0943a">仕掛けが飛びにくい</td></tr>
+            <tr><td>😣 向かい風</td><td style="color:#ff4444">釣りにくい。場所変更も検討</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <!-- 3. 潮汐・GPグラフ -->
+      <details class="help-section">
+        <summary class="help-section-title">📊 潮汐・GPグラフ詳細</summary>
+        <div class="help-section-body">
+          <p><strong>■ 潮汐グラフ（曲線）</strong></p>
+          <ul>
+            <li><span style="color:#3ec6e0">水色の曲線</span> = 理論潮位（天文計算）</li>
+            <li><span style="color:#f0943a">オレンジの曲線</span> = 実質潮位（気圧補正済み）※気圧データがある場合のみ</li>
+            <li><span style="color:#f0943a">●オレンジ丸</span> = 満潮ポイント（時刻と潮位cm表示）</li>
+            <li><span style="color:#3ec6e0">●シアン丸</span> = 干潮ポイント</li>
+            <li>薄いオレンジの帯 = 朝マズメ・夕マズメの時間帯</li>
+          </ul>
+          <p><strong>■ GP棒グラフ（GPボタンON時）</strong></p>
+          <p>30分刻みで釣果期待値を棒グラフ表示。色でスコアがわかります：</p>
+          <table class="help-icon-table">
+            <tr><td><span style="color:#ff2020">■ 赤</span></td><td>90点以上 — 激熱！最高の時間帯</td></tr>
+            <tr><td><span style="color:#ff8c00">■ オレンジ</span></td><td>80〜89点 — 高期待</td></tr>
+            <tr><td><span style="color:#ffd700">■ 黄</span></td><td>70〜79点 — 期待あり</td></tr>
+            <tr><td><span style="color:#40c060">■ 緑</span></td><td>60〜69点 — 普通</td></tr>
+            <tr><td><span style="color:#4080ff">■ 青</span></td><td>50〜59点 — 低め</td></tr>
+            <tr><td><span style="color:#666">■ グレー</span></td><td>49点以下 — 厳しい</td></tr>
+            <tr><td>🌈 レインボー + ★</td><td>最高条件（後述）</td></tr>
+          </table>
+          <p><strong>■ ヒートマップバー（グラフ下）</strong></p>
+          <p>2時間ごとの時間帯別スコアを色ブロックで表示。白枠はスライダー位置の時間帯を示します。</p>
+          <p><strong>■ GP ON/OFF</strong></p>
+          <p>グラフ上の「GP」ボタンをタップで切り替え。ONにすると棒グラフが重なって表示されます。</p>
+        </div>
+      </details>
+
+      <!-- 4. 魚種スコア -->
+      <details class="help-section">
+        <summary class="help-section-title">🐟 魚種スコア詳細</summary>
+        <div class="help-section-body">
+          <p><strong>■ 魚種の選択方法</strong></p>
+          <ul>
+            <li>グラフ上の「🎣 総合」ボタンをタップ → 魚種一覧から選択</li>
+            <li>スコアエリアの 🎣ボタン → 魚種ミニスコア一覧を表示</li>
+            <li>◁ ▷ ボタン → 前後の魚種に切替</li>
+          </ul>
+          <p><strong>■ スコア帯の目安</strong></p>
+          <table class="help-icon-table">
+            <tr><td style="color:#ff2020;font-weight:bold">78〜100</td><td>激熱！狙い目の時間帯</td></tr>
+            <tr><td style="color:#ff8c00;font-weight:bold">65〜77</td><td>好条件。十分期待できる</td></tr>
+            <tr><td style="color:#ffd700;font-weight:bold">50〜64</td><td>普通。タイミング次第</td></tr>
+            <tr><td style="color:#4080ff;font-weight:bold">30〜49</td><td>やや厳しい</td></tr>
+            <tr><td style="color:#666;font-weight:bold">0〜29</td><td>厳しい。別の魚種・日を検討</td></tr>
+          </table>
+          <p><strong>■ 主な魚種の特性</strong></p>
+          <table class="help-icon-table">
+            <tr><td>アジ</td><td>夕マズメ◎ 上げ潮好き 大潮〜中潮</td></tr>
+            <tr><td>メバル</td><td>夕マズメ◎ 上げ三分 小潮〜長潮でも○</td></tr>
+            <tr><td>タチウオ</td><td>夜釣り◎ 潮止まり〜上げ三分</td></tr>
+            <tr><td>シーバス</td><td>夜◎ 上げ潮全般 大潮好き</td></tr>
+            <tr><td>ガシラ</td><td>夜◎ 潮止まり〜下げ七分 小潮OK</td></tr>
+            <tr><td>チヌ</td><td>上げ〜下げ広い 大潮好き</td></tr>
+            <tr><td>アオリイカ</td><td>潮止まり〜上げ三分 中潮◎</td></tr>
+            <tr><td>ヒラメ</td><td>朝マズメ◎ 上げ七分 大潮好き</td></tr>
+            <tr><td>キス</td><td>朝◎ 上げ潮序盤 大潮〜中潮</td></tr>
+            <tr><td>グレ</td><td>朝夕マズメ◎ 上げ七分 大潮好き</td></tr>
+            <tr><td>タコ</td><td>潮止まり〜下げ七分 小潮OK</td></tr>
+            <tr><td>マダイ</td><td>上げ七分◎ 大潮好き</td></tr>
+          </table>
+        </div>
+      </details>
+
+      <!-- 5. 釣りスポット検索 -->
+      <details class="help-section">
+        <summary class="help-section-title">🔍 釣りスポット検索・絞り込み</summary>
+        <div class="help-section-body">
+          <p><strong>■ 地点選択画面を開く</strong></p>
+          <p>ヘッダー左の釣り場名をタップ → 地点選択モーダルが開きます。</p>
+          <p><strong>■ エリアタブ</strong></p>
+          <ul>
+            <li><strong>★ お気に入り</strong>：登録した釣り場だけ表示</li>
+            <li><strong>和歌山 / 大阪 / 京都 / 兵庫</strong>：地域で絞り込み</li>
+          </ul>
+          <p><strong>■ テキスト検索</strong></p>
+          <p>入力欄に漁港名を入力するとリアルタイムで絞り込まれます。</p>
+          <p><strong>■ お気に入り登録・解除</strong></p>
+          <p>地点リスト右端の ★ をタップで登録/解除。お気に入りはブラウザに保存されます。</p>
+          <p><strong>■ ランキング（🏆ボタン）</strong></p>
+          <ul>
+            <li>ヘッダー右の 🏆 をタップで開く</li>
+            <li><strong>エリアタブ</strong>：全て / 和歌山 / 大阪 / 京都 / 兵庫</li>
+            <li><strong>魚種バー</strong>：横スクロールで魚種を選択。その魚種のスコアでランキング</li>
+            <li><strong>時間帯</strong>：終日ベスト / 朝マズメ / 夕マズメ で切り替え</li>
+            <li><strong>日付ナビ</strong>：◁ ▷ で前後の日のランキングを比較</li>
+            <li>スポットをタップするとそのスポットに切り替わります</li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- 6. 虹表示条件 -->
+      <details class="help-section">
+        <summary class="help-section-title">🌈 虹（レインボー）表示の詳細条件</summary>
+        <div class="help-section-body">
+          <p><strong>■ 基本条件（2つ同時に満たすこと）</strong></p>
+          <ol>
+            <li><strong>GPスコアが閾値を超えている</strong>（通常82点、ガシラのみ85点）</li>
+            <li>以下の<strong>魚種別条件のいずれか</strong>に該当する</li>
+          </ol>
+          <p><strong>■ 魚種別レインボー条件</strong></p>
+          <table class="help-icon-table help-rainbow-table">
+            <tr><th>魚種</th><th>潮汐条件</th><th>時間帯条件</th></tr>
+            <tr><td>総合</td><td>上げ七分 / 下げ三分</td><td>—</td></tr>
+            <tr><td>アジ</td><td>上げ三分 / 上げ七分</td><td>夕マズメ</td></tr>
+            <tr><td>メバル</td><td>上げ三分</td><td>夕マズメ</td></tr>
+            <tr><td>タチウオ</td><td>潮止まり / 上げ三分</td><td>夜 / 夕マズメ</td></tr>
+            <tr><td>シーバス</td><td>上げ三分 / 上げ七分</td><td>夜 / 夕マズメ</td></tr>
+            <tr><td>ガシラ</td><td>潮止まり / 下げ七分</td><td>深夜</td></tr>
+            <tr><td>チヌ</td><td>上げ三分 / 下げ七分 / 上げ七分</td><td>—</td></tr>
+            <tr><td>アオリイカ</td><td>潮止まり / 上げ三分</td><td>—</td></tr>
+            <tr><td>ヒラメ</td><td>上げ七分 / 下げ三分</td><td>朝マズメ</td></tr>
+            <tr><td>グレ</td><td>上げ七分 / 下げ三分</td><td>朝 / 夕マズメ</td></tr>
+            <tr><td>キス</td><td>上げ三分 / 上げ潮中盤</td><td>朝マズメ</td></tr>
+            <tr><td>カレイ</td><td>上げ三分 / 下げ七分</td><td>朝マズメ</td></tr>
+            <tr><td>カマス</td><td>上げ七分 / 下げ三分</td><td>朝 / 夕マズメ</td></tr>
+            <tr><td>サゴシ</td><td>上げ七分 / 下げ三分</td><td>朝マズメ</td></tr>
+            <tr><td>ブリ</td><td>上げ七分 / 下げ三分</td><td>朝マズメ</td></tr>
+            <tr><td>マダイ</td><td>上げ七分 / 下げ三分</td><td>—</td></tr>
+            <tr><td>タコ</td><td>潮止まり / 下げ七分</td><td>—</td></tr>
+            <tr><td>カワハギ</td><td>上げ潮中盤 / 下げ潮中盤</td><td>朝マズメ</td></tr>
+          </table>
+          <p><strong>■ 時間帯の定義</strong></p>
+          <ul>
+            <li><strong>朝マズメ</strong>：5:00〜7:00</li>
+            <li><strong>夕マズメ</strong>：17:00〜19:00</li>
+            <li><strong>夜</strong>：20:00〜翌4:00</li>
+            <li><strong>深夜</strong>：22:00〜翌2:00</li>
+          </ul>
+          <p>★マークはレインボーバーの上に表示されます。</p>
+        </div>
+      </details>
+
+      <!-- 7. コンディション指標 -->
+      <details class="help-section">
+        <summary class="help-section-title">📋 コンディション指標の見方</summary>
+        <div class="help-section-body">
+          <p><strong>■ 天気カード</strong></p>
+          <table class="help-icon-table">
+            <tr><td><strong>波浪</strong></td><td>波高(m)と周期(秒)。波高1.5m超は注意、2m超は危険</td></tr>
+            <tr><td><strong>風</strong></td><td>風速(m/s)と風向。矢印の色が変化：<span style="color:#4ecb71">緑</span>=微風 <span style="color:#f0c040">黄</span>=そよ風 <span style="color:#f0943a">橙</span>=強風 <span style="color:#e74c5e">赤</span>=暴風</td></tr>
+            <tr><td><strong>気圧</strong></td><td>hPa表示。1013hPa前後が標準。低気圧接近で魚の活性が上がることも</td></tr>
+            <tr><td><strong>海水温</strong></td><td>℃表示。魚種ごとの適水温と照合してスコアに反映</td></tr>
+          </table>
+          <p><strong>■ 風速の目安</strong></p>
+          <ul>
+            <li><strong>0〜3 m/s</strong>：微風。釣り日和</li>
+            <li><strong>3〜7 m/s</strong>：そよ風。おおむね問題なし</li>
+            <li><strong>7〜15 m/s</strong>：強風。場所によっては厳しい</li>
+            <li><strong>15 m/s超</strong>：暴風。釣りは中止推奨</li>
+          </ul>
+          <p><strong>■ 潮回りの影響</strong></p>
+          <ul>
+            <li><strong>大潮</strong>：潮の動き最大。青物・マダイ等回遊魚に◎</li>
+            <li><strong>中潮</strong>：バランス良し。多くの魚種に安定</li>
+            <li><strong>小潮</strong>：潮の動き穏やか。根魚・タコ・イカに○</li>
+            <li><strong>長潮・若潮</strong>：潮の変化少。ガシラ・メバル等に悪くない</li>
+          </ul>
+          <p><strong>■ 釣行判断（🎯）のランク</strong></p>
+          <table class="help-icon-table">
+            <tr><td style="color:#4ecb71;font-weight:900">A</td><td>絶好の釣り日和！迷わず行くべし</td></tr>
+            <tr><td style="color:#a0d840;font-weight:900">B</td><td>良い条件。十分期待できる</td></tr>
+            <tr><td style="color:#f0c040;font-weight:900">C</td><td>普通。条件は可もなく不可もなく</td></tr>
+            <tr><td style="color:#e74c5e;font-weight:900">D</td><td>厳しい条件。別の日を検討</td></tr>
+          </table>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</div>
+
 <!-- ===== Scripts (load order matters) ===== -->
 <script src="js/ports-data.js"></script>
 <script src="js/tide-calc.js"></script>
@@ -414,6 +670,15 @@ if ('serviceWorker' in navigator) {
 // デバッグ：全モジュール読み込み確認
 console.log('[DEBUG] Nearby defined:', typeof Nearby);
 console.log('[DEBUG] Nearby.toggle:', typeof Nearby !== 'undefined' ? typeof Nearby.toggle : 'N/A');
+// 超詳細ヘルプ切り替え
+document.getElementById('helpSuperBtn').addEventListener('click', function() {
+  document.getElementById('helpOverlay').style.display = 'none';
+  document.getElementById('superHelpOverlay').style.display = 'flex';
+});
+document.getElementById('superHelpBack').addEventListener('click', function() {
+  document.getElementById('superHelpOverlay').style.display = 'none';
+  document.getElementById('helpOverlay').style.display = 'flex';
+});
 window.addEventListener('error', function(e) {
   console.error('[GLOBAL ERROR]', e.message, e.filename, e.lineno);
 });
