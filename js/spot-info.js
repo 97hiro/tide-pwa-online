@@ -104,6 +104,9 @@ const SpotInfo = (() => {
     // 📋 詳細
     html += `<button class="spot-bar-btn info" id="spotBarDetail" title="詳細情報">📋</button>`;
 
+    // ❓ ヘルプ
+    html += `<button class="spot-bar-btn info" id="spotBarHelp" title="ヘルプ">❓</button>`;
+
     bar.innerHTML = html;
 
     // イベント
@@ -124,6 +127,12 @@ const SpotInfo = (() => {
 
     const detailBtn = document.getElementById('spotBarDetail');
     if (detailBtn) detailBtn.addEventListener('click', () => _showPopup(port[0] + ' 詳細情報', _renderFullDetail(portIndex)));
+
+    const helpBtn = document.getElementById('spotBarHelp');
+    if (helpBtn) helpBtn.addEventListener('click', () => {
+      const overlay = document.getElementById('helpOverlay');
+      if (overlay) overlay.style.display = 'flex';
+    });
   }
 
   // ==================== ポップアップ ====================

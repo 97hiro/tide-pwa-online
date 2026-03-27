@@ -321,6 +321,81 @@ if ('serviceWorker' in navigator) {
   </div>
 </div>
 
+<!-- ===== Help Modal ===== -->
+<div class="help-overlay" id="helpOverlay" style="display:none" onclick="this.style.display='none'">
+  <div class="help-modal" onclick="event.stopPropagation()">
+    <div class="help-modal-header">
+      <span class="help-modal-title">ヘルプ</span>
+      <button class="help-modal-close" onclick="document.getElementById('helpOverlay').style.display='none'">&times;</button>
+    </div>
+    <div class="help-modal-body">
+
+      <details class="help-section" open>
+        <summary class="help-section-title">📈 潮汐・GPグラフの読み方</summary>
+        <div class="help-section-body">
+          <p><strong>潮汐グラフ</strong>は1日の潮位変化を曲線で表示します。</p>
+          <ul>
+            <li><span style="color:#f0943a">●オレンジ</span> = 満潮（潮位が高い）</li>
+            <li><span style="color:#3ec6e0">●シアン</span> = 干潮（潮位が低い）</li>
+          </ul>
+          <p><strong>GPグラフ</strong>（GPボタンON時）は時間帯ごとの釣果期待値を色で重ねて表示します。</p>
+          <ul>
+            <li><span style="color:#ff2020">●赤</span> = 激熱</li>
+            <li><span style="color:#ff8c00">●オレンジ</span> = 高期待</li>
+            <li><span style="color:#ffd700">●黄</span> = 期待あり</li>
+            <li><span style="color:#40c060">●緑</span> = 普通</li>
+            <li><span style="color:#4080ff">●青</span> = 低め</li>
+            <li><span style="color:#666">●グレー</span> = 厳しい</li>
+          </ul>
+          <p>🌈<strong>レインボー表示</strong>は特に好条件の時間帯を示します。</p>
+          <p>タイムスライダーを動かすと、任意の時刻のスコアを確認できます。</p>
+        </div>
+      </details>
+
+      <details class="help-section">
+        <summary class="help-section-title">🎣 魚種スコアと釣りスコアの説明</summary>
+        <div class="help-section-body">
+          <p><strong>釣り期待値 Theory</strong>は潮汐・天候・時間帯などを総合した釣果期待度（0〜100）です。</p>
+          <ul>
+            <li><strong>80以上</strong>：絶好の釣り日和</li>
+            <li><strong>60〜79</strong>：良い条件</li>
+            <li><strong>40〜59</strong>：普通</li>
+            <li><strong>40未満</strong>：厳しい条件</li>
+          </ul>
+          <p><strong>魚種別スコア</strong>は各魚種の旬・適水温・潮の好みなどを加味した個別の期待値です。🎣ボタンや◁▷で魚種を切り替えられます。</p>
+          <p><strong>ベストタイム</strong>はその日もっともスコアが高い時間帯です。</p>
+        </div>
+      </details>
+
+      <details class="help-section">
+        <summary class="help-section-title">🔍 釣りスポットの検索・絞り込み方法</summary>
+        <div class="help-section-body">
+          <p>ヘッダー左の<strong>スポット名</strong>をタップすると、地点選択画面が開きます。</p>
+          <ul>
+            <li><strong>検索</strong>：テキスト入力で漁港名を検索</li>
+            <li><strong>エリアタブ</strong>：和歌山・大阪・京都・兵庫で絞り込み</li>
+            <li><strong>お気に入り</strong>：★タブによく行く釣り場を保存</li>
+          </ul>
+          <p>🏆<strong>ランキング</strong>ボタンでは、エリア別・魚種別・時間帯別で好条件のスポットを比較できます。</p>
+        </div>
+      </details>
+
+      <details class="help-section">
+        <summary class="help-section-title">🌈 虹（レインボー）表示の条件</summary>
+        <div class="help-section-body">
+          <p>GPグラフでレインボー表示になるのは、以下の条件を<strong>同時に満たした</strong>時間帯です。</p>
+          <ul>
+            <li><strong>時合</strong>（潮の動きが活発なタイミング）と重なっている</li>
+            <li><strong>GPスコアが82を超えている</strong></li>
+          </ul>
+          <p>レインボーが表示される時間帯は、魚の活性が最も高まる「最高の釣り時」を意味します。この時間帯を狙って釣行するのがおすすめです。</p>
+        </div>
+      </details>
+
+    </div>
+  </div>
+</div>
+
 <!-- ===== Scripts (load order matters) ===== -->
 <script src="js/ports-data.js"></script>
 <script src="js/tide-calc.js"></script>

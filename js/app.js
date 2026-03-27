@@ -89,7 +89,7 @@ const App = (() => {
     gure:     ['上げ七分', '下げ三分', '_morning', '_evening'],
     kisu:     ['上げ三分', '上げ潮中盤', '_morning'],
     karei:    ['上げ三分', '下げ七分', '_morning'],
-    mebaru:   ['上げ三分', '下げ七分', '_night', '_evening'],
+    mebaru:   ['上げ三分', '_evening'],
     kamasu:   ['上げ七分', '下げ三分', '_morning', '_evening'],
     tachiuo:  ['潮止まり', '上げ三分', '_night', '_evening'],
     sagoshi:  ['上げ七分', '下げ三分', '_morning'],
