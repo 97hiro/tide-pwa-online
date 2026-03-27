@@ -1,7 +1,7 @@
 {
-  "name": "タイドグラフ Theory - 釣り総合情報",
-  "short_name": "Theory",
-  "description": "和歌山・大阪・京都 152地点対応 釣り期待値スコア付き潮汐情報アプリ",
+  "name": "「ポセイどん」- 関西版",
+  "short_name": "ポセイどん関西版",
+  "description": "関西エリアの釣り場対応 釣り期待値スコア付き潮汐情報アプリ",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

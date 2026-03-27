@@ -33,9 +33,16 @@ const UI = (() => {
     portNameEl.innerHTML = port[0] + ' ' + weatherHtml;
     const areaText = PREF_NAMES[port[2]] + ' ' + port[1];
     document.getElementById('portArea').textContent = areaText;
-    // portLinks は行2(spotBar)に移行 → 非表示
+    // portLinks: 対応エリア表示（タップでポップアップ）
     const linksEl = document.getElementById('portLinks');
-    linksEl.innerHTML = '';
+    if (!linksEl.dataset.bound) {
+      linksEl.dataset.bound = '1';
+      linksEl.addEventListener('click', function(e) {
+        e.stopPropagation();
+        _showAreaPopup();
+      });
+    }
+    linksEl.innerHTML = '<span class="area-link-text">対応エリア ▸</span>';
     document.getElementById('dateText').textContent = formatDate(date);
 
     const badge = document.getElementById('tideBadge');
@@ -692,6 +699,52 @@ const UI = (() => {
       bodyEl.innerHTML = html;
       overlay.style.display = 'flex';
     }
+  }
+
+  // 対応エリア一覧（地域を追加するだけで拡張可能）
+  const AREA_REGIONS = [
+    { name: '関西', prefectures: ['大阪府', '京都府', '和歌山県', '兵庫県'] }
+    // { name: '関東', prefectures: ['東京都', '神奈川県', '千葉県'] },
+    // { name: '九州', prefectures: ['福岡県', '長崎県'] },
+  ];
+
+  function _showAreaPopup() {
+    let overlay = document.getElementById('areaPopupOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'areaPopupOverlay';
+      overlay.className = 'area-popup-overlay';
+      overlay.addEventListener('click', function() { overlay.style.display = 'none'; });
+      var accordionHtml = AREA_REGIONS.map(function(region) {
+        var items = region.prefectures.map(function(p) { return '<li class="area-accordion-item">' + p + '</li>'; }).join('');
+        return '<div class="area-accordion">' +
+          '<button class="area-accordion-trigger" data-area-open="0">' +
+            '<span>' + region.name + '</span><span class="area-accordion-arrow">▶</span>' +
+          '</button>' +
+          '<ul class="area-accordion-list" style="display:none">' + items + '</ul>' +
+        '</div>';
+      }).join('');
+      overlay.innerHTML =
+        '<div class="area-popup" onclick="event.stopPropagation()">' +
+          '<div class="area-popup-header">' +
+            '<span class="area-popup-title">対応エリア</span>' +
+            '<button class="area-popup-close" onclick="document.getElementById(\'areaPopupOverlay\').style.display=\'none\'">&times;</button>' +
+          '</div>' +
+          '<div class="area-popup-body">' + accordionHtml + '</div>' +
+        '</div>';
+      overlay.querySelectorAll('.area-accordion-trigger').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var list = btn.nextElementSibling;
+          var arrow = btn.querySelector('.area-accordion-arrow');
+          var isOpen = btn.dataset.areaOpen === '1';
+          btn.dataset.areaOpen = isOpen ? '0' : '1';
+          list.style.display = isOpen ? 'none' : 'block';
+          arrow.textContent = isOpen ? '▶' : '▼';
+        });
+      });
+      document.body.appendChild(overlay);
+    }
+    overlay.style.display = 'flex';
   }
 
   return {

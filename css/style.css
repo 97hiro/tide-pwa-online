@@ -1784,6 +1784,86 @@ body {
 .fish-select-item img { width: 28px; height: 28px; object-fit: contain; }
 .fish-select-emoji { font-size: 22px; width: 28px; text-align: center; }
 
+/* ==================== Area Link & Popup ==================== */
+.area-link-text {
+  font-size: 9px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+.area-link-text:active { color: var(--accent-cyan); }
+.area-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 250;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.area-popup {
+  background: var(--bg-card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  max-width: 260px;
+  width: 100%;
+  overflow: hidden;
+}
+.area-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.area-popup-title { font-size: 14px; font-weight: 700; }
+.area-popup-close {
+  width: 28px; height: 28px;
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.area-popup-close:active { background: var(--bg-hover); }
+.area-popup-body { padding: 4px 0; }
+.area-accordion { border-bottom: 1px solid var(--border); }
+.area-accordion:last-child { border-bottom: none; }
+.area-accordion-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.area-accordion-trigger:active { background: var(--bg-hover); }
+.area-accordion-arrow {
+  font-size: 10px;
+  color: var(--text-secondary);
+  transition: transform .15s;
+}
+.area-accordion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 6px;
+}
+.area-accordion-item {
+  padding: 6px 16px 6px 28px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
 /* ==================== Help Modal ==================== */
 .help-overlay {
   position: fixed;
